@@ -14,7 +14,7 @@ export default async function Page() {
     const animes = await getAnimes();
     return (
         <>
-        <div className="container mx-auto md:px-32 px-5 pt-20">
+        <div className="container mx-auto md:px-40 px-5 pt-20">
             <div className="flex justify-between py-10">
                 <h1>Anime</h1>
                 <CreateAnimeButton/>
