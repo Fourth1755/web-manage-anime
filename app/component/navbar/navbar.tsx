@@ -3,6 +3,7 @@ import { useState } from "react";
 import Sidebar from "../sidebar/sidebar";
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
+import { Button } from "../mtailwind";
 
 export default function Navbar() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -18,11 +19,11 @@ export default function Navbar() {
               <h1 className="my-auto font-castoro italic text-lg">Animap</h1>
             </div>
             <div className="md:flex hidden justify-center w-40">
-              <Link href={"/login"}>
-                <button className="bg-success px-6 py-2 my-auto rounded-lg">
+                <Button variant="gradient" color="green">
+                <Link href={"/login"}>
                   Sign In
-                </button>
-              </Link>
+                  </Link>
+                </Button>
             </div>
             <button
               data-drawer-target="default-sidebar"
