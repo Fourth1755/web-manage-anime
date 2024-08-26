@@ -11,7 +11,6 @@ import {
     Select,
     Option,
 } from "@material-tailwind/react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -35,18 +34,6 @@ type FormData = {
     seasonal: string;
     year: string;
     episodes: number
-    //detail: string;
-}
-
-// async function createAnime(anime: AnimeData) {
-//     const response = await axios.post(`http://localhost:8080/animes`, anime)
-//     console.log(response)
-//     return Response.json(response)
-// }
-
-async function updateBlog(anime: AnimeData, id: number) {
-    const response = axios.patch(`http://localhost:8080/animes/${id}`, anime)
-    return Response.json(response)
 }
 
 export default function createAnimeModal(prop: PropsCreateAnimeModal) {
@@ -86,7 +73,6 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         if (isEdit && animeData) {
             //PATCH:/blogs
             anime.id = animeData.id
-            await updateBlog(anime, animeData.id)
         } else {
             //POST:/blogs
             await createAnime(anime)
@@ -109,6 +95,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                     mount: { scale: 1, y: 0 },
                     unmount: { scale: 0.9, y: -100 },
                 }}
+                size="xs"
             >
                 <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
                 <form onSubmit={handleSubmit}>
@@ -157,7 +144,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                     <DialogFooter>
                         <Button
                             variant="text"
-                            color="green"
+                            color="red"
                             onClick={handleOpen}
                             className="mr-1"
                         >
