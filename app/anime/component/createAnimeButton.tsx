@@ -3,18 +3,23 @@ import CreateBlogModal from "./createAnimeModal";
 import { useState } from "react";
 import { Button } from "../../component/mtailwind";
 
-export default function CreateAnimeButton() {
+type PropCreateAnimeButton ={
+    name: string
+    isEdit: boolean
+}
+
+export default function CreateAnimeButton(props:PropCreateAnimeButton) {
     const [openModal, setOpenModal] = useState(false);
     const handleOpen = () => setOpenModal(!openModal);
     return (
         <>
             <Button variant="gradient" color="green" type="submit" onClick={handleOpen}>
-                <span>Add New</span>
+                <span>{props.name}</span>
             </Button>
             <CreateBlogModal
                 open={openModal}
                 handler={handleOpen}
-                isEdit={false}
+                isEdit={props.isEdit}
                 anime={undefined}
             />
         </>
