@@ -17,6 +17,27 @@ type CreateAnimeSongData = {
         link: string
     }[],
 }
+type SongChannel ={
+    id:number
+    channel: number
+    type:number
+    link:string
+    is_main:number
+}
+
+type SongDetail = {
+    id:number
+    name:string
+    type:number
+    sequence:number
+    song_channel:SongChannel[]
+}
+
+type AnimeSongsDetail= {
+    opening:SongDetail[]
+    ending:SongDetail[]
+    soundtrack:SongDetail[]
+}
 
 export async function getSongs() {
     const response = await axios.get(animeUrl, {
@@ -32,6 +53,16 @@ export async function createSong(song: CreateAnimeSongData) {
     const response = await axios.post(animeUrl, song, { 
         headers: { 
             "Content-Type": "application/json", 
+            "Authorization": authorization
+        },
+    })
+    return response.data
+}
+
+export async function getSongByAnime(anime_id:number):Promise<AnimeSongsDetail> {
+    const response = await axios.get(`${animeUrl}/anime/${anime_id}`, {
+        headers: {
+            "Content-Type": "application/json",
             "Authorization": authorization
         },
     })

@@ -1,5 +1,4 @@
 "use client";
-import { createAnime } from "@/app/api/anime";
 import {
     Button,
     Dialog,
@@ -13,13 +12,19 @@ import {
 } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createAnime,updateAnime } from "./action";
 
 type AnimeData = {
     id: number;
     name: string;
-    seasonal: string;
-    year: string;
+    name_english: string
     episodes: number
+    seasonal: string;
+    image: string
+    description: string
+    duration: string
+    year: string;
+    type: number
 };
 
 type PropsCreateAnimeModal = {
@@ -31,26 +36,40 @@ type PropsCreateAnimeModal = {
 
 type FormData = {
     name: string;
-    seasonal: string;
-    year: string;
+    name_english: string
     episodes: number
+    seasonal: string;
+    image: string
+    description: string
+    duration: string
+    year: string;
+    type: string
 }
 
+const seasonalList = [
+    "spring", "summer", "winter", "fall"
+];
+const animeTypeList = [
+    { id: "1", name: "TV" },
+    { id: "2", name: "Movie" }
+]
 export default function createAnimeModal(prop: PropsCreateAnimeModal) {
     const router = useRouter()
     const open = prop.open;
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit
     const animeData = prop.anime
-    const seasonalList = [
-        "spring", "summer", "winter", "fall"
-    ];
-    const user = {
-        id: 1,
-        name: "Alisa Mikhailovna",
-        image: "https://cdn.myanimelist.net/images/characters/5/536830.jpg",
-    }
-    const [formData, setFormData] = useState<FormData>({ name: "", seasonal: "", year: "", episodes: 0 });
+    const [formData, setFormData] = useState<FormData>({
+        name: "",
+        name_english: "",
+        episodes: 0,
+        seasonal: "",
+        image: "",
+        description: "",
+        duration: "",
+        year: "",
+        type: "",
+    });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | any) => {
         const { name, value } = event.target;
@@ -59,31 +78,46 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
     const changeSeasonal = (val = "") => {
         setFormData({ ...formData, "seasonal": val });
     };
+    const changeAnimeType = (val = "") => {
+        setFormData({ ...formData, "type": val });
+    };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+        //event.preventDefault();
         const anime: AnimeData = {
             id: 0,
             name: formData.name,
+            name_english: formData.name_english,
+            episodes: +formData.episodes,
             seasonal: formData.seasonal,
+            image: formData.image,
+            description: formData.description,
+            duration: formData.duration,
             year: formData.year,
-            episodes: +formData.episodes
+            type: +formData.type
         }
-        console.log(typeof +formData.episodes)
         if (isEdit && animeData) {
-            //PATCH:/blogs
             anime.id = animeData.id
+            await updateAnime(anime)
         } else {
-            //POST:/blogs
             await createAnime(anime)
-            //await createAnime(blog)
         }
         handleOpen()
-        router.push('/')
     }
     useEffect(() => {
+        console.log(isEdit,animeData)
         if (isEdit && animeData) {
-            setFormData({ name: animeData.name, seasonal: animeData.seasonal, year: animeData.year, episodes: animeData.episodes })
+            setFormData({
+                name: animeData.name,
+                name_english: animeData.name_english,
+                episodes: +animeData.episodes,
+                seasonal: animeData.seasonal,
+                image: animeData.image,
+                description: animeData.description,
+                duration: animeData.duration,
+                year: animeData.year,
+                type: animeData.type.toString()
+            })
         }
     }, [])
     return (
@@ -95,12 +129,11 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                     mount: { scale: 1, y: 0 },
                     unmount: { scale: 0.9, y: -100 },
                 }}
-                size="xs"
+                size="sm"
             >
                 <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
                 <form onSubmit={handleSubmit}>
-                    <DialogBody>
-                        <div className="grid gap-6">
+                    <DialogBody  className="space-y-4 pb-6">
                             <Input
                                 label="anime name"
                                 crossOrigin={undefined}
@@ -108,7 +141,23 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                 name="name"
                                 onChange={handleInputChange}
                             />
-                            <div className="md:w-48 flex gap-6">
+                            <Input
+                                label="anime english name"
+                                crossOrigin={undefined}
+                                value={formData.name_english}
+                                name="name_english"
+                                onChange={handleInputChange}
+                            />
+                            <Input
+                                label="image"
+                                type="text"
+                                crossOrigin={undefined}
+                                value={formData.image}
+                                name="image"
+                                onChange={handleInputChange}
+                            />
+                            <div className="flex gap-4">
+                                <div className="w-full">
                                 <Select
                                     variant="outlined"
                                     label="Choose a Seasonal"
@@ -123,6 +172,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                         </Option>
                                     ))}
                                 </Select>
+                                </div>
+                                <div className="w-full">
                                 <Input
                                     label="year"
                                     crossOrigin={undefined}
@@ -130,16 +181,52 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                     name="year"
                                     onChange={handleInputChange}
                                 />
+                                </div>
+
                             </div>
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                <Select
+                                    variant="outlined"
+                                    label="Choose a Type"
+                                    color="green"
+                                    value={formData.type}
+                                    name="type"
+                                    onChange={changeAnimeType}
+                                >
+                                    {animeTypeList.map((item) => (
+                                        <Option key={item.id} value={item.id}>
+                                            {item.name}
+                                        </Option>
+                                    ))}
+                                </Select>
+                                </div>
+                                <div className="w-full">
+                                <Input
+                                    label="episodes"
+                                    type="number"
+                                    crossOrigin={undefined}
+                                    value={formData.episodes}
+                                    name="episodes"
+                                    onChange={handleInputChange}
+                                />
+                                </div>
+                            </div>
+
                             <Input
-                                label="episodes"
-                                type="number"
+                                label="duration"
+                                type="text"
                                 crossOrigin={undefined}
-                                value={formData.episodes}
-                                name="episodes"
+                                value={formData.duration}
+                                name="duration"
                                 onChange={handleInputChange}
                             />
-                        </div>
+                            <Textarea
+                                label="description"
+                                value={formData.description}
+                                name="description"
+                                onChange={handleInputChange}
+                            />
                     </DialogBody>
                     <DialogFooter>
                         <Button
@@ -151,7 +238,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                             <span>Cancel</span>
                         </Button>
                         <Button variant="gradient" color="green" type="submit">
-                            <span>Create</span>
+                            <span>{isEdit ? "Save" : "Create"}</span>
                         </Button>
                     </DialogFooter>
                 </form>
