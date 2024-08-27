@@ -6,6 +6,20 @@ import { Button } from "../../component/mtailwind";
 type PropCreateAnimeButton ={
     name: string
     isEdit: boolean
+    anime?:AnimeData
+}
+
+type AnimeData = {
+    id:number
+    name: string;
+    name_english: string
+    episodes: number
+    seasonal: string;
+    image: string
+    description: string
+    duration: string
+    year: string;
+    type: number
 }
 
 export default function CreateAnimeButton(props:PropCreateAnimeButton) {
@@ -20,7 +34,7 @@ export default function CreateAnimeButton(props:PropCreateAnimeButton) {
                 open={openModal}
                 handler={handleOpen}
                 isEdit={props.isEdit}
-                anime={undefined}
+                anime={props.anime}
             />
         </>
     );

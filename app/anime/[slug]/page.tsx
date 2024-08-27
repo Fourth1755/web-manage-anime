@@ -1,10 +1,12 @@
-import { getAnime } from "@/app/api/anime";
+import { getAnimeAPI } from "@/app/api/anime";
 import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
 import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
+import { getSongByAnime } from "@/app/api/songs";
 
 export default async function Page({ params }: { params: { slug: number } }) {
-    const anime = await getAnime(params.slug);
+    const anime = await getAnimeAPI(params.slug);
+    const songs = await getSongByAnime(params.slug);
     return (
         <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">
             <Card className="h-full w-full">
@@ -14,7 +16,7 @@ export default async function Page({ params }: { params: { slug: number } }) {
                         <Typography variant="h5" color="blue-gray">
                             {anime.name}
                         </Typography>
-                        <CreateAnimeButton name="Edit anime" isEdit={false}/>
+                        <CreateAnimeButton name="Edit anime" isEdit={true} anime={anime}/>
                         </div>
                         <img
                             className="h-60 w-44 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
@@ -50,10 +52,10 @@ export default async function Page({ params }: { params: { slug: number } }) {
                                     </td>
                                     <td>
                                         {anime.categories?.map((item, index) => (
-                                            <p key={item.id}>
+                                            <span key={item.id}>
                                                 <Link href={`category/${item.id}`}>{item.name}</Link>
                                                 <p>{index == anime.categories.length ? "," : ""}</p>
-                                            </p>
+                                            </span>
                                         ))}
                                     </td>
                                 </tr>
@@ -79,17 +81,17 @@ export default async function Page({ params }: { params: { slug: number } }) {
                     <Typography variant="h5" color="blue-gray">
                         Anime Song
                     </Typography>
-                    {anime.opening ? <Typography color="gray" className="mt-1 font-normal">
+                    {songs.opening_song ? <Typography color="gray" className="mt-1 font-normal">
                         Anime Opening
                     </Typography> : <></>}
-                    {anime.ending ? <Typography color="gray" className="mt-1 font-normal">
+                    {songs.ending_song ? <Typography color="gray" className="mt-1 font-normal">
                         Anime Ending
                     </Typography> : <></>}
-                    {anime.soundtrack ? <div>
+                    {songs.soundtrack_song ? <div>
                         <Typography color="gray" className="mt-1 font-normal">
                             Soundtrack
                         </Typography>
-                        {anime.soundtrack.map((song)=>(<div key={song.id}>
+                        {songs.soundtrack_song.map((song)=>(<div key={song.id}>
                             <Typography color="gray" className="mt-1 font-normal" >
                                 {song.name}
                            </Typography>

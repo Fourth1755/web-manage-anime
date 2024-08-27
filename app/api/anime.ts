@@ -5,21 +5,19 @@ const authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6I
 type CreateAnimeData = {
     id: number;
     name: string;
-    seasonal: string;
-    year: string;
+    name_english: string
     episodes: number
+    seasonal: string;
+    image: string
+    description: string
+    duration: string
+    year: string;
+    type: number
 };
 
 type AnimeDetailCategories = {
     id:number
     name:string
-}
-
-type AnimeDetailSongs = {
-    id:number
-    name:string
-    type:number
-    sequence:number
 }
 
 type AnimeDetail = {
@@ -35,12 +33,9 @@ type AnimeDetail = {
     type:number
     duration:string
     categories:AnimeDetailCategories[]
-    opening:AnimeDetailSongs[]
-    ending:AnimeDetailSongs[]
-    soundtrack:AnimeDetailSongs[]
 }
 
-export async function createAnime(anime: CreateAnimeData) {
+export async function createAnimeAPI(anime: CreateAnimeData) {
     const response = await axios.post(animeUrl, anime, { 
         headers: { 
             "Content-Type": "application/json", 
@@ -50,7 +45,7 @@ export async function createAnime(anime: CreateAnimeData) {
     return response.data
 }
 
-export async function getAnimes() {
+export async function getAnimesAPI() {
     const response = await axios.get(animeUrl, {
         headers: {
             "Content-Type": "application/json",
@@ -60,8 +55,18 @@ export async function getAnimes() {
     return response.data
 }
 
-export async function getAnime(id:number):Promise<AnimeDetail>{
+export async function getAnimeAPI(id:number):Promise<AnimeDetail>{
     const response = await axios.get(`${animeUrl}/${id}`, {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": authorization
+        },
+    })
+    return response.data
+}
+
+export async function updateAnimeAPI(anime: CreateAnimeData){
+    const response = await axios.put(`${animeUrl}/${anime.id}`, anime,{
         headers: {
             "Content-Type": "application/json",
             "Authorization": authorization
