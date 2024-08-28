@@ -1,6 +1,5 @@
 import axios from "axios";
-const animeUrl = 'http://localhost:8080/animes'
-const authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZvdXJ0aEBnbWFpbC5jb20iLCJleHAiOjE3MjQ4MzI0MjAsInJvbGUiOiJhZG1pbiJ9.puBrLutqxUtoSjLhC7c3nDTKRgahyueMTPOl_gwDPkk'
+import { ConnectAnimapService } from "./builder";
 
 type CreateAnimeData = {
     id: number;
@@ -34,43 +33,48 @@ type AnimeDetail = {
     duration:string
     categories:AnimeDetailCategories[]
 }
+export class AnimeSerivce{
+    private url:string
+    private authorization: string
+    
+    constructor(){
+        const connectAnimap = new ConnectAnimapService()
+        this.url = connectAnimap.getAnimesUrl();
+        this.authorization = connectAnimap.getAuthorization()
+    }
 
-export async function createAnimeAPI(anime: CreateAnimeData) {
-    const response = await axios.post(animeUrl, anime, { 
-        headers: { 
-            "Content-Type": "application/json", 
-            "Authorization": authorization
-        },
-    })
-    return response.data
-}
-
-export async function getAnimesAPI() {
-    const response = await axios.get(animeUrl, {
-        headers: {
+    private getConfigHeaders(){
+        return{
             "Content-Type": "application/json",
-            "Authorization": authorization
-        },
-    })
-    return response.data
-}
+            "Authorization": this.authorization
+        }
+    }
 
-export async function getAnimeAPI(id:number):Promise<AnimeDetail>{
-    const response = await axios.get(`${animeUrl}/${id}`, {
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": authorization
-        },
-    })
-    return response.data
-}
+    public async createAnimeAPI(anime: CreateAnimeData) {
+        const response = await axios.post(this.url, anime, { 
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
 
-export async function updateAnimeAPI(anime: CreateAnimeData){
-    const response = await axios.put(`${animeUrl}/${anime.id}`, anime,{
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": authorization
-        },
-    })
-    return response.data
+    public async getAnimesAPI() {
+        const response = await axios.get(this.url, {
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
+
+    public async getAnimeAPI(id:number):Promise<AnimeDetail>{
+        const response = await axios.get(`${this.url}/${id}`, {
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
+
+    public async updateAnimeAPI(anime: CreateAnimeData){
+        const response = await axios.put(`${this.url}/${anime.id}`, anime,{
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
 }

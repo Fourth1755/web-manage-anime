@@ -1,5 +1,4 @@
 "use client";
-import { createSong } from "@/app/api/songs";
 import {
     Button,
     Dialog,
@@ -14,7 +13,8 @@ import {
 } from "../../component/mtailwind";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { channel } from "diagnostics_channel";
+import { ArtistSerivce } from "@/app/api/artist";
+import { createSong } from "./action";
 
 type AnimeSongData = {
     id: number;
@@ -25,24 +25,31 @@ type AnimeSongData = {
     type: number;
     anime_id: number;
     song_channel: {
-        channel: number
-        type: number
-        link: string
-    }[],
-}
+        channel: number;
+        type: number;
+        link: string;
+    }[];
+    artist_list: number[]
+};
 
 type PropsCreateSongeModal = {
     open: boolean;
     handler: () => void;
     isEdit: boolean;
-    song?: AnimeSongData
+    song?: AnimeSongData;
 };
 
-type FormSongChannelData ={
-    channel: number
-    type: number
-    link: string
-}
+type FormSongArtistData = {
+    id: number;
+    name: string;
+    image: string;
+};
+
+type FormSongChannelData = {
+    channel: number;
+    type: number;
+    link: string;
+};
 
 type FormSongData = {
     name: string;
@@ -51,60 +58,79 @@ type FormSongData = {
     year: string;
     type: string;
     anime_id: string;
-    song_channel: FormSongChannelData[],
-}
+    song_channel: FormSongChannelData[];
+    artists: string
+};
 
 type SongType = {
     id: string;
     name: string;
-}
+};
+
+type ArtistList = {
+    id: number;
+    name: string;
+    image: string;
+    description?: string;
+    record_label?: string;
+    is_music_band?: boolean;
+};
 
 const songType: SongType[] = [
     { id: "1", name: "opening" },
     { id: "2", name: "ending" },
-    { id: "3", name: "soundtrack" }
+    { id: "3", name: "soundtrack" },
 ];
 
 export default function createSongModal(prop: PropsCreateSongeModal) {
-    const router = useRouter()
+    const router = useRouter();
     const open = prop.open;
     const handleOpen = prop.handler;
-    const isEdit = prop.isEdit
-    const songData = prop.song
-
-
-    const [formSongChannelData, setFormSongChannelData] = useState<FormSongChannelData>({
-        channel: 0,
-        type: 0,
-        link:""
-    })
-    const [formData, setFormData] = useState<FormSongData>({ 
-        name: "", 
-        image: "", 
-        description: "", 
-        year: "", 
-        type: "", 
-        anime_id: "", 
-        song_channel:[formSongChannelData] });
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | any) => {
+    const isEdit = prop.isEdit;
+    const songData = prop.song;
+    const [artistList, setArtistList] = useState<ArtistList[]>();
+    const [formSongChannelData, setFormSongChannelData] =
+        useState<FormSongChannelData>({
+            channel: 0,
+            type: 0,
+            link: "",
+        });
+    const [formData, setFormData] = useState<FormSongData>({
+        name: "",
+        image: "",
+        description: "",
+        year: "",
+        type: "",
+        anime_id: "",
+        song_channel: [formSongChannelData],
+        artists: ""
+    });
+    const handleInputChange = (
+        event: React.ChangeEvent<HTMLInputElement> | any
+    ) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
-    }
+    };
     const changeType = (val = "") => {
-        console.log(val)
-        setFormData({ ...formData, "type": val });
+        setFormData({ ...formData, type: val });
     };
 
-    const handleChannelInputChange = (event: React.ChangeEvent<HTMLInputElement> | any) => {
+    const handleChangeArtists = (val = "") => {
+        setFormData({ ...formData, artists: val });
+    };
+
+    const handleChannelInputChange = (
+        event: React.ChangeEvent<HTMLInputElement> | any
+    ) => {
         const { name, value } = event.target;
-        if(name == "channel"){
-            setFormSongChannelData({...formSongChannelData,"channel": +value});
-        }else if(name == "type"){
-            setFormSongChannelData({...formSongChannelData,"type": +value});
-        }else if(name == "link"){
-            setFormSongChannelData({...formSongChannelData,"link": value});
+        if (name == "channel") {
+            setFormSongChannelData({ ...formSongChannelData, channel: +value });
+        } else if (name == "type") {
+            setFormSongChannelData({ ...formSongChannelData, type: +value });
+        } else if (name == "link") {
+            setFormSongChannelData({ ...formSongChannelData, link: value });
         }
-    }
+    };
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const song: AnimeSongData = {
@@ -115,20 +141,20 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             year: formData.year,
             type: +formData.type,
             anime_id: +formData.anime_id,
-            song_channel: [formSongChannelData]
-        }
+            song_channel: [formSongChannelData],
+            artist_list: [+formData.artists],
+        };
         if (isEdit && songData) {
             //PATCH:/blogs
-            song.id = songData.id
+            song.id = songData.id;
             //await updateBlog(song, songData.id)
         } else {
             //POST:/blogs
-            console.log(song)
-            await createSong(song)
+            await createSong(song);
         }
-        handleOpen()
-        router.push('/')
-    }
+        handleOpen();
+        router.push("/");
+    };
     useEffect(() => {
         if (isEdit && songData) {
             setFormData({
@@ -138,10 +164,24 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                 year: songData.year,
                 type: songData.type.toString(),
                 anime_id: songData.anime_id.toString(),
-                song_channel: songData.song_channel
-            })
+                song_channel: songData.song_channel,
+                artists: songData.artist_list[0].toString()
+            });
         }
-    }, [])
+    }, []);
+
+    //fetch list of artist
+    const initArtist = async () => {
+        const artistSerivce = new ArtistSerivce()
+        const artist = await artistSerivce.getArtists();
+        console.log(artist)
+        if (artist != null) {
+            setArtistList(artist);
+        }
+    };
+    useEffect(() => {
+        initArtist();
+    }, []);
     return (
         <>
             <Dialog
@@ -153,13 +193,10 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                 }}
             >
                 <DialogHeader>{isEdit ? "Edit Song" : "Create Song"}</DialogHeader>
-
                 <form onSubmit={handleSubmit}>
                     <DialogBody className="h-[32rem] overflow-y-scroll">
                         <div className="grid gap-6">
-                            <Typography variant="h6">
-                                Song
-                            </Typography>
+                            <Typography variant="h6">Song</Typography>
                             <Input
                                 label="Anime song name"
                                 crossOrigin={undefined}
@@ -181,53 +218,80 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                                 name="image"
                                 onChange={handleInputChange}
                             />
-                            <Input
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                    <Select
+                                        variant="outlined"
+                                        label="Choose a Type of Song"
+                                        color="green"
+                                        value={formData.type}
+                                        name="type"
+                                        onChange={changeType}
+                                    >
+                                        {songType.map((item) => (
+                                            <Option key={item.id} value={item.id}>
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </div>
+                                <div className="w-full">
+                                    <Input
+                                        label="year"
+                                        crossOrigin={undefined}
+                                        value={formData.year}
+                                        name="year"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-4">
+                                <div className="w-full">
+                                    <Select
+                                        variant="outlined"
+                                        label="Choose a Artist"
+                                        color="green"
+                                        value={formData.artists}
+                                        name="artists"
+                                        onChange={handleChangeArtists}
+                                    >
+                                        {artistList?.map((item) => (
+                                            <Option key={item.id} value={item.id.toString()}>
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </div>
+                            </div>
+                            <Textarea
                                 label="Description"
-                                crossOrigin={undefined}
                                 value={formData.description}
                                 name="description"
                                 onChange={handleInputChange}
                             />
-                            <Input
-                                label="year"
-                                crossOrigin={undefined}
-                                value={formData.year}
-                                name="year"
-                                onChange={handleInputChange}
-                            />
-                            <div className="md:w-48 flex gap-6">
-                                <Select
-                                    variant="outlined"
-                                    label="Choose a Type of Song"
-                                    color="green"
-                                    value={formData.type}
-                                    name="type"
-                                    onChange={changeType}
-                                >
-                                    {songType.map((item) => (
-                                        <Option key={item.id} value={item.id}>
-                                            {item.name}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </div>
                             <Typography className="-mb-2" variant="h6">
                                 Song Channel
                             </Typography>
-                            <Input
-                                label="channel"
-                                crossOrigin={undefined}
-                                value={formSongChannelData.channel}
-                                name="channel"
-                                onChange={handleChannelInputChange}
-                            />
-                            <Input
-                                label="type"
-                                crossOrigin={undefined}
-                                value={formSongChannelData.type}
-                                name="type"
-                                onChange={handleChannelInputChange}
-                            />
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                    <Input
+                                        label="channel"
+                                        crossOrigin={undefined}
+                                        value={formSongChannelData.channel}
+                                        name="channel"
+                                        onChange={handleChannelInputChange}
+                                    />
+                                </div>
+                                <div className="w-full">
+                                    <Input
+                                        label="type"
+                                        crossOrigin={undefined}
+                                        value={formSongChannelData.type}
+                                        name="type"
+                                        onChange={handleChannelInputChange}
+                                    />
+                                </div>
+                            </div>
                             <Input
                                 label="link"
                                 crossOrigin={undefined}

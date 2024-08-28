@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSongs } from "../api/songs";
+import { SongSerivce } from "../api/songs";
 import { Button } from "../component/mtailwind";
 import CreateSongButton from "./component/createSongButton";
 
@@ -16,7 +16,8 @@ type AnimeSong ={
 }
 
 export default async function Page() {
-    const songs = await getSongs();
+    const songSerivce = new SongSerivce()
+    const songs = await songSerivce.getSongs();
     return(<>
         <div className="container mx-auto md:px-40 px-5 pt-20">
             <div className="flex justify-between py-10">

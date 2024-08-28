@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAnimesAPI } from "../api/anime";
+import { AnimeSerivce } from "../api/anime";
 import { Button } from "../component/mtailwind";
 import CreateAnimeButton from "./component/createAnimeButton";
 interface IAnime {
@@ -11,7 +11,8 @@ interface IAnime {
 }
 
 export default async function Page() {
-    const animes = await getAnimesAPI();
+    const animeSerivce = new AnimeSerivce()
+    const animes = await animeSerivce.getAnimesAPI();
     return (
         <>
         <div className="container mx-auto md:px-40 px-5 pt-20">
