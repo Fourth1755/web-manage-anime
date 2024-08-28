@@ -1,12 +1,15 @@
-import { getAnimeAPI } from "@/app/api/anime";
+import { AnimeSerivce } from "@/app/api/anime";
 import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
 import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
-import { getSongByAnime } from "@/app/api/songs";
+import { SongSerivce } from "@/app/api/songs";
 
 export default async function Page({ params }: { params: { slug: number } }) {
-    const anime = await getAnimeAPI(params.slug);
-    const songs = await getSongByAnime(params.slug);
+    const animeSerivce = new AnimeSerivce()
+    const songSerivce = new SongSerivce();
+
+    const anime = await animeSerivce.getAnimeAPI(params.slug);
+    const songs = await songSerivce.getSongByAnime(params.slug);
     return (
         <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">
             <Card className="h-full w-full">
