@@ -15,7 +15,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArtistSerivce } from "@/app/api/artist";
 import { createSong } from "./action";
+import React from "react";
 
+type AnimeSongChannel = {
+    channel: number;
+    type: number;
+    link: string;
+}
 type AnimeSongData = {
     id: number;
     name: string;
@@ -24,11 +30,7 @@ type AnimeSongData = {
     year: string;
     type: number;
     anime_id: number;
-    song_channel: {
-        channel: number;
-        type: number;
-        link: string;
-    }[];
+    song_channel: AnimeSongChannel[];
     artist_list: number[]
 };
 
@@ -46,8 +48,8 @@ type FormSongArtistData = {
 };
 
 type FormSongChannelData = {
-    channel: number;
-    type: number;
+    channel: string;
+    type: string;
     link: string;
 };
 
@@ -76,12 +78,28 @@ type ArtistList = {
     is_music_band?: boolean;
 };
 
+type ChannelSelect= {
+    id: string;
+    name: string;
+    image: string;
+}
 const songType: SongType[] = [
     { id: "1", name: "opening" },
     { id: "2", name: "ending" },
     { id: "3", name: "soundtrack" },
 ];
 
+const channelSelect:ChannelSelect[] = [
+    { id: "1", name: "Youtube", image: "https://yt3.googleusercontent.com/584JjRp5QMuKbyduM_2k5RlXFqHJtQ0qLIPZpwbUjMJmgzZngHcam5JMuZQxyzGMV5ljwJRl0Q=s900-c-k-c0x00ffffff-no-rj"},
+    { id: "2", name: "Spotify", image: "https://play-lh.googleusercontent.com/c82CySwt2OcRjL_X7eKRU1qD7lrfT8_thTJVIlUxG_idLUl8v8PDchbmJelmdoHfQsA"},
+] 
+//1: tv_size 2: full 3: official 4 unofficial
+const channelTypeSelect=[
+    { id: "1", name: "TV size" },
+    { id: "2", name: "Full size" },
+    { id: "3", name: "Official" },
+    { id: "4", name: "Unofficial" },
+]
 export default function createSongModal(prop: PropsCreateSongeModal) {
     const router = useRouter();
     const open = prop.open;
@@ -91,10 +109,11 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     const [artistList, setArtistList] = useState<ArtistList[]>();
     const [formSongChannelData, setFormSongChannelData] =
         useState<FormSongChannelData>({
-            channel: 0,
-            type: 0,
+            channel: "",
+            type: "",
             link: "",
         });
+
     const [formData, setFormData] = useState<FormSongData>({
         name: "",
         image: "",
@@ -105,6 +124,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
         song_channel: [formSongChannelData],
         artists: ""
     });
+
     const handleInputChange = (
         event: React.ChangeEvent<HTMLInputElement> | any
     ) => {
@@ -119,20 +139,28 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
         setFormData({ ...formData, artists: val });
     };
 
+    const handleChangeChannel = (value = "") => {
+        setFormSongChannelData({ ...formSongChannelData, channel: value });
+    };
+
+    const handleChangeTypeChannel = (value = "") => {
+        setFormSongChannelData({ ...formSongChannelData, type: value });
+    };
+
     const handleChannelInputChange = (
         event: React.ChangeEvent<HTMLInputElement> | any
     ) => {
         const { name, value } = event.target;
-        if (name == "channel") {
-            setFormSongChannelData({ ...formSongChannelData, channel: +value });
-        } else if (name == "type") {
-            setFormSongChannelData({ ...formSongChannelData, type: +value });
-        } else if (name == "link") {
-            setFormSongChannelData({ ...formSongChannelData, link: value });
-        }
+        setFormSongChannelData({ ...formSongChannelData, [name]: value });
     };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const songChannel:AnimeSongChannel = {
+            channel:+formSongChannelData.channel,
+            type:+formSongChannelData.type,
+            link:formSongChannelData.link
+        }
         const song: AnimeSongData = {
             id: 0,
             name: formData.name,
@@ -141,7 +169,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             year: formData.year,
             type: +formData.type,
             anime_id: +formData.anime_id,
-            song_channel: [formSongChannelData],
+            song_channel: [songChannel],
             artist_list: [+formData.artists],
         };
         if (isEdit && songData) {
@@ -157,6 +185,11 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     };
     useEffect(() => {
         if (isEdit && songData) {
+            const songChannel:FormSongChannelData = {
+                channel:songData.song_channel[0].channel.toString(),
+                type:songData.song_channel[0].type.toString(),
+                link:songData.song_channel[0].link
+            }
             setFormData({
                 name: songData.name,
                 image: songData.image,
@@ -164,7 +197,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                 year: songData.year,
                 type: songData.type.toString(),
                 anime_id: songData.anime_id.toString(),
-                song_channel: songData.song_channel,
+                song_channel: [songChannel],
                 artists: songData.artist_list[0].toString()
             });
         }
@@ -174,7 +207,6 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     const initArtist = async () => {
         const artistSerivce = new ArtistSerivce()
         const artist = await artistSerivce.getArtists();
-        console.log(artist)
         if (artist != null) {
             setArtistList(artist);
         }
@@ -254,9 +286,22 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                                         value={formData.artists}
                                         name="artists"
                                         onChange={handleChangeArtists}
+                                        selected={(element) =>
+                                            element &&
+                                            React.cloneElement(element, {
+                                              disabled: true,
+                                              className:
+                                                "flex items-center opacity-100 px-0 gap-2 pointer-events-none",
+                                            })
+                                          }
                                     >
                                         {artistList?.map((item) => (
-                                            <Option key={item.id} value={item.id.toString()}>
+                                            <Option key={item.id} value={item.id.toString()} className="flex items-center gap-2">
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="h-7 w-7 rounded-full object-cover"
+                                                />
                                                 {item.name}
                                             </Option>
                                         ))}
@@ -274,22 +319,49 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                             </Typography>
                             <div className="flex gap-4">
                                 <div className="w-full">
-                                    <Input
-                                        label="channel"
-                                        crossOrigin={undefined}
+                                    <Select
+                                        variant="outlined"
+                                        label="Choose a Channel"
+                                        color="green"
                                         value={formSongChannelData.channel}
                                         name="channel"
-                                        onChange={handleChannelInputChange}
-                                    />
+                                        onChange={handleChangeChannel}
+                                        selected={(element) =>
+                                            element &&
+                                            React.cloneElement(element, {
+                                              disabled: true,
+                                              className:
+                                                "flex items-center opacity-100 px-0 gap-2 pointer-events-none",
+                                            })
+                                          }
+                                    >
+                                        {channelSelect.map((item) => (
+                                            <Option key={item.id} value={item.id} className="flex items-center gap-2">
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="h-5 w-5 rounded-full object-cover"
+                                                />
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                    </Select>
                                 </div>
                                 <div className="w-full">
-                                    <Input
-                                        label="type"
-                                        crossOrigin={undefined}
-                                        value={formSongChannelData.type}
+                                    <Select
+                                        variant="outlined"
+                                        label="Choose a Channel type"
+                                        color="green"
+                                        value={formSongChannelData.channel}
                                         name="type"
-                                        onChange={handleChannelInputChange}
-                                    />
+                                        onChange={handleChangeTypeChannel}
+                                    >
+                                        {channelTypeSelect.map((item) => (
+                                            <Option key={item.id} value={item.id} className="flex items-center gap-2">
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                    </Select>
                                 </div>
                             </div>
                             <Input
