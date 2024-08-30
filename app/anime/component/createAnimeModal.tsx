@@ -10,7 +10,6 @@ import {
     Select,
     Option,
 } from "@material-tailwind/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createAnime,updateAnime } from "./action";
 
@@ -54,7 +53,6 @@ const animeTypeList = [
     { id: "2", name: "Movie" }
 ]
 export default function createAnimeModal(prop: PropsCreateAnimeModal) {
-    const router = useRouter()
     const open = prop.open;
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit

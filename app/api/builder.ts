@@ -29,4 +29,9 @@ export class ConnectAnimapService {
         const url = new URL("/animes", this.url);
         return url.toString()
     }
+
+    public getCategoriesUrl(){
+        const url = new URL("/category", this.url);
+        return url.toString()
+    }
 }
