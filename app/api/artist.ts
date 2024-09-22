@@ -9,6 +9,7 @@ type ArtistList = {
     record_label:string
     is_music_band: boolean
 }
+
 export class ArtistSerivce{
     private url:string
     private authorization: string

@@ -3,6 +3,7 @@ import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
 import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
 import { SongSerivce } from "@/app/api/songs";
+import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 
 export default async function Page({ params }: { params: { slug: number } }) {
     const animeSerivce = new AnimeSerivce()
@@ -51,19 +52,6 @@ export default async function Page({ params }: { params: { slug: number } }) {
                                 </tr>
                                 <tr>
                                     <td color="blue-gray" className="font-bold">
-                                        Tags:
-                                    </td>
-                                    <td>
-                                        {anime.categories?.map((item, index) => (
-                                            <span key={item.id}>
-                                                <Link href={`category/${item.id}`}>{item.name}</Link>
-                                                <p>{index == anime.categories.length ? "," : ""}</p>
-                                            </span>
-                                        ))}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
                                         Studios:
                                     </td>
                                     <td>studios anime</td>
@@ -73,6 +61,20 @@ export default async function Page({ params }: { params: { slug: number } }) {
                                         Duration:
                                     </td>
                                     <td>{anime.duration}</td>
+                                </tr>
+                                <tr>
+                                    <td color="blue-gray" className="font-bold">
+                                        Tags:
+                                    </td>
+                                    <td>
+                                        {anime.categories?.map((item, index) => (
+                                            <span key={item.id}>
+                                                <Link href={`category/${item.id}`}>{item.name}</Link>
+                                                <p>{index == anime.categories.length ? "," : ""}</p>
+                                            </span>
+                                        ))}
+                                        <AddCategoryToAnimeButton name="Add Tag" category={anime.categories}/>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
