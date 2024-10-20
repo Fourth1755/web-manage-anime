@@ -11,12 +11,13 @@ import {
     Option,
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { createAnime,updateAnime } from "./action";
+import { createAnime, updateAnime } from "./action";
 
 type AnimeData = {
     id: number;
     name: string;
     name_english: string
+    name_thai: string
     episodes: number
     seasonal: string;
     image: string
@@ -24,6 +25,8 @@ type AnimeData = {
     duration: string
     year: string;
     type: number
+    wallpaper: string
+    trailer: string
 };
 
 type PropsCreateAnimeModal = {
@@ -36,6 +39,7 @@ type PropsCreateAnimeModal = {
 type FormData = {
     name: string;
     name_english: string
+    name_thai: string
     episodes: number
     seasonal: string;
     image: string
@@ -43,6 +47,8 @@ type FormData = {
     duration: string
     year: string;
     type: string
+    wallpaper: string
+    trailer: string
 }
 
 const seasonalList = [
@@ -60,6 +66,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
     const [formData, setFormData] = useState<FormData>({
         name: "",
         name_english: "",
+        name_thai: "",
         episodes: 0,
         seasonal: "",
         image: "",
@@ -67,6 +74,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         duration: "",
         year: "",
         type: "",
+        wallpaper: "",
+        trailer: ""
     });
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | any) => {
@@ -86,13 +95,16 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
             id: 0,
             name: formData.name,
             name_english: formData.name_english,
+            name_thai:formData.name_thai,
             episodes: +formData.episodes,
             seasonal: formData.seasonal,
             image: formData.image,
             description: formData.description,
             duration: formData.duration,
             year: formData.year,
-            type: +formData.type
+            type: +formData.type,
+            wallpaper: formData.wallpaper,
+            trailer: formData.trailer
         }
         if (isEdit && animeData) {
             anime.id = animeData.id
@@ -103,18 +115,21 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         handleOpen()
     }
     useEffect(() => {
-        console.log(isEdit,animeData)
+        console.log(isEdit, animeData)
         if (isEdit && animeData) {
             setFormData({
                 name: animeData.name,
                 name_english: animeData.name_english,
+                name_thai:animeData.name_thai,
                 episodes: +animeData.episodes,
                 seasonal: animeData.seasonal,
                 image: animeData.image,
                 description: animeData.description,
                 duration: animeData.duration,
                 year: animeData.year,
-                type: animeData.type.toString()
+                type: animeData.type.toString(),
+                wallpaper: animeData.wallpaper,
+                trailer: animeData.trailer
             })
         }
     }, [])
@@ -128,34 +143,42 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                     unmount: { scale: 0.9, y: -100 },
                 }}
                 size="sm"
+                
             >
                 <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
                 <form onSubmit={handleSubmit}>
-                    <DialogBody  className="space-y-4 pb-6">
-                            <Input
-                                label="anime name"
-                                crossOrigin={undefined}
-                                value={formData.name}
-                                name="name"
-                                onChange={handleInputChange}
-                            />
-                            <Input
-                                label="anime english name"
-                                crossOrigin={undefined}
-                                value={formData.name_english}
-                                name="name_english"
-                                onChange={handleInputChange}
-                            />
-                            <Input
-                                label="image"
-                                type="text"
-                                crossOrigin={undefined}
-                                value={formData.image}
-                                name="image"
-                                onChange={handleInputChange}
-                            />
-                            <div className="flex gap-4">
-                                <div className="w-full">
+                    <DialogBody className="space-y-4 pb-6 overflow-scroll h-96">
+                        <Input
+                            label="anime name"
+                            crossOrigin={undefined}
+                            value={formData.name}
+                            name="name"
+                            onChange={handleInputChange}
+                        />
+                        <Input
+                            label="anime english name"
+                            crossOrigin={undefined}
+                            value={formData.name_english}
+                            name="name_english"
+                            onChange={handleInputChange}
+                        />
+                        <Input
+                            label="anime thai name"
+                            crossOrigin={undefined}
+                            value={formData.name_thai}
+                            name="name_thai"
+                            onChange={handleInputChange}
+                        />
+                        <Input
+                            label="image"
+                            type="text"
+                            crossOrigin={undefined}
+                            value={formData.image}
+                            name="image"
+                            onChange={handleInputChange}
+                        />
+                        <div className="flex gap-4">
+                            <div className="w-full">
                                 <Select
                                     variant="outlined"
                                     label="Choose a Seasonal"
@@ -170,8 +193,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                         </Option>
                                     ))}
                                 </Select>
-                                </div>
-                                <div className="w-full">
+                            </div>
+                            <div className="w-full">
                                 <Input
                                     label="year"
                                     crossOrigin={undefined}
@@ -179,11 +202,11 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                     name="year"
                                     onChange={handleInputChange}
                                 />
-                                </div>
-
                             </div>
-                            <div className="flex gap-4">
-                                <div className="w-full">
+
+                        </div>
+                        <div className="flex gap-4">
+                            <div className="w-full">
                                 <Select
                                     variant="outlined"
                                     label="Choose a Type"
@@ -198,8 +221,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                         </Option>
                                     ))}
                                 </Select>
-                                </div>
-                                <div className="w-full">
+                            </div>
+                            <div className="w-full">
                                 <Input
                                     label="episodes"
                                     type="number"
@@ -208,23 +231,39 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                     name="episodes"
                                     onChange={handleInputChange}
                                 />
-                                </div>
                             </div>
+                        </div>
 
-                            <Input
-                                label="duration"
-                                type="text"
-                                crossOrigin={undefined}
-                                value={formData.duration}
-                                name="duration"
-                                onChange={handleInputChange}
-                            />
-                            <Textarea
-                                label="description"
-                                value={formData.description}
-                                name="description"
-                                onChange={handleInputChange}
-                            />
+                        <Input
+                            label="duration"
+                            type="text"
+                            crossOrigin={undefined}
+                            value={formData.duration}
+                            name="duration"
+                            onChange={handleInputChange}
+                        />
+                        <Textarea
+                            label="description"
+                            value={formData.description}
+                            name="description"
+                            onChange={handleInputChange}
+                        />
+                        <Input
+                            label="anime wallpaper"
+                            type="text"
+                            crossOrigin={undefined}
+                            value={formData.wallpaper}
+                            name="wallpaper"
+                            onChange={handleInputChange}
+                        />
+                        <Input
+                            label="trailer"
+                            type="text"
+                            crossOrigin={undefined}
+                            value={formData.trailer}
+                            name="trailer"
+                            onChange={handleInputChange}
+                        />
                     </DialogBody>
                     <DialogFooter>
                         <Button
