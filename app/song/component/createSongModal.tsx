@@ -213,7 +213,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     };
     useEffect(() => {
         initArtist();
-    }, []);
+    }, [prop]);
     return (
         <>
             <Dialog
