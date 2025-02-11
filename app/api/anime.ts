@@ -13,26 +13,6 @@ type CreateAnimeData = {
     year: string;
     type: number
 };
-
-type AnimeDetailCategories = {
-    id:number
-    name:string
-}
-
-type AnimeDetail = {
-    id: number,
-    name: string,
-    name_english:string
-    year: string,
-    score: string,
-    seasonal: string
-    episodes: number
-    image:string
-    description:string
-    type:number
-    duration:string
-    categories:AnimeDetailCategories[]
-}
 export class AnimeSerivce{
     private url:string
     private authorization: string

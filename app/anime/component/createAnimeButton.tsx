@@ -10,9 +10,10 @@ type PropCreateAnimeButton ={
 }
 
 type AnimeData = {
-    id:number
+    id: number;
     name: string;
     name_english: string
+    name_thai: string
     episodes: number
     seasonal: string;
     image: string
@@ -20,6 +21,8 @@ type AnimeData = {
     duration: string
     year: string;
     type: number
+    wallpaper: string
+    trailer: string
 }
 
 export default function CreateAnimeButton(props:PropCreateAnimeButton) {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
 import { SongSerivce } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
+import CreateSongButton from "./component/createSongButton";
 
 export default async function Page({ params }: { params: { slug: number } }) {
     const animeSerivce = new AnimeSerivce()
@@ -83,9 +84,12 @@ export default async function Page({ params }: { params: { slug: number } }) {
             </Card>
             <Card className="h-full w-full">
                 <CardBody>
+                <div className="flex justify-between">
                     <Typography variant="h5" color="blue-gray">
                         Anime Song
                     </Typography>
+                    <CreateSongButton anime_id={anime.id} anime_name={anime.name}/>
+                </div>
                     {songs.opening_song ? <Typography color="gray" className="mt-1 font-normal">
                         Anime Opening
                     </Typography> : <></>}

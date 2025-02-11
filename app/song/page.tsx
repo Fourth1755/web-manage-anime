@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { SongSerivce } from "../api/songs";
 import { Button } from "../component/mtailwind";
-import CreateSongButton from "./component/createSongButton";
 
 type AnimeSong ={
     id: number
@@ -22,7 +21,6 @@ export default async function Page() {
         <div className="container mx-auto md:px-40 px-5 pt-20">
             <div className="flex justify-between py-10">
                 <h1>Anime Song</h1>
-                <CreateSongButton/>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-black">

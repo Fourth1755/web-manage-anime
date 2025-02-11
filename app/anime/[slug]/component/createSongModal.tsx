@@ -10,7 +10,7 @@ import {
     Select,
     Option,
     Typography,
-} from "../../component/mtailwind";
+} from "../../../component/mtailwind";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArtistSerivce } from "@/app/api/artist";
@@ -39,6 +39,8 @@ type PropsCreateSongeModal = {
     handler: () => void;
     isEdit: boolean;
     song?: AnimeSongData;
+    anime_id: number;
+    anime_name: string
 };
 
 type FormSongArtistData = {
@@ -59,7 +61,6 @@ type FormSongData = {
     description: string;
     year: string;
     type: string;
-    anime_id: string;
     song_channel: FormSongChannelData[];
     artists: string
 };
@@ -106,6 +107,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit;
     const songData = prop.song;
+    const animeName =prop.anime_name;
     const [artistList, setArtistList] = useState<ArtistList[]>();
     const [formSongChannelData, setFormSongChannelData] =
         useState<FormSongChannelData>({
@@ -120,7 +122,6 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
         description: "",
         year: "",
         type: "",
-        anime_id: "",
         song_channel: [formSongChannelData],
         artists: ""
     });
@@ -168,7 +169,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             description: formData.description,
             year: formData.year,
             type: +formData.type,
-            anime_id: +formData.anime_id,
+            anime_id: prop.anime_id,
             song_channel: [songChannel],
             artist_list: [+formData.artists],
         };
@@ -196,7 +197,6 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                 description: songData.description,
                 year: songData.year,
                 type: songData.type.toString(),
-                anime_id: songData.anime_id.toString(),
                 song_channel: [songChannel],
                 artists: songData.artist_list[0].toString()
             });
@@ -228,19 +228,12 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                 <form onSubmit={handleSubmit}>
                     <DialogBody className="h-[32rem] overflow-y-scroll">
                         <div className="grid gap-6">
-                            <Typography variant="h6">Song</Typography>
+                            <Typography variant="h6">{prop.anime_name}</Typography>
                             <Input
                                 label="Anime song name"
                                 crossOrigin={undefined}
                                 value={formData.name}
                                 name="name"
-                                onChange={handleInputChange}
-                            />
-                            <Input
-                                label="Anime"
-                                crossOrigin={undefined}
-                                value={formData.anime_id}
-                                name="anime_id"
                                 onChange={handleInputChange}
                             />
                             <Input
