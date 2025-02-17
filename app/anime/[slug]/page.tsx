@@ -12,23 +12,88 @@ export default async function Page({ params }: { params: { slug: number } }) {
 
     const anime = await animeSerivce.getAnimeAPI(params.slug);
     const songs = await songSerivce.getSongByAnime(params.slug);
+
+    const converAnimeSongType = (type: number) => {
+        switch (type) {
+            case 1:
+                return "TV Size"
+            case 2:
+                return "Full Size"
+            case 3:
+                return "Official"
+            default:
+                return ""
+        }
+    }
+
+    const converAnimeSongChannel = (type: number) => {
+        switch (type) {
+            case 1:
+                return "Youtube"
+            case 2:
+                return "Spotify"
+            default:
+                return ""
+        }
+    }
+
+    const showAnimeSongItem = (animeSong: SongDetail[],title: string) => {
+        if (!animeSong) {
+            return <></>
+        }
+        return <div>
+            <Typography variant="h6" className="py-2">
+                {title}
+            </Typography>
+            <div>
+                {animeSong.map((song) => (
+                    <div key={song.id}>                        
+                    <Typography variant="h4" color="blue-gray">
+                    {song.name}
+                    </Typography>
+                        <table className="min-w-max table-auto">
+                            <tbody>
+                                {song.song_channel.map((item) => (
+                                    <tr key={item.id}>
+                                        <td scope="col" className="px-2 py-3">            
+                                            <iframe
+                                            width="560"
+                                            height="315"
+                                            id="player"
+                                            src={`${item.link}`}
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        ></iframe></td>
+                                        <td scope="col" className="px-8 py-3">
+                                            {converAnimeSongType(item.type)}</td>
+                                        <td scope="col" className="px-8 py-3">
+                                            {converAnimeSongChannel(item.channel)}</td>
+                                        <td scope="col" className="px-8 py-3">
+                                            <Button>Edit</Button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ))}
+            </div>
+        </div>
+    }
     return (
         <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">
             <Card className="h-full w-full">
                 <CardBody>
                     <div className="flex flex-col gap-4">
                         <div className="flex justify-between">
-                        <Typography variant="h5" color="blue-gray">
-                            {anime.name}
-                        </Typography>
-                        <CreateAnimeButton name="Edit anime" isEdit={true} anime={anime}/>
+                            <Typography variant="h5" color="blue-gray">
+                                {anime.name}
+                            </Typography>
+                            <CreateAnimeButton name="Edit anime" isEdit={true} anime={anime} />
                         </div>
                         <img
                             className="h-60 w-44 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
                             src={anime.image}
                             alt="nature image"
                         />
-                        <h2>Anime Detail</h2>
                         <table className="w-32 min-w-max table-auto text-left">
                             <tbody>
                                 <tr>
@@ -74,7 +139,7 @@ export default async function Page({ params }: { params: { slug: number } }) {
                                                 <p>{index == anime.categories.length ? "," : ""}</p>
                                             </span>
                                         ))}
-                                        <AddCategoryToAnimeButton name="Add Tag" category={anime.categories}/>
+                                        <AddCategoryToAnimeButton name="Add Tag" category={anime.categories} />
                                     </td>
                                 </tr>
                             </tbody>
@@ -84,28 +149,15 @@ export default async function Page({ params }: { params: { slug: number } }) {
             </Card>
             <Card className="h-full w-full">
                 <CardBody>
-                <div className="flex justify-between">
-                    <Typography variant="h5" color="blue-gray">
-                        Anime Song
-                    </Typography>
-                    <CreateSongButton anime_id={anime.id} anime_name={anime.name}/>
-                </div>
-                    {songs.opening_song ? <Typography color="gray" className="mt-1 font-normal">
-                        Anime Opening
-                    </Typography> : <></>}
-                    {songs.ending_song ? <Typography color="gray" className="mt-1 font-normal">
-                        Anime Ending
-                    </Typography> : <></>}
-                    {songs.soundtrack_song ? <div>
-                        <Typography color="gray" className="mt-1 font-normal">
-                            Soundtrack
+                    <div className="flex justify-between">
+                        <Typography variant="h5">
+                            Anime Song
                         </Typography>
-                        {songs.soundtrack_song.map((song)=>(<div key={song.id}>
-                            <Typography color="gray" className="mt-1 font-normal" >
-                                {song.name}
-                           </Typography>
-                        </div>))}
-                    </div> : <></>}
+                        <CreateSongButton anime_id={anime.id} anime_name={anime.name} />
+                    </div>
+                    {showAnimeSongItem(songs.opening_song,"Anime Opening")}
+                    {showAnimeSongItem(songs.ending_song,"Anime Endding")}
+                    {showAnimeSongItem(songs.soundtrack_song,"Anime Soundtrack")}
                 </CardBody>
             </Card>
         </div>
