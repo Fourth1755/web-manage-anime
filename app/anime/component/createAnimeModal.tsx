@@ -9,9 +9,13 @@ import {
     Textarea,
     Select,
     Option,
+    Typography,
+    Chip
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { createAnime, updateAnime } from "./action";
+import { GetStudioResponse } from "@/app/api/dtos/studio";
+import { StudioService } from "@/app/api/studio";
 
 type AnimeData = {
     id: number;
@@ -21,6 +25,7 @@ type AnimeData = {
     episodes: number
     seasonal: string;
     image: string
+    studio: string[]
     description: string
     duration: string
     year: string;
@@ -43,6 +48,7 @@ type FormData = {
     episodes: number
     seasonal: string;
     image: string
+    studio: string[];
     description: string
     duration: string
     year: string;
@@ -58,6 +64,8 @@ const animeTypeList = [
     { id: "1", name: "TV" },
     { id: "2", name: "Movie" }
 ]
+let studioMap = new Map();
+
 export default function createAnimeModal(prop: PropsCreateAnimeModal) {
     const open = prop.open;
     const handleOpen = prop.handler;
@@ -70,6 +78,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         episodes: 0,
         seasonal: "",
         image: "",
+        studio:[],
         description: "",
         duration: "",
         year: "",
@@ -77,7 +86,23 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         wallpaper: "",
         trailer: ""
     });
+    const [studioList, setStduioList] = useState<GetStudioResponse[]>();
+    const [chipOpen, setChipOpen] = useState(true);
 
+    //fetch list of studio
+    const initArtist = async () => {
+        const studioService = new StudioService()
+        const studios = await studioService.getStudio();
+        if (studios != null) {
+            setStduioList(studios);
+            studios.map((item)=>{
+                studioMap.set(item.id,item.name)
+            })
+        }
+    };
+    useEffect(() => {
+        initArtist();
+    }, [prop]);
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | any) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -88,8 +113,17 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
     const changeAnimeType = (val = "") => {
         setFormData({ ...formData, "type": val });
     };
-
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const changeStudio = (val = "") => {
+        let stuidoVal: string[] = [];
+        if(formData.studio.length != 0) {
+            stuidoVal = formData.studio
+        } 
+        stuidoVal.push(val)
+        console.log(studioMap)
+        setFormData({ ...formData, "studio": stuidoVal });
+        
+    }
+    const handleSubmit = async () => {
         //event.preventDefault();
         const anime: AnimeData = {
             id: 0,
@@ -99,6 +133,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
             episodes: +formData.episodes,
             seasonal: formData.seasonal,
             image: formData.image,
+            studio: formData.studio,
             description: formData.description,
             duration: formData.duration,
             year: formData.year,
@@ -114,6 +149,11 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         }
         handleOpen()
     }
+    const onCloseChipStudio = (id:String) => {
+        const stuidoVal = formData.studio.filter((item)=>item!=id)
+        console.log(stuidoVal)
+        setFormData({ ...formData, "studio": stuidoVal });
+    }
     useEffect(() => {
         console.log(isEdit, animeData)
         if (isEdit && animeData) {
@@ -124,6 +164,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                 episodes: +animeData.episodes,
                 seasonal: animeData.seasonal,
                 image: animeData.image,
+                studio: animeData.studio,
                 description: animeData.description,
                 duration: animeData.duration,
                 year: animeData.year,
@@ -146,7 +187,6 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                 
             >
                 <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
-                <form onSubmit={handleSubmit}>
                     <DialogBody className="space-y-4 pb-6 overflow-scroll h-96">
                         <Input
                             label="anime name"
@@ -177,6 +217,36 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                             name="image"
                             onChange={handleInputChange}
                         />
+                        {formData?.studio?.length?<div>
+                            {formData.studio.map((item,index)=>(
+                                <div 
+                                    key={index}
+                                    className="py-1">
+                                    <Chip
+                                        open={chipOpen}
+                                        onClose={() => onCloseChipStudio(item)}
+
+                                        value={studioMap.get(item)}/>
+                                </div>
+
+                            ))}
+                        </div>:<></>}
+                        <div className="w-full">
+                            <Select
+                                variant="outlined"
+                                label="Choose a Studio"
+                                color="green"
+                                value={formData.type}
+                                name="type"
+                                onChange={changeStudio}
+                            >
+                                {studioList?.map((item) => (
+                                    <Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </div>
                         <div className="flex gap-4">
                             <div className="w-full">
                                 <Select
@@ -274,11 +344,10 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                         >
                             <span>Cancel</span>
                         </Button>
-                        <Button variant="gradient" color="green" type="submit">
+                        <Button variant="gradient" color="green" onClick={handleSubmit}>
                             <span>{isEdit ? "Save" : "Create"}</span>
                         </Button>
                     </DialogFooter>
-                </form>
             </Dialog>
         </>
     );

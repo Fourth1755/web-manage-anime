@@ -11,6 +11,7 @@ type AnimeDetail = {
     episodes: number
     seasonal: string;
     image: string
+    studio: string[];
     description: string
     duration: string
     year: string;
