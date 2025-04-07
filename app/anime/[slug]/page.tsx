@@ -10,7 +10,7 @@ export default async function Page({ params }: { params: { slug: number } }) {
     const animeSerivce = new AnimeSerivce()
     const songSerivce = new SongSerivce();
 
-    const anime = await animeSerivce.getAnimeAPI(params.slug);
+    const anime = await animeSerivce.getAnimeById(params.slug);
     const songs = await songSerivce.getSongByAnime(params.slug);
 
     const converAnimeSongType = (type: number) => {
@@ -120,7 +120,14 @@ export default async function Page({ params }: { params: { slug: number } }) {
                                     <td color="blue-gray" className="font-bold">
                                         Studios:
                                     </td>
-                                    <td>studios anime</td>
+                                    <td>
+                                        {anime.studios?.map((item, index) => (
+                                            <span key={item.id}>
+                                                <Link href={`studio/${item.id}`}>{item.name}</Link>
+                                                <p>{index == anime.studios.length ? "," : ""}</p>
+                                            </span>
+                                        ))}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td color="blue-gray" className="font-bold">

@@ -1,9 +1,14 @@
-type AnimeDetailCategories = {
+type GetAnimeByIdResponseCategories = {
     id:number
     name:string
 }
 
-type AnimeDetail = {
+type GetAnimeByIdResponseStudios = {
+    id:string
+    name:string
+}
+
+export type GetAnimeByIdResponse = {
     id: number;
     name: string;
     name_english: string
@@ -11,12 +16,12 @@ type AnimeDetail = {
     episodes: number
     seasonal: string;
     image: string
-    studio: string[];
+    studios: GetAnimeByIdResponseStudios[];
     description: string
     duration: string
     year: string;
     type: number
     wallpaper: string
     trailer: string
-    categories:AnimeDetailCategories[]
+    categories:GetAnimeByIdResponseCategories[]
 }

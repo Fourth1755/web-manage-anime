@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { createAnime, updateAnime } from "./action";
 import { GetStudioResponse } from "@/app/api/dtos/studio";
 import { StudioService } from "@/app/api/studio";
+import { GetAnimeByIdResponse } from "@/app/api/dtos/anime";
 
 type AnimeData = {
     id: number;
@@ -38,7 +39,7 @@ type PropsCreateAnimeModal = {
     open: boolean;
     handler: () => void;
     isEdit: boolean;
-    anime?: AnimeData
+    anime?: GetAnimeByIdResponse
 };
 
 type FormData = {
@@ -164,7 +165,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                 episodes: +animeData.episodes,
                 seasonal: animeData.seasonal,
                 image: animeData.image,
-                studio: animeData.studio,
+                studio: animeData.studios.map(item=>item.id),
                 description: animeData.description,
                 duration: animeData.duration,
                 year: animeData.year,
