@@ -15,7 +15,7 @@ type CreateCategory = {
     is_universe: boolean
 }
 
-export class CategorySerivce{
+export class CategoryService{
     private url:string
     private authorization: string
     

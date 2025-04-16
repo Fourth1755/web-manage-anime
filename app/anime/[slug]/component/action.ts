@@ -2,7 +2,9 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { SongSerivce } from "@/app/api/songs";
+import { SongService } from "@/app/api/songs";
+import { EditCategoryAnimeRequest } from '@/app/api/dtos/anime';
+import { AnimeService } from '@/app/api/anime';
 
 type CreateAnimeSongData = {
     id: number;
@@ -25,10 +27,17 @@ export async function createSong(song: CreateAnimeSongData) {
     //   } catch (error) {
     //     // Handle errors
     //   }
-    const songSerivce = new SongSerivce()
+    const songSerivce = new SongService()
     await songSerivce.createSongAPI(song)
-    revalidatePath('/song') // Update cached posts
-    redirect(`/song`) // Navigate to the new post page
+    revalidatePath('/anime') // Update cached posts
+    redirect(`/anime`) // Navigate to the new post page
+}
+
+export async function editCategoryAnime(params:EditCategoryAnimeRequest) {
+    const animeService = new AnimeService()
+    await animeService.editCategoryAnime(params)
+    revalidatePath('/anime') // Update cached posts
+    redirect(`/anime`) // Navigate to the new post page
 }
 
 

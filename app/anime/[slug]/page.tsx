@@ -1,14 +1,14 @@
-import { AnimeSerivce } from "@/app/api/anime";
+import { AnimeService } from "@/app/api/anime";
 import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
 import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
-import { SongSerivce } from "@/app/api/songs";
+import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import CreateSongButton from "./component/createSongButton";
 
 export default async function Page({ params }: { params: { slug: number } }) {
-    const animeSerivce = new AnimeSerivce()
-    const songSerivce = new SongSerivce();
+    const animeSerivce = new AnimeService()
+    const songSerivce = new SongService();
 
     const anime = await animeSerivce.getAnimeById(params.slug);
     const songs = await songSerivce.getSongByAnime(params.slug);
@@ -146,7 +146,10 @@ export default async function Page({ params }: { params: { slug: number } }) {
                                                 <p>{index == anime.categories.length ? "," : ""}</p>
                                             </span>
                                         ))}
-                                        <AddCategoryToAnimeButton name="Add Tag" category={anime.categories} />
+                                        <AddCategoryToAnimeButton 
+                                            name="Add Tag" 
+                                            category={anime.categories} 
+                                            anime_id={anime.id}/>
                                     </td>
                                 </tr>
                             </tbody>

@@ -6,6 +6,7 @@ import { Button } from "../../../component/mtailwind";
 type PropAddCategoryToAnimeButton ={
     name: string
     category?:AnimeDetailCategories[]
+    anime_id: number
 }
 
 type AnimeDetailCategories = {
@@ -25,6 +26,7 @@ export default function AddCategoryToAnimeButton(props:PropAddCategoryToAnimeBut
                 open={openModal}
                 handler={handleOpen}
                 category={props.category}
+                anime_id={props.anime_id}
             />
         </>
     );

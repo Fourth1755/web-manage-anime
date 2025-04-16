@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
 
-export class SongSerivce{
+export class SongService{
     private url:string
     private authorization: string
     

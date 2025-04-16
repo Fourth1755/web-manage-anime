@@ -1,8 +1,10 @@
 "use client";
-import { CategorySerivce } from "@/app/api/category";
+import { CategoryService } from "@/app/api/category";
 import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, Typography, Card, CardBody } from "../../../component/mtailwind";
 import { useEffect, useState } from "react";
 import TrashIcon from "@/app/component/icon/trashIcon";
+import { EditCategoryAnimeRequest } from "@/app/api/dtos/anime";
+import { editCategoryAnime } from "./action";
 
 type CategoryData = {
     id: number
@@ -13,6 +15,7 @@ type PropsAddCategoryToAnimeModal = {
     open: boolean;
     handler: () => void;
     category?: CategoryData[]
+    anime_id: number
 }
 
 type FormData = {
@@ -34,29 +37,24 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
 
     const [categoryList, setCategoryList] = useState<CategoryList[]>()
     const changeCategory = (val = "") => {
-        //setFormData({ ...formData, "category_ids": val });
+        let categoryVal: number[] = [];
+        if(formData.category_ids.length != 0) {
+            categoryVal = formData.category_ids
+        } 
+    
+        categoryVal.push(+val)
+        console.log(categoryVal)
+        setFormData({ ...formData, "category_ids": categoryVal });
     };
 
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        //event.preventDefault();
-        // const anime: AnimeData = {
-        //     id: 0,
-        //     name: formData.name,
-        //     name_english: formData.name_english,
-        //     episodes: +formData.episodes,
-        //     seasonal: formData.seasonal,
-        //     image: formData.image,
-        //     description: formData.description,
-        //     duration: formData.duration,
-        //     year: formData.year,
-        //     type: +formData.type,
-        // };
-        // if (isEdit && animeData) {
-        //     anime.id = animeData.id;
-        //     await updateAnime(anime);
-        // } else {
-        //     await createAnime(anime);
-        // }
+        event.preventDefault();
+        const request:EditCategoryAnimeRequest = {
+            anime_id: 1,
+            category_ids: formData.category_ids
+        }
+        await editCategoryAnime(request);
         handleOpen();
     };
     // useEffect(() => {
@@ -77,15 +75,15 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
     // }, []);
 
     //fetch list of category
-    const initArtist = async () => {
-        const categorySerivce = new CategorySerivce()
+    const initCategories = async () => {
+        const categorySerivce = new CategoryService()
         const category = await categorySerivce.getCategories();
         if (category != null) {
             setCategoryList(category);
         }
     };
     useEffect(() => {
-        initArtist();
+        initCategories();
     }, []);
     return (
         <>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AnimeSerivce } from "../api/anime";
+import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
 import CreateAnimeButton from "./component/createAnimeButton";
 interface IAnime {
@@ -11,7 +11,7 @@ interface IAnime {
 }
 
 export default async function Page() {
-    const animeSerivce = new AnimeSerivce()
+    const animeSerivce = new AnimeService()
     const animes = await animeSerivce.getAnimesAPI();
     return (
         <>
@@ -33,7 +33,7 @@ export default async function Page() {
                         </tr>
                     </thead>
                     <tbody>
-                        {animes.map((anime: IAnime, index: number) => (
+                        {animes?.map((anime: IAnime, index: number) => (
                             <tr key={index}>
                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
                                 <td>{anime.name}</td>

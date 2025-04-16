@@ -25,3 +25,8 @@ export type GetAnimeByIdResponse = {
     trailer: string
     categories:GetAnimeByIdResponseCategories[]
 }
+
+export type EditCategoryAnimeRequest = {
+    anime_id: number
+    category_ids: number[]
+}

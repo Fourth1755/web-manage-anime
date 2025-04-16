@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
-import { GetAnimeByIdResponse } from "./dtos/anime";
+import { EditCategoryAnimeRequest, GetAnimeByIdResponse } from "./dtos/anime";
 
 type CreateAnimeData = {
     id: number;
@@ -14,7 +14,7 @@ type CreateAnimeData = {
     year: string;
     type: number
 };
-export class AnimeSerivce{
+export class AnimeService{
     private url:string
     private authorization: string
     
@@ -54,6 +54,13 @@ export class AnimeSerivce{
 
     public async updateAnimeAPI(anime: CreateAnimeData){
         const response = await axios.put(`${this.url}/${anime.id}`, anime,{
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
+
+    public async editCategoryAnime(request: EditCategoryAnimeRequest) {
+        const response = await axios.put(`${this.url}/category/edit-category-anime`, request,{
             headers: this.getConfigHeaders(),
         })
         return response.data
