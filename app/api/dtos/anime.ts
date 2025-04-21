@@ -1,5 +1,13 @@
+export type GetAnimeList = {
+    id: string;
+    name: string;
+    year: string;
+    score: string;
+    seasonal: string;
+}
+
 type GetAnimeByIdResponseCategories = {
-    id:number
+    id:string
     name:string
 }
 
@@ -9,7 +17,7 @@ type GetAnimeByIdResponseStudios = {
 }
 
 export type GetAnimeByIdResponse = {
-    id: number;
+    id: string;
     name: string;
     name_english: string
     name_thai: string
@@ -27,6 +35,32 @@ export type GetAnimeByIdResponse = {
 }
 
 export type EditCategoryAnimeRequest = {
-    anime_id: number
-    category_ids: number[]
+    anime_id: string
+    category_ids: string[]
 }
+
+export type CreateAnimeRequest = {
+    // id: string;
+    name: string;
+    name_english: string
+    episodes: number
+    seasonal: string;
+    image: string
+    description: string
+    duration: string
+    year: string;
+    type: number
+};
+
+export type UpdateAnimeRequest = {
+    id: string;
+    name: string;
+    name_english: string
+    episodes: number
+    seasonal: string;
+    image: string
+    description: string
+    duration: string
+    year: string;
+    type: number
+};

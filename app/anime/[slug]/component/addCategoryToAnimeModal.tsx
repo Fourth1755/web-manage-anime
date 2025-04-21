@@ -7,7 +7,7 @@ import { EditCategoryAnimeRequest } from "@/app/api/dtos/anime";
 import { editCategoryAnime } from "./action";
 
 type CategoryData = {
-    id: number
+    id: string
     name: string
 }
 
@@ -15,15 +15,15 @@ type PropsAddCategoryToAnimeModal = {
     open: boolean;
     handler: () => void;
     category?: CategoryData[]
-    anime_id: number
+    anime_id: string
 }
 
 type FormData = {
-    category_ids: number[]
+    category_ids: string[]
 }
 
 type CategoryList = {
-    id: number
+    id: string
     name: string
 }
 export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeModal) {
@@ -37,12 +37,12 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
 
     const [categoryList, setCategoryList] = useState<CategoryList[]>()
     const changeCategory = (val = "") => {
-        let categoryVal: number[] = [];
+        let categoryVal: string[] = [];
         if(formData.category_ids.length != 0) {
             categoryVal = formData.category_ids
         } 
     
-        categoryVal.push(+val)
+        categoryVal.push(val)
         console.log(categoryVal)
         setFormData({ ...formData, "category_ids": categoryVal });
     };
@@ -51,7 +51,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const request:EditCategoryAnimeRequest = {
-            anime_id: 1,
+            anime_id: "",
             category_ids: formData.category_ids
         }
         await editCategoryAnime(request);

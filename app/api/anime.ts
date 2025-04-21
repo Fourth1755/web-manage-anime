@@ -1,19 +1,8 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
-import { EditCategoryAnimeRequest, GetAnimeByIdResponse } from "./dtos/anime";
+import { CreateAnimeRequest, EditCategoryAnimeRequest, GetAnimeByIdResponse, GetAnimeList, UpdateAnimeRequest } from "./dtos/anime";
 
-type CreateAnimeData = {
-    id: number;
-    name: string;
-    name_english: string
-    episodes: number
-    seasonal: string;
-    image: string
-    description: string
-    duration: string
-    year: string;
-    type: number
-};
+
 export class AnimeService{
     private url:string
     private authorization: string
@@ -31,28 +20,28 @@ export class AnimeService{
         }
     }
 
-    public async createAnimeAPI(anime: CreateAnimeData) {
+    public async createAnime(anime: CreateAnimeRequest) {
         const response = await axios.post(this.url, anime, { 
             headers: this.getConfigHeaders(),
         })
         return response.data
     }
 
-    public async getAnimesAPI() {
+    public async getAnimes():Promise<GetAnimeList[]> {
         const response = await axios.get(this.url, {
             headers: this.getConfigHeaders(),
         })
         return response.data
     }
 
-    public async getAnimeById(id:number):Promise<GetAnimeByIdResponse>{
+    public async getAnimeById(id:string):Promise<GetAnimeByIdResponse>{
         const response = await axios.get(`${this.url}/${id}`, {
             headers: this.getConfigHeaders(),
         })
         return response.data
     }
 
-    public async updateAnimeAPI(anime: CreateAnimeData){
+    public async updateAnime(anime: UpdateAnimeRequest) {
         const response = await axios.put(`${this.url}/${anime.id}`, anime,{
             headers: this.getConfigHeaders(),
         })

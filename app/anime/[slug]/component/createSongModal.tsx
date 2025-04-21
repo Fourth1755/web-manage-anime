@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { ArtistSerivce } from "@/app/api/artist";
 import { createSong } from "./action";
 import React from "react";
+import { CreateAnimeSongRequest } from "@/app/api/dtos/song";
 
 type AnimeSongChannel = {
     channel: number;
@@ -23,13 +24,13 @@ type AnimeSongChannel = {
     link: string;
 }
 type AnimeSongData = {
-    id: number;
+    id: string;
     name: string;
     image: string;
     description: string;
     year: string;
     type: number;
-    anime_id: number;
+    anime_id: string;
     song_channel: AnimeSongChannel[];
     artist_list: number[]
 };
@@ -39,7 +40,7 @@ type PropsCreateSongeModal = {
     handler: () => void;
     isEdit: boolean;
     song?: AnimeSongData;
-    anime_id: number;
+    anime_id: string;
     anime_name: string
 };
 
@@ -162,8 +163,8 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             type:+formSongChannelData.type,
             link:formSongChannelData.link
         }
-        const song: AnimeSongData = {
-            id: 0,
+        const song: CreateAnimeSongRequest = {
+            id: "",
             name: formData.name,
             image: formData.image,
             description: formData.description,
@@ -171,7 +172,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             type: +formData.type,
             anime_id: prop.anime_id,
             song_channel: [songChannel],
-            artist_list: [+formData.artists],
+            artist_list: [formData.artists],
         };
         if (isEdit && songData) {
             //PATCH:/blogs

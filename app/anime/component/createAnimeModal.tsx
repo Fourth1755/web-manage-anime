@@ -19,7 +19,7 @@ import { StudioService } from "@/app/api/studio";
 import { GetAnimeByIdResponse } from "@/app/api/dtos/anime";
 
 type AnimeData = {
-    id: number;
+    id: string;
     name: string;
     name_english: string
     name_thai: string

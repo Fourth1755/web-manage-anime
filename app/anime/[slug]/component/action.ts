@@ -5,30 +5,16 @@ import { revalidatePath } from 'next/cache'
 import { SongService } from "@/app/api/songs";
 import { EditCategoryAnimeRequest } from '@/app/api/dtos/anime';
 import { AnimeService } from '@/app/api/anime';
+import { CreateAnimeSongRequest } from '@/app/api/dtos/song';
 
-type CreateAnimeSongData = {
-    id: number;
-    name: string;
-    image: string;
-    description: string;
-    year: string;
-    type: number;
-    anime_id: number;
-    song_channel: {
-        channel: number
-        type: number
-        link: string
-    }[],
-}
-
-export async function createSong(song: CreateAnimeSongData) {
+export async function createSong(song: CreateAnimeSongRequest) {
     //   try {
     //     // Call database
     //   } catch (error) {
     //     // Handle errors
     //   }
     const songSerivce = new SongService()
-    await songSerivce.createSongAPI(song)
+    await songSerivce.createSong(song)
     revalidatePath('/anime') // Update cached posts
     redirect(`/anime`) // Navigate to the new post page
 }

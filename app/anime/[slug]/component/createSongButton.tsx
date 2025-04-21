@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "../../../component/mtailwind";
 
 type PropsCreateSongButton = {
-    anime_id: number
+    anime_id: string
     anime_name: string
 }
 

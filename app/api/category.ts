@@ -1,19 +1,8 @@
 import axios from "axios"
 import { ConnectAnimapService } from "./builder"
+import { CreateCategoryRequest, GetCategoryListResponse } from "./dtos/category"
 
-type CategoryList = {
-    id: number,
-    name:string
-    image:string
-    is_universe:boolean
-}
 
-type CreateCategory = {
-    id: number,
-    name: string
-    image: string
-    is_universe: boolean
-}
 
 export class CategoryService{
     private url:string
@@ -32,14 +21,14 @@ export class CategoryService{
         }
     }
 
-    public async getCategories() :Promise<CategoryList[]>{
+    public async getCategories() :Promise<GetCategoryListResponse[]>{
         const response = await axios.get(this.url, {
             headers: this.getConfigHeaders(),
         })
         return response.data
     }
 
-    public async createCategory(category:CreateCategory){
+    public async createCategory(category:CreateCategoryRequest){
         const response = await axios.post(this.url,category, {
             headers: this.getConfigHeaders(),
         })

@@ -1,21 +1,10 @@
 import Link from "next/link";
-import { SongSerivce } from "../api/songs";
+import { SongService } from "../api/songs";
 import { Button } from "../component/mtailwind";
-
-type AnimeSong ={
-    id: number
-    name: string,
-    image: string,
-    description: string,
-    year: string,
-    type: string,
-    sequence: number,
-    anime_id: number,
-    anime_name: string,
-}
+import { GetAllSongResponse } from "../api/dtos/song";
 
 export default async function Page() {
-    const songSerivce = new SongSerivce()
+    const songSerivce = new SongService()
     const songs = await songSerivce.getSongs();
     return(<>
         <div className="container mx-auto md:px-40 px-5 pt-20">
@@ -36,7 +25,7 @@ export default async function Page() {
                         </tr>
                     </thead>
                     <tbody>
-                        {songs.map((song: AnimeSong, index: number) => (
+                        {songs.map((song: GetAllSongResponse, index: number) => (
                             <tr key={index} className="py-4">
                                 <td  scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
                                 <td><Link href={`song/${song.id}`}>{song.name}</Link></td>

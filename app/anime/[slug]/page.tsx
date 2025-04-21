@@ -5,8 +5,9 @@ import CreateAnimeButton from "../component/createAnimeButton";
 import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import CreateSongButton from "./component/createSongButton";
+import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
 
-export default async function Page({ params }: { params: { slug: number } }) {
+export default async function Page({ params }: { params: { slug: string } }) {
     const animeSerivce = new AnimeService()
     const songSerivce = new SongService();
 
@@ -37,7 +38,7 @@ export default async function Page({ params }: { params: { slug: number } }) {
         }
     }
 
-    const showAnimeSongItem = (animeSong: SongDetail[],title: string) => {
+    const showAnimeSongItem = (animeSong: GetSongByAnimeIdResponseSongDetail[],title: string) => {
         if (!animeSong) {
             return <></>
         }

@@ -2,17 +2,18 @@
 import AddCategoryToAnimeModal from "./addCategoryToAnimeModal";
 import { useState } from "react";
 import { Button } from "../../../component/mtailwind";
+import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
 
 type PropAddCategoryToAnimeButton ={
     name: string
-    category?:AnimeDetailCategories[]
-    anime_id: number
+    category?:GetSongByAnimeIdResponseSongDetail[]
+    anime_id: string
 }
 
-type AnimeDetailCategories = {
-    id:number
-    name:string
-}
+// type AnimeDetailCategories = {
+//     id:string
+//     name:string
+// }
 
 export default function AddCategoryToAnimeButton(props:PropAddCategoryToAnimeButton) {
     const [openModal, setOpenModal] = useState(false);

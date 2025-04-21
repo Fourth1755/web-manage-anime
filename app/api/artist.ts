@@ -1,14 +1,7 @@
 import axios from "axios"
 import { ConnectAnimapService } from "./builder"
+import { GetArtistListResponse } from "./dtos/artist"
 
-type ArtistList = {
-    id: number
-    name:string
-    image:string
-    description: string
-    record_label:string
-    is_music_band: boolean
-}
 
 export class ArtistSerivce{
     private url:string
@@ -27,7 +20,7 @@ export class ArtistSerivce{
         }
     }
 
-    public async getArtists() :Promise<ArtistList[]>{
+    public async getArtists() :Promise<GetArtistListResponse[]>{
         const response = await axios.get(this.url, {
             headers: this.getConfigHeaders(),
         })
