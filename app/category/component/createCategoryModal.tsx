@@ -4,7 +4,7 @@ import { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Switch }
 import { createCategory } from "./action";
 
 type CategoryData = {
-    id: number,
+    id: string,
     name: string
     image: string
     is_universe: boolean
@@ -46,7 +46,7 @@ export default function CreateCategoryModal(prop: PropsCreateCategoryModal) {
     }
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         const category: CategoryData = {
-            id: 0,
+            id: "",
             name: formData.name,
             image: formData.image,
             is_universe: formData.is_universe,

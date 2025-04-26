@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { Button } from "../component/mtailwind";
-import { CategorySerivce } from "../api/category";
+import { CategoryService } from "../api/category";
 import CreateCategoryButton from "./component/createCategoryButton";
 
 type Category = {
-    id: number,
+    id: string,
     name:string
     image:string
     is_universe:boolean
 }
 
 export default async function Page() {
-    const categorySerivce = new CategorySerivce()
+    const categorySerivce = new CategoryService()
     const categories = await categorySerivce.getCategories()
     return (<div>
         <div className="container mx-auto md:px-40 px-5 pt-20">

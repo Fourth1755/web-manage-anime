@@ -25,7 +25,7 @@ export default async function Page() {
                         </tr>
                     </thead>
                     <tbody>
-                        {songs.map((song: GetAllSongResponse, index: number) => (
+                        {songs?.map((song: GetAllSongResponse, index: number) => (
                             <tr key={index} className="py-4">
                                 <td  scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
                                 <td><Link href={`song/${song.id}`}>{song.name}</Link></td>

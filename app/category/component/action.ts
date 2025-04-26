@@ -2,17 +2,17 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { CategorySerivce } from "@/app/api/category";
+import { CategoryService } from "@/app/api/category";
 
 type CategoryData = {
-    id: number,
+    id: string,
     name: string
     image: string
     is_universe: boolean
 }
 
 export async function createCategory(category: CategoryData) {
-  const categorySerivce = new CategorySerivce();
+  const categorySerivce = new CategoryService();
   try {
     // Call database
     await categorySerivce.createCategory(category);

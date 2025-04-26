@@ -127,7 +127,7 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
     const handleSubmit = async () => {
         //event.preventDefault();
         const anime: AnimeData = {
-            id: 0,
+            id: "",
             name: formData.name,
             name_english: formData.name_english,
             name_thai:formData.name_thai,
