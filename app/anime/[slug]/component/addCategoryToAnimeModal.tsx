@@ -1,8 +1,7 @@
 "use client";
 import { CategoryService } from "@/app/api/category";
-import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, Typography, Card, CardBody } from "../../../component/mtailwind";
+import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, Typography, Card, CardBody, Chip } from "../../../component/mtailwind";
 import { useEffect, useState } from "react";
-import TrashIcon from "@/app/component/icon/trashIcon";
 import { EditCategoryAnimeRequest } from "@/app/api/dtos/anime";
 import { editCategoryAnime } from "./action";
 
@@ -26,6 +25,9 @@ type CategoryList = {
     id: string
     name: string
 }
+
+let categoryMap = new Map();
+
 export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeModal) {
     const open = prop.open;
     const handleOpen = prop.handler;
@@ -34,6 +36,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
         category_ids: [],
     });
     const [category, setCategory] = useState("")
+    const [chipOpen, setChipOpen] = useState(true);
 
     const [categoryList, setCategoryList] = useState<CategoryList[]>()
     const changeCategory = (val = "") => {
@@ -48,10 +51,9 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
     };
 
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
         const request:EditCategoryAnimeRequest = {
-            anime_id: "",
+            anime_id: prop.anime_id,
             category_ids: formData.category_ids
         }
         await editCategoryAnime(request);
@@ -74,12 +76,21 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
     //     }
     // }, []);
 
+    const onCloseChipCategory = (id:String) => {
+        const categoryVal = formData.category_ids.filter((item)=>item!=id)
+        console.log(categoryVal)
+        setFormData({ ...formData, "category_ids": categoryVal });
+    }
+
     //fetch list of category
     const initCategories = async () => {
         const categorySerivce = new CategoryService()
         const category = await categorySerivce.getCategories();
         if (category != null) {
             setCategoryList(category);
+            category.map((item)=>{
+                categoryMap.set(item.id,item.name)
+            })
         }
     };
     useEffect(() => {
@@ -97,22 +108,23 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
                 size="sm"
             >
                 <DialogHeader>Manage Tag Anime</DialogHeader>
-                <form onSubmit={handleSubmit}>
                     <DialogBody className="space-y-4 pb-6">
-                        {categoryDataList?.map((category) => (
-                            <Card>
                                 <CardBody className="flex justify-between">
-                                    <Typography variant="h5" color="blue-gray">
-                                        {category.name}
-                                    </Typography>
-                                    <Button
-                                        variant="outlined"
-                                        size="sm"
-                                        color="red">
-                                        <TrashIcon />
-                                    </Button>
+                                    {formData?.category_ids?.length?<div>
+                                        {formData.category_ids.map((item,index)=>(
+                                            <div 
+                                                key={index}
+                                                className="py-1">
+                                                <Chip
+                                                    open={chipOpen}
+                                                    onClose={() => onCloseChipCategory(item)}
+            
+                                                    value={categoryMap.get(item)}/>
+                                            </div>
+            
+                                        ))}
+                                    </div>:<></>}
                                 </CardBody>
-                            </Card>))}
                         <Select
                             variant="outlined"
                             label="Choose a Category"
@@ -137,11 +149,14 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
                         >
                             <span>Cancel</span>
                         </Button>
-                        <Button variant="gradient" color="green" type="submit">
+                        <Button 
+                            variant="gradient" 
+                            color="green" 
+                            type="submit"
+                            onClick={handleSubmit}>
                             <span>Save</span>
                         </Button>
                     </DialogFooter>
-                </form>
             </Dialog>
         </>
     );
