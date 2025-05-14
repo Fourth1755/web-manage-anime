@@ -14,7 +14,7 @@ export default function Navbar() {
     <>
       {pathname != "/login" ? (
         <>
-          <nav className="bg-pink-500 w-full p-2 flex justify-between fixed">
+          <nav className="bg-pink-500 w-full p-2 flex justify-between fixed z-10">
             <div className="flex justify-center w-40">
               <h1 className="my-auto font-castoro italic text-lg">Animap</h1>
             </div>

@@ -4,6 +4,7 @@ export type GetAnimeList = {
     year: string;
     score: string;
     seasonal: string;
+    image: string;
 }
 
 type GetAnimeByIdResponseCategories = {

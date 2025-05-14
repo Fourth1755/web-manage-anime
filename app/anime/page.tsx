@@ -20,6 +20,7 @@ export default async function Page() {
                     <thead>
                         <tr>
                             <th  scope="col" className="px-6 py-3">No.</th>
+                            <th  scope="col" className="px-6 py-3">Anime</th>
                             <th  scope="col" className="px-6 py-3">Name</th>
                             <th  scope="col" className="px-6 py-3">Year</th>
                             <th  scope="col" className="px-6 py-3">Seasonal</th>
@@ -31,6 +32,13 @@ export default async function Page() {
                         {animes?.map((anime: GetAnimeList, index: number) => (
                             <tr key={index}>
                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
+                                <td>
+                                    <img
+                                        className="h-60 w-44 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50 my-1"
+                                        src={anime.image}
+                                        alt="nature image"
+                                    />
+                                </td>
                                 <td>{anime.name}</td>
                                 <td>{anime.year}</td>
                                 <td>{anime.seasonal}</td>
