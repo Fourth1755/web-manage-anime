@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
-import { CreateAnimeRequest, EditCategoryAnimeRequest, GetAnimeByIdResponse, GetAnimeList, UpdateAnimeRequest } from "./dtos/anime";
+import { CreateAnimeRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeList, UpdateAnimeRequest } from "./dtos/anime";
 
 
 export class AnimeService{
@@ -50,6 +50,13 @@ export class AnimeService{
 
     public async editCategoryAnime(request: EditCategoryAnimeRequest) {
         const response = await axios.put(`${this.url}/category/edit-category-anime`, request,{
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
+
+    public async editCategoryUniverseAnime(request: EditCategoryUniversesAnimeRequest) {
+        const response = await axios.put(`${this.url}/category-universe/edit-category-universe-anime`, request,{
             headers: this.getConfigHeaders(),
         })
         return response.data

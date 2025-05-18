@@ -33,11 +33,17 @@ export type GetAnimeByIdResponse = {
     wallpaper: string
     trailer: string
     categories:GetAnimeByIdResponseCategories[]
+    categoryUniverse:GetAnimeByIdResponseCategories[]
 }
 
 export type EditCategoryAnimeRequest = {
     anime_id: string
     category_ids: string[]
+}
+
+export type EditCategoryUniversesAnimeRequest = {
+    anime_id: string
+    category_universe_ids: string[]
 }
 
 export type CreateAnimeRequest = {

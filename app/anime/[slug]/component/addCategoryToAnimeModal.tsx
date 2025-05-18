@@ -2,8 +2,9 @@
 import { CategoryService } from "@/app/api/category";
 import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, Typography, Card, CardBody, Chip } from "../../../component/mtailwind";
 import { useEffect, useState } from "react";
-import { EditCategoryAnimeRequest } from "@/app/api/dtos/anime";
-import { editCategoryAnime } from "./action";
+import { EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest } from "@/app/api/dtos/anime";
+import { editCategoryAnime, editCategoryUniverseAnime } from "./action";
+import { CategoryUniverseService } from "@/app/api/categoryUniverse";
 
 type CategoryData = {
     id: string
@@ -15,6 +16,7 @@ type PropsAddCategoryToAnimeModal = {
     handler: () => void;
     category?: CategoryData[]
     anime_id: string
+    is_universe: boolean
 }
 
 type FormData = {
@@ -52,11 +54,19 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
 
 
     const handleSubmit = async () => {
-        const request:EditCategoryAnimeRequest = {
-            anime_id: prop.anime_id,
-            category_ids: formData.category_ids
+        if(prop.is_universe){
+            const request:EditCategoryUniversesAnimeRequest = {
+                anime_id: prop.anime_id,
+                category_universe_ids: formData.category_ids
+            }
+            await editCategoryUniverseAnime(request);
+        }else {
+            const request:EditCategoryAnimeRequest = {
+                anime_id: prop.anime_id,
+                category_ids: formData.category_ids
+            }
+            await editCategoryAnime(request);
         }
-        await editCategoryAnime(request);
         handleOpen();
     };
     // useEffect(() => {
@@ -93,8 +103,25 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
             })
         }
     };
+
+    //fetch list of category universe
+    const initCategoyUniverse = async () => {
+        const categorySerivce = new CategoryUniverseService()
+        const category = await categorySerivce.getCategoryUniverse();
+        if (category != null) {
+            setCategoryList(category);
+            category.map((item)=>{
+                categoryMap.set(item.id,item.name)
+            })
+        }
+    };
+
     useEffect(() => {
-        initCategories();
+        if(prop.is_universe){
+            initCategoyUniverse();
+        } else {
+            initCategories();
+        }
     }, []);
     return (
         <>
@@ -130,7 +157,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
                             label="Choose a Category"
                             color="green"
                             value={category}
-                            name="seasonal"
+                            name="category"
                             onChange={changeCategory}
                         >
                             {categoryList?.map((item,i) => (

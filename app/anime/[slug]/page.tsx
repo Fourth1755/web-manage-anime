@@ -137,20 +137,41 @@ export default async function Page({ params }: { params: { slug: string } }) {
                                     <td>{anime.duration}</td>
                                 </tr>
                                 <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Tags:
+                                    <td color="blue-gray" className="font-bold py-1">
+                                        Category:
                                     </td>
-                                    <td>
+                                    <td className="flex">
+                                        <div className="flex">
                                         {anime.categories?.map((item, index) => (
-                                            <span key={item.id}>
+                                            <span key={item.id} className="px-1">
                                                 <Link href={`category/${item.id}`}>{item.name}</Link>
-                                                <p>{index == anime.categories.length ? "," : ""}</p>
                                             </span>
                                         ))}
+                                        </div>
                                         <AddCategoryToAnimeButton 
                                             name="Add Tag" 
                                             category={anime.categories} 
-                                            anime_id={anime.id}/>
+                                            anime_id={anime.id}
+                                            is_universe={false}/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td color="blue-gray" className="font-bold">
+                                        Universe:
+                                    </td>
+                                    <td className="flex">
+                                        <div className="flex">                                        
+                                            {anime.categoryUniverse?.map((item, index) => (
+                                            <span key={item.id} className="px-1">
+                                                {item.name}
+                                                <p>{index == anime.categoryUniverse.length ? "," : ""}</p>
+                                            </span>
+                                        ))}</div>
+                                        <AddCategoryToAnimeButton 
+                                            name="Add Tag" 
+                                            category={anime.categoryUniverse} 
+                                            anime_id={anime.id}
+                                            is_universe={true}/>
                                     </td>
                                 </tr>
                             </tbody>

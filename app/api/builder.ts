@@ -39,4 +39,9 @@ export class ConnectAnimapService {
         const url = new URL("/studios", this.url);
         return url.toString()
     }
+    
+    public getCategoryUniverseUrl(){
+        const url = new URL("/category-universe", this.url);
+        return url.toString()
+    }
 }

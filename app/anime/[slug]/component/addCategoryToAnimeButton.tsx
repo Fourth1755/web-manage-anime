@@ -7,6 +7,7 @@ type PropAddCategoryToAnimeButton ={
     name: string
     category?:AnimeDetailCategories[]
     anime_id: string
+    is_universe: boolean
 }
 
 type AnimeDetailCategories = {
@@ -27,6 +28,7 @@ export default function AddCategoryToAnimeButton(props:PropAddCategoryToAnimeBut
                 handler={handleOpen}
                 category={props.category}
                 anime_id={props.anime_id}
+                is_universe ={props.is_universe}
             />
         </>
     );
