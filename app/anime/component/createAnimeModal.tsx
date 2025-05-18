@@ -63,7 +63,8 @@ const seasonalList = [
 ];
 const animeTypeList = [
     { id: "1", name: "TV" },
-    { id: "2", name: "Movie" }
+    { id: "2", name: "Movie" },
+    { id: "3", name: "Special" }
 ]
 let studioMap = new Map();
 
