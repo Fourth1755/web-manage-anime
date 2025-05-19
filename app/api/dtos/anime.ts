@@ -34,6 +34,7 @@ export type GetAnimeByIdResponse = {
     trailer: string
     categories:GetAnimeByIdResponseCategories[]
     categoryUniverse:GetAnimeByIdResponseCategories[]
+    aired_at: string
 }
 
 export type EditCategoryAnimeRequest = {
@@ -57,6 +58,7 @@ export type CreateAnimeRequest = {
     duration: string
     year: string;
     type: number
+    aired_at: string
 };
 
 export type UpdateAnimeRequest = {
@@ -70,4 +72,5 @@ export type UpdateAnimeRequest = {
     duration: string
     year: string;
     type: number
+    aired_at: string
 };

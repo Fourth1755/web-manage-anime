@@ -17,6 +17,7 @@ import { createAnime, updateAnime } from "./action";
 import { GetStudioResponse } from "@/app/api/dtos/studio";
 import { StudioService } from "@/app/api/studio";
 import { GetAnimeByIdResponse } from "@/app/api/dtos/anime";
+import DatePicker from "@/app/component/datePicker/datePicker";
 
 type AnimeData = {
     id: string;
@@ -33,6 +34,7 @@ type AnimeData = {
     type: number
     wallpaper: string
     trailer: string
+    aired_at: string
 };
 
 type PropsCreateAnimeModal = {
@@ -56,6 +58,7 @@ type FormData = {
     type: string
     wallpaper: string
     trailer: string
+    aired_at: string
 }
 
 const seasonalList = [
@@ -86,7 +89,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         year: "",
         type: "",
         wallpaper: "",
-        trailer: ""
+        trailer: "",
+        aired_at: ""
     });
     const [studioList, setStduioList] = useState<GetStudioResponse[]>();
     const [chipOpen, setChipOpen] = useState(true);
@@ -122,8 +126,11 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         } 
         stuidoVal.push(val)
         console.log(studioMap)
-        setFormData({ ...formData, "studio": stuidoVal });
-        
+        setFormData({ ...formData, "studio": stuidoVal });   
+    }
+    const handleChangeAiredDate = (date:any) => {
+        console.log(date)
+        setFormData({ ...formData, "aired_at": date }); 
     }
     const handleSubmit = async () => {
         //event.preventDefault();
@@ -141,7 +148,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
             year: formData.year,
             type: +formData.type,
             wallpaper: formData.wallpaper,
-            trailer: formData.trailer
+            trailer: formData.trailer,
+            aired_at: formData.aired_at
         }
         if (isEdit && animeData) {
             anime.id = animeData.id
@@ -172,7 +180,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                 year: animeData.year,
                 type: animeData.type.toString(),
                 wallpaper: animeData.wallpaper,
-                trailer: animeData.trailer
+                trailer: animeData.trailer,
+                aired_at: animeData.aired_at
             })
         }
     }, [])
@@ -186,7 +195,6 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                     unmount: { scale: 0.9, y: -100 },
                 }}
                 size="sm"
-                
             >
                 <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
                     <DialogBody className="space-y-4 pb-6 overflow-scroll h-96">
@@ -275,7 +283,9 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                                     onChange={handleInputChange}
                                 />
                             </div>
-
+                        </div>
+                        <div aria-hidden={true}>
+                            <DatePicker handler={handleChangeAiredDate}/>
                         </div>
                         <div className="flex gap-4">
                             <div className="w-full">
