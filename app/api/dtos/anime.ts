@@ -51,6 +51,7 @@ export type CreateAnimeRequest = {
     // id: string;
     name: string;
     name_english: string
+    name_thai: string
     episodes: number
     seasonal: string;
     image: string
@@ -65,6 +66,7 @@ export type UpdateAnimeRequest = {
     id: string;
     name: string;
     name_english: string
+    name_thai: string
     episodes: number
     seasonal: string;
     image: string

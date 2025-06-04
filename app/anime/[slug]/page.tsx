@@ -6,6 +6,7 @@ import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import CreateSongButton from "./component/createSongButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
+import CreateEpisodeButton from "./component/createEpisodeButton/createEpisodeButton";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const animeSerivce = new AnimeService()
@@ -190,6 +191,16 @@ export default async function Page({ params }: { params: { slug: string } }) {
                     {showAnimeSongItem(songs.opening_song,"Anime Opening")}
                     {showAnimeSongItem(songs.ending_song,"Anime Endding")}
                     {showAnimeSongItem(songs.soundtrack_song,"Anime Soundtrack")}
+                </CardBody>
+            </Card>
+            <Card className="h-full w-full">
+                <CardBody>
+                    <div className="flex justify-between">
+                        <Typography variant="h5">
+                            Anime Episode
+                        </Typography>
+                        <CreateEpisodeButton anime_id={anime.id} />
+                    </div>
                 </CardBody>
             </Card>
         </div>

@@ -44,4 +44,9 @@ export class ConnectAnimapService {
         const url = new URL("/category-universe", this.url);
         return url.toString()
     }
+        
+    public getEpisodeUrl(){
+        const url = new URL("/episode", this.url);
+        return url.toString()
+    }
 }
