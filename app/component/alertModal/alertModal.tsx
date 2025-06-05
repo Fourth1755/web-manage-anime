@@ -1,5 +1,5 @@
 "use client";
-import { Dialog,DialogHeader,DialogFooter,Button,DialogBody } from "../mtailwind";
+import { Dialog,DialogHeader,DialogFooter,Button,DialogBody,Typography } from "../mtailwind";
 type PropsAlertModal = {
     open: boolean;
     handler: () => void;
@@ -18,17 +18,20 @@ export default function AlertModal(props:PropsAlertModal){
                     mount: { scale: 1, y: 0 },
                     unmount: { scale: 0.9, y: -100 },
                 }}
-                size="sm"
+                size='xs'
             >
-                <DialogHeader>แจ้งเตือน</DialogHeader>
-                <DialogBody className="space-y-4 pb-6">
-                    <h2>{message}</h2>
+                <DialogHeader className="grid place-items-center gap-4">
+                    <Typography className="text-center" variant="h3">แจ้งเตือน</Typography>
+                </DialogHeader>
+                <DialogBody className="grid place-items-center gap-4">
+                    <Typography className="text-center font-normal">{message}</Typography>
                 </DialogBody>
-                <DialogFooter>
+                <DialogFooter className="space-x-2">
                     <Button
-                        variant="text"
+                        variant="gradient"
                         color="green"
                         onClick={handleOpen}
+                        className="m-auto"
                     >
                         <span>OK</span>
                     </Button>

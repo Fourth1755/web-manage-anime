@@ -7,13 +7,17 @@ import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import CreateSongButton from "./component/createSongButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
 import CreateEpisodeButton from "./component/createEpisodeButton/createEpisodeButton";
+import { EpisodeService } from "@/app/api/episode";
+import { GetEpisodeByAnimeResponse } from "@/app/api/dtos/episode";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const animeSerivce = new AnimeService()
     const songSerivce = new SongService();
+    const episodeService = new EpisodeService();
 
     const anime = await animeSerivce.getAnimeById(params.slug);
     const songs = await songSerivce.getSongByAnime(params.slug);
+    const episodeResponse = await episodeService.getEpisode(params.slug);
 
     const converAnimeSongType = (type: number) => {
         switch (type) {
@@ -201,6 +205,37 @@ export default async function Page({ params }: { params: { slug: string } }) {
                         </Typography>
                         <CreateEpisodeButton anime_id={anime.id} />
                     </div>
+                                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="w-full text-sm text-left text-black">
+                    <thead>
+                        <tr>
+                            <th  scope="col" className="px-6 py-3">No.</th>
+                            <th  scope="col" className="px-6 py-3">Name</th>
+                            <th  scope="col" className="px-6 py-3">Name Thai</th>
+                            <th  scope="col" className="px-6 py-3">Name English</th>
+                            <th  scope="col" className="px-6 py-3">Char</th>
+                            <th  scope="col" className="px-6 py-3">Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {episodeResponse?.episodes.map((episode, index: number) => (
+                            <tr key={index}>
+                                <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
+                                <td>{episode.name}</td>
+                                <td>{episode.name_thai}</td>
+                                <td>{episode.name_english}</td>
+                                <td>
+                                    {/* <Link href={`anime/${anime.id}`}>
+                                        <Button variant="outlined" color="pink" type="submit">
+                                            <span>Detail</span>
+                                        </Button>
+                                    </Link> */}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
                 </CardBody>
             </Card>
         </div>
