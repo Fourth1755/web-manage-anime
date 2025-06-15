@@ -46,7 +46,12 @@ export class ConnectAnimapService {
     }
         
     public getEpisodeUrl(){
-        const url = new URL("/episode", this.url);
+        const url = new URL("/episodes", this.url);
+        return url.toString()
+    }
+
+    public getCharacterUrl(){
+        const url = new URL("/characters", this.url);
         return url.toString()
     }
 }
