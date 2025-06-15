@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
 import { CreateEpisodeRequest, GetEpisodeByAnimeResponse, UpdateEpisodeRequest } from "./dtos/episode";
-import { GetCharacterByAnimeIdResponse } from "./dtos/character";
+import { CreateCharacterRequest, GetCharacterByAnimeIdResponse } from "./dtos/character";
 
 export class CharacterService {
     private url:string
@@ -25,5 +25,12 @@ export class CharacterService {
             headers: this.getConfigHeaders()
         })
         return response.data
+    }
+
+    public async createCharacter(request: CreateCharacterRequest) {
+        const response = await axios.post(`${this.url}`, request, {
+            headers: this.getConfigHeaders()
+        })
+        return response
     }
 }

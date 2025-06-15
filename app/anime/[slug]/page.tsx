@@ -11,17 +11,20 @@ import { EpisodeService } from "@/app/api/episode";
 import { GetEpisodeByAnimeResponse } from "@/app/api/dtos/episode";
 import EditEpisodeButton from "./component/editEpisodeButton/editEpisodeButton";
 import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton/addCharacterToEpisodeButton";
+import { CharacterService } from "@/app/api/character";
+import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const animeSerivce = new AnimeService()
     const songSerivce = new SongService();
     const episodeService = new EpisodeService();
+    const characterService = new CharacterService();
 
     const animeId = params.slug
     const anime = await animeSerivce.getAnimeById(animeId);
     const songs = await songSerivce.getSongByAnime(animeId);
     const episodeResponse = await episodeService.getEpisode(animeId,"FIRST_APPEARANCE");
-
+    const characterResponse = await characterService.getCharacterByAnimeId(animeId)
     const converAnimeSongType = (type: number) => {
         switch (type) {
             case 1:
@@ -204,18 +207,56 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 <CardBody>
                     <div className="flex justify-between">
                         <Typography variant="h5">
+                            Anime Character
+                        </Typography>
+                        <CreateCharacterButton anime_id={anime.id} />
+                    </div>
+                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table className="w-full text-sm text-left text-black">
+                            <thead>
+                                <tr>
+                                    <th  scope="col" className="px-6 py-3">No.</th>
+                                    <th  scope="col" className="px-6 py-3">Name</th>
+                                    <th  scope="col" className="px-6 py-3">Full Name</th>
+                                    <th  scope="col" className="px-6 py-3">Name Thai</th>
+                                    <th  scope="col" className="px-6 py-3">Full Name Thai</th>
+                                    <th  scope="col" className="px-6 py-3">Full Name Japan</th>
+                                    <th  scope="col" className="px-6 py-3">Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {characterResponse?.character?.map((character, index: number) => (
+                                <tr key={index}>
+                                    <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index+1}</td>
+                                    <td>{character.name}</td>
+                                    <td>{character.full_name}</td>
+                                    <td>{character.name_thai}</td>
+                                    <td>{character.full_name_thai}</td>
+                                    <td>{character.full_name_japan}</td>
+                                    <td></td>
+                                </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardBody>
+            </Card>
+            <Card className="h-full w-full">
+                <CardBody>
+                    <div className="flex justify-between">
+                        <Typography variant="h5">
                             Anime Episode
                         </Typography>
                         <CreateEpisodeButton anime_id={anime.id} />
                     </div>
-                                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-black">
                     <thead>
                         <tr>
                             <th  scope="col" className="px-6 py-3">No.</th>
-                            <th  scope="col" className="px-6 py-3">Name Japan</th>
-                            <th  scope="col" className="px-6 py-3">Name Thai</th>
                             <th  scope="col" className="px-6 py-3">Name English</th>
+                            <th  scope="col" className="px-6 py-3">Name Thai</th>
+                            <th  scope="col" className="px-6 py-3">Name Japan</th>
                             <th  scope="col" className="px-6 py-3">Char</th>
                             <th  scope="col" className="px-6 py-3">Edit</th>
                             <th  scope="col" className="px-6 py-3">Detail</th>
@@ -225,9 +266,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
                         {episodeResponse?.episodes?.map((episode, index: number) => (
                             <tr key={index}>
                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{episode.number}</td>
-                                <td>{episode.name_japan}</td>
-                                <td>{episode.name_thai}</td>
                                 <td>{episode.name_english}</td>
+                                <td>{episode.name_thai}</td>
+                                <td>{episode.name_japan}</td>
                                 <td></td>
                                 <td>
                                     {/* <Link href={`anime/${anime.id}`}>
