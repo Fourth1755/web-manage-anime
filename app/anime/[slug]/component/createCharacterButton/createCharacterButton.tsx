@@ -15,7 +15,7 @@ export default function CreateCharacterButton(props: PropsCreateCharacterButton)
     const [message, setMessage] = useState("");
 
     const handleOpen = () => setOpenModal(!openModal);
-    const handleOpenAlert = () => setOpenModalAlert(!openModal);
+    const handleOpenAlert = () => setOpenModalAlert(!openModalAlert);
     const handlerResponseMessage = (message:string) => {
         setMessage(message)
         handleOpenAlert()

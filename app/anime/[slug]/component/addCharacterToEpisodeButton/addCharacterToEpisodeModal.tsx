@@ -8,8 +8,9 @@ import {
     Option, 
     DialogFooter, 
     Select, 
-    CardBody, 
-    Chip } from "../../../../component/mtailwind";
+    CardBody,
+    Input, 
+    Checkbox } from "../../../../component/mtailwind";
 import { useEffect, useState } from "react";
 import { CharacterService } from "@/app/api/character";
 import { AddCharacterToEpisodeRequest } from "@/app/api/dtos/episode";
@@ -57,26 +58,56 @@ export default function AddCharacterToEpisodeModal(prop: PropsAddCharacterToEpis
     const [formData, setFormData] = useState<FormData>({
         character_list: [],
     });
+    const handlerResponseMessage = prop.handlerResponseMessage;
+
     const [character, setCharacter] = useState("")
-    const [chipOpen, setChipOpen] = useState(true);
 
     const [characterList, setCharacterList] = useState<CharacterItem[]>()
+    const cheakCharacterIsDup = (characterListVal: FormDataCharacter[],characterId :string) =>{
+        for(let i=0;i<characterListVal.length;i++){
+            if(characterListVal[i].id == characterId){
+                return true
+            }
+        }
+        return false
+    }
+
     const changeCharacter = (characterId = "") => {
         let characterListVal: FormDataCharacter[] = [];
         if(formData.character_list.length != 0) {
             characterListVal = formData.character_list
         } 
-
-        let characterVal: FormDataCharacter = {
-            id:characterId,
-            description:"",
-            first_appearance:false,
-            appearance: true
+        const isDupCharacter = cheakCharacterIsDup(characterListVal,characterId);
+        if(!isDupCharacter){
+            let characterVal: FormDataCharacter = {
+                id:characterId,
+                description:"",
+                first_appearance:false,
+                appearance: false
+            }
+            characterListVal.push(characterVal)
+            console.log(characterVal)
+            setFormData({ ...formData, "character_list": characterListVal });
         }
-        characterListVal.push(characterVal)
-        console.log(characterVal)
-        setFormData({ ...formData, "character_list": characterListVal });
     };
+
+    const handleInputChange = (characterId:string,name:string) => {
+        for(let i=0;i<formData.character_list.length;i++){
+            if(formData.character_list[i].id==characterId){
+                const characterListVal = formData.character_list.filter((item)=>item.id!=characterId)
+                let characterVal: FormDataCharacter = {
+                    id:characterId,
+                    description:"",
+                    first_appearance: name=="first_appearance"?!formData.character_list[i].first_appearance:formData.character_list[i].first_appearance,
+                    appearance: name=="appearance"?!formData.character_list[i].appearance:formData.character_list[i].appearance
+                }
+                characterListVal.push(characterVal)
+                setFormData({ ...formData, "character_list": characterListVal });
+                console.log(characterVal)
+                break;
+            }
+        }
+    }
 
 
     const handleSubmit = () => {
@@ -84,7 +115,8 @@ export default function AddCharacterToEpisodeModal(prop: PropsAddCharacterToEpis
              episode_id:prop.episode.id,
              characters:formData.character_list,
         }
-        addCharacterToEpisode(request,prop.anime_id)
+        const response = addCharacterToEpisode(request,prop.anime_id)
+        response.then((data)=>handlerResponseMessage(data))
         handleOpen();
     };
 
@@ -108,7 +140,7 @@ export default function AddCharacterToEpisodeModal(prop: PropsAddCharacterToEpis
 
     useEffect(() => {
         initCharacter(prop.anime_id);
-    }, []);
+    }, [prop]);
     return (
         <>
             <Dialog
@@ -118,26 +150,10 @@ export default function AddCharacterToEpisodeModal(prop: PropsAddCharacterToEpis
                     mount: { scale: 1, y: 0 },
                     unmount: { scale: 0.9, y: -100 },
                 }}
-                size="sm"
+                size="md"
             >
                 <DialogHeader>Manage Tag Anime</DialogHeader>
                     <DialogBody className="space-y-4 pb-6">
-                                <CardBody className="flex justify-between">
-                                    {formData?.character_list?.length?<div>
-                                        {formData.character_list.map((item,index)=>(
-                                            <div 
-                                                key={index}
-                                                className="py-1">
-                                                <Chip
-                                                    open={chipOpen}
-                                                    onClose={() => onCloseChipCharacter(item.id)}
-            
-                                                    value={characterMap.get(item)}/>
-                                            </div>
-            
-                                        ))}
-                                    </div>:<></>}
-                                </CardBody>
                         <Select
                             variant="outlined"
                             label="Choose a Character"
@@ -152,6 +168,57 @@ export default function AddCharacterToEpisodeModal(prop: PropsAddCharacterToEpis
                                 </Option>
                             ))}
                         </Select>
+                        <table className="w-full text-sm text-left text-black">
+                            <thead>
+                                <tr>
+                                    <th  scope="col" className="py-3">Name</th>
+                                    <th  scope="col" className="py-3">Appearance</th>
+                                    <th  scope="col" className="py-3">First Appearance</th>
+                                    <th  scope="col" className="py-3">Delete</th>
+                                </tr>
+                            </thead>
+                            {formData?.character_list?.length?
+                                <tbody>
+                                    {formData.character_list.map((item,index)=>(
+                                            <tr 
+                                                key={index}
+                                                >
+                                                <td>
+                                                    <Input
+                                                        crossOrigin={undefined}
+                                                        value={characterMap.get(item.id)}
+                                                        disabled
+                                                />   
+                                                </td>
+                                                <td>
+                                                    <Checkbox 
+                                                        crossOrigin={undefined}
+                                                        id="ripple-on" 
+                                                        ripple={true}
+                                                        onClick={() => handleInputChange(item.id,"appearance")}
+                                                        name="appearance"
+                                                        />
+                                                </td>
+                                                <td>
+                                                    <Checkbox 
+                                                        crossOrigin={undefined}
+                                                        id="ripple-on"
+                                                        ripple={true}
+                                                        onClick={() => handleInputChange(item.id,"first_appearance")}
+                                                        name="first_appearance"
+                                                         />
+                                                </td>
+                                                <td>
+                                                <Button
+                                                    onClick={() => onCloseChipCharacter(item.id)}
+                                                    color="red"
+                                                    variant="outlined"
+                                                    >X</Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                            </tbody>:<></>}
+                        </table>
                     </DialogBody>
                     <DialogFooter>
                         <Button

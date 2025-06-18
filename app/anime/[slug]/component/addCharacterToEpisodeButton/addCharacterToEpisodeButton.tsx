@@ -23,7 +23,7 @@ export default function AddCharacterToEpisodeButton(props: PropsAddCharacterToEp
     const [openModalAlert, setOpenModalAlert] = useState(false);
     const [message, setMessage] = useState("");
     const handleOpen = () => setOpenModal(!openModal);
-    const handleOpenAlert = () => setOpenModalAlert(!openModal);
+    const handleOpenAlert = () => setOpenModalAlert(!openModalAlert);
     const handlerResponseMessage = (message:string) => {
         setMessage(message)
         handleOpenAlert()
