@@ -15,11 +15,6 @@ import { CharacterService } from "@/app/api/character";
 import { AddCharacterToEpisodeRequest } from "@/app/api/dtos/episode";
 import { addCharacterToEpisode } from "./action";
 
-type CategoryData = {
-    id: string
-    name: string
-}
-
 type EpisodeData = {
     id: string
     number: number

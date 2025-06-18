@@ -24,7 +24,6 @@ export default async function Page() {
                             <th  scope="col" className="px-6 py-3">Name</th>
                             <th  scope="col" className="px-6 py-3">Year</th>
                             <th  scope="col" className="px-6 py-3">Seasonal</th>
-                            <th  scope="col" className="px-6 py-3">Score</th>
                             <th  scope="col" className="px-6 py-3">Detail</th>
                         </tr>
                     </thead>
@@ -42,7 +41,6 @@ export default async function Page() {
                                 <td>{anime.name}</td>
                                 <td>{anime.year}</td>
                                 <td>{anime.seasonal}</td>
-                                <td>10</td>
                                 <td>
                                     <Link href={`anime/${anime.id}`}>
                                         <Button variant="outlined" color="pink" type="submit">

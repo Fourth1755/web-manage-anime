@@ -20,7 +20,7 @@ export class ArtistSerivce{
         }
     }
 
-    public async getArtists() :Promise<GetArtistListResponse[]>{
+    public async getArtists() :Promise<GetArtistListResponse>{
         const response = await axios.get(this.url, {
             headers: this.getConfigHeaders(),
         })

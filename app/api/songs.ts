@@ -30,7 +30,7 @@ export class SongService{
         const response = await axios.post(this.url, song, { 
             headers: this.getConfigHeaders(),
         })
-        return response.data
+        return response
     }
 
     public async getSongByAnime(anime_id:string):Promise<GetSongByAnimeIdResponse> {

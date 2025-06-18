@@ -4,7 +4,7 @@ import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
 import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
-import CreateSongButton from "./component/createSongButton";
+import CreateSongButton from "./component/createSongButton/createSongButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
 import CreateEpisodeButton from "./component/createEpisodeButton/createEpisodeButton";
 import { EpisodeService } from "@/app/api/episode";
@@ -196,7 +196,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
                         <Typography variant="h5">
                             Anime Song
                         </Typography>
-                        <CreateSongButton anime_id={anime.id} anime_name={anime.name} />
+                        <CreateSongButton 
+                            anime_id={anime.id} 
+                            anime_name={anime.name} />
                     </div>
                     {showAnimeSongItem(songs.opening_song,"Anime Opening")}
                     {showAnimeSongItem(songs.ending_song,"Anime Endding")}

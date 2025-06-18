@@ -10,11 +10,11 @@ import {
     Select,
     Option,
     Typography,
-} from "../../../component/mtailwind";
+} from "../../../../component/mtailwind";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArtistSerivce } from "@/app/api/artist";
-import { createSong } from "./action";
+import { createSong, getAllArtist } from "./action";
 import React from "react";
 import { CreateAnimeSongRequest } from "@/app/api/dtos/song";
 
@@ -42,12 +42,7 @@ type PropsCreateSongeModal = {
     song?: AnimeSongData;
     anime_id: string;
     anime_name: string
-};
-
-type FormSongArtistData = {
-    id: number;
-    name: string;
-    image: string;
+    //handlerResponseMessage: (message:string) => void;
 };
 
 type FormSongChannelData = {
@@ -103,12 +98,12 @@ const channelTypeSelect=[
     { id: "4", name: "Unofficial" },
 ]
 export default function createSongModal(prop: PropsCreateSongeModal) {
-    const router = useRouter();
     const open = prop.open;
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit;
     const songData = prop.song;
-    const animeName =prop.anime_name;
+    //const handlerResponseMessage = prop.handlerResponseMessage;
+
     const [artistList, setArtistList] = useState<ArtistList[]>();
     const [formSongChannelData, setFormSongChannelData] =
         useState<FormSongChannelData>({
@@ -156,7 +151,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
         setFormSongChannelData({ ...formSongChannelData, [name]: value });
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const songChannel:AnimeSongChannel = {
             channel:+formSongChannelData.channel,
@@ -174,16 +169,16 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             song_channel: [songChannel],
             artist_list: [formData.artists],
         };
+        
         if (isEdit && songData) {
             //PATCH:/blogs
             song.id = songData.id;
             //await updateBlog(song, songData.id)
         } else {
-            //POST:/blogs
-            await createSong(song);
+            const res = createSong(song);
+            //res.then((data)=>handlerResponseMessage(data))
         }
         handleOpen();
-        router.push("/");
     };
     useEffect(() => {
         if (isEdit && songData) {
@@ -205,13 +200,11 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     }, []);
 
     //fetch list of artist
-    const initArtist = async () => {
-        const artistSerivce = new ArtistSerivce()
-        const artist = await artistSerivce.getArtists();
-        if (artist != null) {
-            setArtistList(artist);
-        }
+    const initArtist = () => {
+        const response = getAllArtist()
+        response.then((data)=>setArtistList(data.artists));
     };
+
     useEffect(() => {
         initArtist();
     }, [prop]);
@@ -346,7 +339,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
                                         variant="outlined"
                                         label="Choose a Channel type"
                                         color="green"
-                                        value={formSongChannelData.channel}
+                                        value={formSongChannelData.type}
                                         name="type"
                                         onChange={handleChangeTypeChannel}
                                     >
