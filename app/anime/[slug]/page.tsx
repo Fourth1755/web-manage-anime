@@ -259,19 +259,18 @@ export default async function Page({ params }: { params: { slug: string } }) {
                             <th  scope="col" className="px-6 py-3">Name English</th>
                             <th  scope="col" className="px-6 py-3">Name Thai</th>
                             <th  scope="col" className="px-6 py-3">Name Japan</th>
-                            <th  scope="col" className="px-6 py-3">Char</th>
                             <th  scope="col" className="px-6 py-3">Edit</th>
                             <th  scope="col" className="px-6 py-3">Detail</th>
                         </tr>
                     </thead>
                     <tbody>
                         {episodeResponse?.episodes?.map((episode, index: number) => (
+                            <>
                             <tr key={index}>
                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{episode.number}</td>
                                 <td>{episode.name_english}</td>
                                 <td>{episode.name_thai}</td>
                                 <td>{episode.name_japan}</td>
-                                <td></td>
                                 <td>
                                     {/* <Link href={`anime/${anime.id}`}>
                                         <Button variant="outlined" color="pink" type="submit">
@@ -284,6 +283,18 @@ export default async function Page({ params }: { params: { slug: string } }) {
                                     <AddCharacterToEpisodeButton episode={episode} anime_id={animeId}/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td className="flex">
+                                    {episode?.characters?.map((character)=>(
+                                    <span className="ml-2">
+                                        <img 
+                                            src={character.image}
+                                            className="w-10 h-10 rounded-full object-cover"/>
+                                    </span>))}
+                                </td>
+                            </tr>
+                            </>
                         ))}
                     </tbody>
                 </table>
