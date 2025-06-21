@@ -32,13 +32,13 @@ export default function CreateSongButton(props: PropsCreateSongButton) {
                 song={undefined}
                 anime_id={props.anime_id}
                 anime_name={props.anime_name}
-                // handlerResponseMessage={handlerResponseMessage}
+                handlerResponseMessage={handlerResponseMessage}
             />
-            {/* <AlertModal                 
+            <AlertModal                 
                 open={openModalAlert}
                 handler={handleOpenAlert}
                 message={message}
-                /> */}
+                />
         </>
     );
 }

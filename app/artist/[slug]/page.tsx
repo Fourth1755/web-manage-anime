@@ -16,7 +16,7 @@ const converAnimeSongType = (type: string) => {
         case "FULL_SIZE_UNOFFICIAL":
             return "Full Size Unofficial"
         case "FIRST_TAKE":
-            return "Full Size Unofficial"
+            return "First Take"
         default:
             return ""
     }
@@ -70,9 +70,14 @@ export default async function Page({ params }: Props) {
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                         {songResponse?.songs?.map((song, index: number) => (
                             <div key={index}>
-                                <div className="flex p-3">
-                                    <h1 className="font-medium text-xl">{index+1}</h1>
-                                    <span className="pl-5">{song.name} | {song.anime_name}</span>
+                                <div className="flex justify-between">
+                                    <div className="flex p-3">
+                                        <h1 className="font-medium text-xl">{index+1}</h1>
+                                        <span className="pl-5">{song.name} | {song.anime_name}</span>
+                                    </div>
+                                    <div>
+                                        <AddSongChannelButton song_id={song.id}/>
+                                    </div>
                                 </div>
                                 <table className="w-full text-sm text-left text-black">
                                     <tbody>
@@ -94,7 +99,7 @@ export default async function Page({ params }: Props) {
                                                 <td scope="col" className="px-8 py-3">
                                                     {converAnimeSongChannel(item.channel)}</td>
                                                 <td>
-                                                    <AddSongChannelButton song_id={song.id}/>
+                                                    {/* <AddSongChannelButton song_id={song.id}/> */}
                                                 </td>
                                             </tr>
                                         ))}

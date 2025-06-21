@@ -9,12 +9,10 @@ export async function editCategoryAnime(params:EditCategoryAnimeRequest) {
     const animeService = new AnimeService()
     await animeService.editCategoryAnime(params)
     revalidatePath('/anime') // Update cached posts
-    redirect(`/anime`) // Navigate to the new post page
 }
 
 export async function editCategoryUniverseAnime(params:EditCategoryUniversesAnimeRequest) {
     const animeService = new AnimeService()
     await animeService.editCategoryUniverseAnime(params)
     revalidatePath('/anime') // Update cached posts
-    redirect(`/anime`) // Navigate to the new post page
 }

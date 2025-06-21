@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             case "FULL_SIZE_UNOFFICIAL":
                 return "Full Size Unofficial"
             case "FIRST_TAKE":
-                return "Full Size Unofficial"
+                return "First Take"
             default:
                 return ""
         }

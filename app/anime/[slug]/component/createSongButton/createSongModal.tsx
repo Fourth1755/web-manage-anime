@@ -79,11 +79,11 @@ type ChannelSelect= {
     image: string;
 }
 
-//OPENING, ENDING, SOUNDSTRACK
+//OPENING, ENDING, SOUNDTRACK
 const songType: SongType[] = [
     { id: "OPENING", name: "opening" },
     { id: "ENDING", name: "ending" },
-    { id: "SOUNDSTRACK", name: "soundtrack" },
+    { id: "SOUNDTRACK", name: "soundtrack" },
 ];
 
 // YOUTUBE,SPOTIFY
@@ -95,9 +95,9 @@ const channelSelect:ChannelSelect[] = [
 //TV_SIZE, FULL_SIZE_OFFICIAL, FULL_SIZE_UNOFFICIAL, FIRST_TAKE
 const channelTypeSelect=[
     { id: "TV_SIZE", name: "TV size" },
-    { id: "FULL_SIZE_OFFICIAL", name: "Full size" },
-    { id: "FULL_SIZE_UNOFFICIAL", name: "Official" },
-    { id: "FIRST_TAKE", name: "Unofficial" },
+    { id: "FULL_SIZE_OFFICIAL", name: "Full size Official" },
+    { id: "FULL_SIZE_UNOFFICIAL", name: "Full size Unofficial" },
+    { id: "FIRST_TAKE", name: "Fitst Take" },
 ]
 
 export default function createSongModal(prop: PropsCreateSongeModal) {
@@ -178,11 +178,13 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             //PATCH:/blogs
             song.id = songData.id;
             //await updateBlog(song, songData.id)
+            handleOpen();
         } else {
             const res = createSong(song);
             res.then((data)=>handlerResponseMessage(data))
+            handleOpen();
         }
-        handleOpen();
+        
     };
     useEffect(() => {
         if (isEdit && songData) {
