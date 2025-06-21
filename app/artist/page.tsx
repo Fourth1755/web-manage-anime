@@ -42,14 +42,13 @@ export default async function Page() {
                                         <h2 className="pl-5">{artist.name}</h2>
                                     </div>
                                 </td>
-                                
-                                {/* <td>
-                                    <Link href={`category/${category.id}`}>
+                                <td>
+                                    <Link href={`artist/${artist.id}`}>
                                         <Button variant="outlined" color="pink" type="submit">
                                             <span>Detail</span>
                                         </Button>
                                     </Link>
-                                </td> */}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

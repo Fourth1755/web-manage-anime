@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
-import { CreateAnimeSongRequest, GetAllSongResponse, GetSongByAnimeIdResponse } from "./dtos/song";
+import { CreateAnimeSongRequest, CreateSongChannelRequest, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse } from "./dtos/song";
 
 export class SongService{
     private url:string
@@ -8,7 +8,7 @@ export class SongService{
     
     constructor(){
         const connectAnimap = new ConnectAnimapService()
-        this.url = connectAnimap.getSongsUrl();
+        this.url = connectAnimap.getUrl();
         this.authorization = connectAnimap.getAuthorization()
     }
 
@@ -20,23 +20,37 @@ export class SongService{
     }
 
     public async getSongs():Promise<GetAllSongResponse[]> {
-        const response = await axios.get(this.url, {
+        const response = await axios.get(`${this.url}/songs`, {
             headers: this.getConfigHeaders()
         })
         return response.data
     }
 
     public async createSong(song: CreateAnimeSongRequest) {
-        const response = await axios.post(this.url, song, { 
+        const response = await axios.post(`${this.url}/songs`, song, { 
             headers: this.getConfigHeaders(),
         })
         return response
     }
 
     public async getSongByAnime(anime_id:string):Promise<GetSongByAnimeIdResponse> {
-        const response = await axios.get(`${this.url}/anime/${anime_id}`, {
+        const response = await axios.get(`${this.url}/songs/anime/${anime_id}`, {
             headers: this.getConfigHeaders(),
         })
         return response.data
+    }
+
+    public async getSongsByArtist(artist_id:string):Promise<GetSongsByArtistResponse> {
+        const response = await axios.get(`${this.url}/songs/artist/${artist_id}`, {
+            headers: this.getConfigHeaders(),
+        })
+        return response.data
+    }
+
+    public async createSongChannel(request:CreateSongChannelRequest) {
+        const response = await axios.post(`${this.url}/songs/channel`,request, {
+            headers: this.getConfigHeaders(),
+        })
+        return response
     }
 }

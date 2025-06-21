@@ -11,12 +11,10 @@ import {
     Option,
     Typography,
 } from "../../../../component/mtailwind";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArtistSerivce } from "@/app/api/artist";
 import { createSong, getAllArtist } from "./action";
 import React from "react";
-import { CreateAnimeSongRequest } from "@/app/api/dtos/song";
+import { CreateAnimeSongRequest, CreateAnimeSongRequestSongChannel } from "@/app/api/dtos/song";
 
 type AnimeSongChannel = {
     channel: number;
@@ -80,23 +78,28 @@ type ChannelSelect= {
     name: string;
     image: string;
 }
+
+//OPENING, ENDING, SOUNDSTRACK
 const songType: SongType[] = [
-    { id: "1", name: "opening" },
-    { id: "2", name: "ending" },
-    { id: "3", name: "soundtrack" },
+    { id: "OPENING", name: "opening" },
+    { id: "ENDING", name: "ending" },
+    { id: "SOUNDSTRACK", name: "soundtrack" },
 ];
 
+// YOUTUBE,SPOTIFY
 const channelSelect:ChannelSelect[] = [
-    { id: "1", name: "Youtube", image: "https://yt3.googleusercontent.com/584JjRp5QMuKbyduM_2k5RlXFqHJtQ0qLIPZpwbUjMJmgzZngHcam5JMuZQxyzGMV5ljwJRl0Q=s900-c-k-c0x00ffffff-no-rj"},
-    { id: "2", name: "Spotify", image: "https://play-lh.googleusercontent.com/c82CySwt2OcRjL_X7eKRU1qD7lrfT8_thTJVIlUxG_idLUl8v8PDchbmJelmdoHfQsA"},
+    { id: "YOUTUBE", name: "Youtube", image: "https://www.youtube.com/img/desktop/yt_1200.png"},
+    { id: "SPOTIFY", name: "Spotify", image: "https://m.media-amazon.com/images/I/51rttY7a+9L._h1_.png"},
 ] 
-//1: tv_size 2: full 3: official 4 unofficial
+
+//TV_SIZE, FULL_SIZE_OFFICIAL, FULL_SIZE_UNOFFICIAL, FIRST_TAKE
 const channelTypeSelect=[
-    { id: "1", name: "TV size" },
-    { id: "2", name: "Full size" },
-    { id: "3", name: "Official" },
-    { id: "4", name: "Unofficial" },
+    { id: "TV_SIZE", name: "TV size" },
+    { id: "FULL_SIZE_OFFICIAL", name: "Full size" },
+    { id: "FULL_SIZE_UNOFFICIAL", name: "Official" },
+    { id: "FIRST_TAKE", name: "Unofficial" },
 ]
+
 export default function createSongModal(prop: PropsCreateSongeModal) {
     const open = prop.open;
     const handleOpen = prop.handler;
@@ -128,6 +131,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };
+
     const changeType = (val = "") => {
         setFormData({ ...formData, type: val });
     };
@@ -153,9 +157,9 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const songChannel:AnimeSongChannel = {
-            channel:+formSongChannelData.channel,
-            type:+formSongChannelData.type,
+        const songChannel:CreateAnimeSongRequestSongChannel = {
+            channel:formSongChannelData.channel,
+            type:formSongChannelData.type,
             link:formSongChannelData.link
         }
         const song: CreateAnimeSongRequest = {
@@ -164,7 +168,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             image: formData.image,
             description: formData.description,
             year: formData.year,
-            type: +formData.type,
+            type: formData.type,
             anime_id: prop.anime_id,
             song_channel: [songChannel],
             artist_list: [formData.artists],

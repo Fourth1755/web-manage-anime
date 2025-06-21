@@ -25,24 +25,27 @@ export default async function Page({ params }: { params: { slug: string } }) {
     const songs = await songSerivce.getSongByAnime(animeId);
     const episodeResponse = await episodeService.getEpisode(animeId,"FIRST_APPEARANCE");
     const characterResponse = await characterService.getCharacterByAnimeId(animeId)
-    const converAnimeSongType = (type: number) => {
+
+    const converAnimeSongType = (type: string) => {
         switch (type) {
-            case 1:
+            case "TV_SIZE":
                 return "TV Size"
-            case 2:
-                return "Full Size"
-            case 3:
-                return "Official"
+            case "FULL_SIZE_OFFICIAL":
+                return "Full Size Official"
+            case "FULL_SIZE_UNOFFICIAL":
+                return "Full Size Unofficial"
+            case "FIRST_TAKE":
+                return "Full Size Unofficial"
             default:
                 return ""
         }
     }
 
-    const converAnimeSongChannel = (type: number) => {
+    const converAnimeSongChannel = (type: string) => {
         switch (type) {
-            case 1:
+            case "YOUTUBE":
                 return "Youtube"
-            case 2:
+            case "SPOTIFY":
                 return "Spotify"
             default:
                 return ""
