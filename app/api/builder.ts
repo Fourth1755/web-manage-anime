@@ -7,7 +7,7 @@ export class ConnectAnimapService {
         this.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZvdXJ0aEBnbWFpbC5jb20iLCJleHAiOjE3MjQ4MzI0MjAsInJvbGUiOiJhZG1pbiJ9.puBrLutqxUtoSjLhC7c3nDTKRgahyueMTPOl_gwDPkk'
       }
 
-    private getUrl(){
+    public getUrl(){
         return this.url
     }
 

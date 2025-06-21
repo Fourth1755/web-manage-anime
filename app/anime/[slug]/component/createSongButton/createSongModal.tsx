@@ -42,7 +42,7 @@ type PropsCreateSongeModal = {
     song?: AnimeSongData;
     anime_id: string;
     anime_name: string
-    //handlerResponseMessage: (message:string) => void;
+    handlerResponseMessage: (message:string) => void;
 };
 
 type FormSongChannelData = {
@@ -102,7 +102,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit;
     const songData = prop.song;
-    //const handlerResponseMessage = prop.handlerResponseMessage;
+    const handlerResponseMessage = prop.handlerResponseMessage;
 
     const [artistList, setArtistList] = useState<ArtistList[]>();
     const [formSongChannelData, setFormSongChannelData] =
@@ -176,7 +176,7 @@ export default function createSongModal(prop: PropsCreateSongeModal) {
             //await updateBlog(song, songData.id)
         } else {
             const res = createSong(song);
-            //res.then((data)=>handlerResponseMessage(data))
+            res.then((data)=>handlerResponseMessage(data))
         }
         handleOpen();
     };
