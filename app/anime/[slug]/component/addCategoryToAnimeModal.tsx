@@ -1,10 +1,8 @@
 "use client";
-import { CategoryService } from "@/app/api/category";
 import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, Typography, Card, CardBody, Chip } from "../../../component/mtailwind";
 import { useEffect, useState } from "react";
 import { EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest } from "@/app/api/dtos/anime";
-import { editCategoryAnime, editCategoryUniverseAnime } from "./action";
-import { CategoryUniverseService } from "@/app/api/categoryUniverse";
+import { editCategoryAnime, editCategoryUniverseAnime, getCategories, getCategoryUniverses } from "./action";
 
 type CategoryData = {
     id: string
@@ -94,8 +92,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
 
     //fetch list of category
     const initCategories = async () => {
-        const categorySerivce = new CategoryService()
-        const category = await categorySerivce.getCategories();
+        const category = await getCategories();
         if (category != null) {
             setCategoryList(category);
             category.map((item)=>{
@@ -106,8 +103,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
 
     //fetch list of category universe
     const initCategoyUniverse = async () => {
-        const categorySerivce = new CategoryUniverseService()
-        const category = await categorySerivce.getCategoryUniverse();
+        const category = await getCategoryUniverses();
         if (category != null) {
             setCategoryList(category);
             category.map((item)=>{

@@ -1,36 +1,34 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
-import { CreateEpisodeRequest, GetEpisodeByAnimeResponse, UpdateEpisodeRequest } from "./dtos/episode";
 import { CreateCharacterRequest, GetCharacterByAnimeIdResponse } from "./dtos/character";
 
 export class CharacterService {
-    private url:string
-    private authorization: string
-    
-    constructor(){
-        const connectAnimap = new ConnectAnimapService()
-        this.url = connectAnimap.getCharacterUrl();
-        this.authorization = connectAnimap.getAuthorization()
+    private url: string;
+    private connect: ConnectAnimapService;
+
+    constructor() {
+        this.connect = new ConnectAnimapService();
+        this.url = this.connect.getCharacterUrl();
     }
 
-    private getConfigHeaders(){
-        return{
+    private async getConfigHeaders() {
+        return {
             "Content-Type": "application/json",
-            "Authorization": this.authorization
-        }
+            "Authorization": await this.connect.getAuthorization(),
+        };
     }
 
-    public async getCharacterByAnimeId(anime_id: string) :Promise<GetCharacterByAnimeIdResponse> {
+    public async getCharacterByAnimeId(anime_id: string): Promise<GetCharacterByAnimeIdResponse> {
         const response = await axios.get(`${this.url}/${anime_id}`, {
-            headers: this.getConfigHeaders()
-        })
-        return response.data
+            headers: await this.getConfigHeaders(),
+        });
+        return response.data;
     }
 
     public async createCharacter(request: CreateCharacterRequest) {
         const response = await axios.post(`${this.url}`, request, {
-            headers: this.getConfigHeaders()
-        })
-        return response
+            headers: await this.getConfigHeaders(),
+        });
+        return response;
     }
 }

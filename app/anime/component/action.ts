@@ -3,7 +3,9 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { AnimeService } from "@/app/api/anime";
+import { StudioService } from "@/app/api/studio";
 import { CreateAnimeRequest, UpdateAnimeRequest } from "@/app/api/dtos/anime";
+import { GetStudioResponse } from "@/app/api/dtos/studio";
 
 type AnimeData = {
   id: number;
@@ -34,13 +36,16 @@ export async function createAnime(anime: CreateAnimeRequest) {
 export async function updateAnime(anime: UpdateAnimeRequest) {
   const animeSerivce = new AnimeService();
   try {
-    // Call database
     await animeSerivce.updateAnime(anime);
   } catch (error) {
-    // Handle errors
     console.error(error);
   }
 
-  revalidatePath("/anime"); // Update cached posts
-  redirect(`/anime`); // Navigate to the new post page
+  revalidatePath("/anime");
+  redirect(`/anime`);
+}
+
+export async function getStudios(): Promise<GetStudioResponse[]> {
+  const studioService = new StudioService();
+  return studioService.getStudio();
 }

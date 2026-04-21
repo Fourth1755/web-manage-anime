@@ -1,57 +1,55 @@
+import { cookies } from 'next/headers';
+
 export class ConnectAnimapService {
-    private url:string
-    private authorization:string
+    private url: string;
 
     constructor() {
-        this.url = "http://localhost:8080"
-        this.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZvdXJ0aEBnbWFpbC5jb20iLCJleHAiOjE3MjQ4MzI0MjAsInJvbGUiOiJhZG1pbiJ9.puBrLutqxUtoSjLhC7c3nDTKRgahyueMTPOl_gwDPkk'
-      }
-
-    public getUrl(){
-        return this.url
+        this.url = "http://localhost:8080";
     }
 
-    public getAuthorization(){
-        return this.authorization
+    public getUrl(): string {
+        return this.url;
     }
 
-    public getArtistUrl(){
-        const url = new URL("/artists", this.url);
-        return url.toString()
+    public async getAuthorization(): Promise<string> {
+        try {
+            const cookieStore = await cookies();
+            const token = cookieStore.get('token')?.value ?? '';
+            return `Bearer ${token}`;
+        } catch {
+            return 'Bearer ';
+        }
     }
 
-    public getSongsUrl(){
-        const url = new URL("/songs", this.url);
-        return url.toString()
+    public getArtistUrl(): string {
+        return new URL("/artists", this.url).toString();
     }
 
-    public getAnimesUrl(){
-        const url = new URL("/animes", this.url);
-        return url.toString()
+    public getSongsUrl(): string {
+        return new URL("/songs", this.url).toString();
     }
 
-    public getCategoriesUrl(){
-        const url = new URL("/category", this.url);
-        return url.toString()
+    public getAnimesUrl(): string {
+        return new URL("/animes", this.url).toString();
     }
 
-    public getStudioUrl(){
-        const url = new URL("/studios", this.url);
-        return url.toString()
-    }
-    
-    public getCategoryUniverseUrl(){
-        const url = new URL("/category-universe", this.url);
-        return url.toString()
-    }
-        
-    public getEpisodeUrl(){
-        const url = new URL("/episodes", this.url);
-        return url.toString()
+    public getCategoriesUrl(): string {
+        return new URL("/category", this.url).toString();
     }
 
-    public getCharacterUrl(){
-        const url = new URL("/characters", this.url);
-        return url.toString()
+    public getStudioUrl(): string {
+        return new URL("/studios", this.url).toString();
+    }
+
+    public getCategoryUniverseUrl(): string {
+        return new URL("/category-universe", this.url).toString();
+    }
+
+    public getEpisodeUrl(): string {
+        return new URL("/episodes", this.url).toString();
+    }
+
+    public getCharacterUrl(): string {
+        return new URL("/characters", this.url).toString();
     }
 }

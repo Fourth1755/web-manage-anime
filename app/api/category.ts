@@ -1,37 +1,34 @@
-import axios from "axios"
-import { ConnectAnimapService } from "./builder"
-import { CreateCategoryRequest, GetCategoryListResponse } from "./dtos/category"
+import axios from "axios";
+import { ConnectAnimapService } from "./builder";
+import { CreateCategoryRequest, GetCategoryListResponse } from "./dtos/category";
 
+export class CategoryService {
+    private url: string;
+    private connect: ConnectAnimapService;
 
-
-export class CategoryService{
-    private url:string
-    private authorization: string
-    
-    constructor(){
-        const connectAnimap = new ConnectAnimapService()
-        this.url = connectAnimap.getCategoriesUrl();
-        this.authorization = connectAnimap.getAuthorization()
+    constructor() {
+        this.connect = new ConnectAnimapService();
+        this.url = this.connect.getCategoriesUrl();
     }
 
-    private getConfigHeaders(){
-        return{
+    private async getConfigHeaders() {
+        return {
             "Content-Type": "application/json",
-            "Authorization": this.authorization
-        }
+            "Authorization": await this.connect.getAuthorization(),
+        };
     }
 
-    public async getCategories() :Promise<GetCategoryListResponse[]>{
+    public async getCategories(): Promise<GetCategoryListResponse[]> {
         const response = await axios.get(this.url, {
-            headers: this.getConfigHeaders(),
-        })
-        return response.data
+            headers: await this.getConfigHeaders(),
+        });
+        return response.data;
     }
 
-    public async createCategory(category:CreateCategoryRequest){
-        const response = await axios.post(this.url,category, {
-            headers: this.getConfigHeaders(),
-        })
-        return response.data
+    public async createCategory(category: CreateCategoryRequest) {
+        const response = await axios.post(this.url, category, {
+            headers: await this.getConfigHeaders(),
+        });
+        return response.data;
     }
 }

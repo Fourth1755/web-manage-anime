@@ -2,28 +2,39 @@
 import { useState } from "react";
 import Sidebar from "../sidebar/sidebar";
 import Link from "next/link";
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
 import { Button } from "../mtailwind";
+import { SessionUser } from "@/app/layout";
+import LogoutButton from "./logoutButton";
 
-export default function Navbar() {
+type NavbarProps = {
+  user: SessionUser | null;
+};
+
+export default function Navbar({ user }: NavbarProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const handleClose = () => setSidebarOpen(false);
+  const pathname = usePathname();
 
-  const pathname = usePathname()
   return (
     <>
-      {pathname != "/login" ? (
+      {pathname !== "/login" ? (
         <>
           <nav className="bg-pink-500 w-full p-2 flex justify-between fixed z-10">
             <div className="flex justify-center w-40">
               <h1 className="my-auto font-castoro italic text-lg">Animap</h1>
             </div>
-            <div className="md:flex hidden justify-center w-40">
+            <div className="md:flex hidden items-center gap-3">
+              {user ? (
+                <>
+                  <span className="text-white text-sm font-medium">{user.name || user.email}</span>
+                  <LogoutButton />
+                </>
+              ) : (
                 <Button variant="gradient" color="green">
-                <Link href={"/login"}>
-                  Sign In
-                  </Link>
+                  <Link href="/login">Sign In</Link>
                 </Button>
+              )}
             </div>
             <button
               data-drawer-target="default-sidebar"
@@ -31,11 +42,11 @@ export default function Navbar() {
               aria-controls="default-sidebar"
               type="button"
               onClick={() => setSidebarOpen(!isSidebarOpen)}
-              className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200"
             >
               <span className="sr-only">Open sidebar</span>
               <svg
-                className="w-6 h-6 text-white dark:text-white"
+                className="w-6 h-6 text-white"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"

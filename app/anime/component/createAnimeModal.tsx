@@ -13,9 +13,8 @@ import {
     Chip
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { createAnime, updateAnime } from "./action";
+import { createAnime, updateAnime, getStudios } from "./action";
 import { GetStudioResponse } from "@/app/api/dtos/studio";
-import { StudioService } from "@/app/api/studio";
 import { GetAnimeByIdResponse } from "@/app/api/dtos/anime";
 import DatePicker from "@/app/component/datePicker/datePicker";
 
@@ -99,8 +98,7 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
 
     //fetch list of studio
     const initArtist = async () => {
-        const studioService = new StudioService()
-        const studios = await studioService.getStudio();
+        const studios = await getStudios();
         if (studios != null) {
             setStduioList(studios);
             studios.map((item)=>{

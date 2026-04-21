@@ -10,9 +10,9 @@ import {
     Input, 
     Checkbox } from "../../../../component/mtailwind";
 import { useEffect, useState } from "react";
-import { CharacterService } from "@/app/api/character";
 import { AddCharacterToEpisodeRequest } from "@/app/api/dtos/episode";
 import { addCharacterToEpisode } from "./action";
+import { getCharactersByAnime } from "../action";
 
 type EpisodeData = {
     id: string
@@ -124,10 +124,9 @@ export default function AddCharacterToEpisodeModal(prop: PropsAddCharacterToEpis
         setFormData({ ...formData, "character_list": characteVal });
     }
 
-    //fetch list of category universe
+    //fetch list of character
     const initCharacter = async (animeId: string) => {
-        const categorySerivce = new CharacterService()
-        const response = await categorySerivce.getCharacterByAnimeId(animeId);
+        const response = await getCharactersByAnime(animeId);
         if (response.character != null) {
             setCharacterList(response.character);
             response.character.map((item)=>{

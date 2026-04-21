@@ -1,43 +1,41 @@
-import axios from "axios"
-import { ConnectAnimapService } from "./builder"
-import { CreateArtistRequest, GetArtistListResponse, GetArtistResponse } from "./dtos/artist"
+import axios from "axios";
+import { ConnectAnimapService } from "./builder";
+import { CreateArtistRequest, GetArtistListResponse, GetArtistResponse } from "./dtos/artist";
 
+export class ArtistSerivce {
+    private url: string;
+    private connect: ConnectAnimapService;
 
-export class ArtistSerivce{
-    private url:string
-    private authorization: string
-    
-    constructor(){
-        const connectAnimap = new ConnectAnimapService()
-        this.url = connectAnimap.getUrl();
-        this.authorization = connectAnimap.getAuthorization()
+    constructor() {
+        this.connect = new ConnectAnimapService();
+        this.url = this.connect.getUrl();
     }
 
-    private getConfigHeaders(){
-        return{
+    private async getConfigHeaders() {
+        return {
             "Content-Type": "application/json",
-            "Authorization": this.authorization
-        }
+            "Authorization": await this.connect.getAuthorization(),
+        };
     }
 
-    public async getArtist(id:string) :Promise<GetArtistResponse>{
+    public async getArtist(id: string): Promise<GetArtistResponse> {
         const response = await axios.get(`${this.url}/artists/${id}`, {
-            headers: this.getConfigHeaders(),
-        })
-        return response.data
+            headers: await this.getConfigHeaders(),
+        });
+        return response.data;
     }
 
-    public async getArtists() :Promise<GetArtistListResponse>{
+    public async getArtists(): Promise<GetArtistListResponse> {
         const response = await axios.get(`${this.url}/artists`, {
-            headers: this.getConfigHeaders(),
-        })
-        return response.data
+            headers: await this.getConfigHeaders(),
+        });
+        return response.data;
     }
 
-    public async createArtist(request:CreateArtistRequest) {
-        const response = await axios.post(`${this.url}/artists`,request, {
-            headers: this.getConfigHeaders(),
-        })
-        return response
+    public async createArtist(request: CreateArtistRequest) {
+        const response = await axios.post(`${this.url}/artists`, request, {
+            headers: await this.getConfigHeaders(),
+        });
+        return response;
     }
 }
