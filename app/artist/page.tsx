@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { Button } from "../component/mtailwind";
 import { CategoryService } from "../api/category";

@@ -59,6 +59,7 @@ type FormData = {
     wallpaper: string
     trailer: string
     aired_at: string
+    my_anime_list_id: number
 }
 
 const seasonalList = [
@@ -71,7 +72,7 @@ const animeTypeList = [
 ]
 let studioMap = new Map();
 
-export default function createAnimeModal(prop: PropsCreateAnimeModal) {
+export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
     const open = prop.open;
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit
@@ -90,7 +91,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
         type: "",
         wallpaper: "",
         trailer: "",
-        aired_at: ""
+        aired_at: "",
+        my_anime_list_id:0,
     });
     const [studioList, setStduioList] = useState<GetStudioResponse[]>();
     const [chipOpen, setChipOpen] = useState(true);
@@ -181,7 +183,8 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                 type: animeData.type.toString(),
                 wallpaper: animeData.wallpaper,
                 trailer: animeData.trailer,
-                aired_at: animeData.aired_at
+                aired_at: animeData.aired_at,
+                my_anime_list_id: animeData.my_anime_list_id
             })
         }
     }, [])
@@ -344,6 +347,14 @@ export default function createAnimeModal(prop: PropsCreateAnimeModal) {
                             crossOrigin={undefined}
                             value={formData.trailer}
                             name="trailer"
+                            onChange={handleInputChange}
+                        />
+                        <Input
+                            label="my_anime_list_id"
+                            type="number"
+                            crossOrigin={undefined}
+                            value={formData.my_anime_list_id}
+                            name="my_anime_list_id"
                             onChange={handleInputChange}
                         />
                     </DialogBody>

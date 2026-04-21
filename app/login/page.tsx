@@ -81,7 +81,7 @@ export default function LoginPage() {
                     sign in
                 </Button>
                 <Typography color="gray" className="mt-4 text-center font-normal">
-                   You don't have an account yet.{" "}
+                   You don&apos;t have an account yet.{" "}
                     <Link href="/register" className="font-medium text-gray-900">
                         Sign Up
                     </Link>

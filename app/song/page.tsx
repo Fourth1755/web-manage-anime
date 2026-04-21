@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { SongService } from "../api/songs";
 import { Button } from "../component/mtailwind";

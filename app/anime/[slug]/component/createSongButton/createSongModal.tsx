@@ -100,7 +100,7 @@ const channelTypeSelect=[
     { id: "FIRST_TAKE", name: "Fitst Take" },
 ]
 
-export default function createSongModal(prop: PropsCreateSongeModal) {
+export default function CreateSongModal(prop: PropsCreateSongeModal) {
     const open = prop.open;
     const handleOpen = prop.handler;
     const isEdit = prop.isEdit;

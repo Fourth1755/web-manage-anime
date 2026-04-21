@@ -1,10 +1,11 @@
+export const dynamic = 'force-dynamic';
 import { ArtistSerivce } from "@/app/api/artist";
 import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
 import { SongService } from "@/app/api/songs";
 import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
 
 type Props = {
-    params: { slug: string }
+    params: Promise<{ slug: string }>
 }
 
 const converAnimeSongType = (type: string) => {
@@ -37,8 +38,9 @@ export default async function Page({ params }: Props) {
     const artistService = new ArtistSerivce()
     const songService = new SongService()
 
-    const artistResponse = await artistService.getArtist(params.slug)
-    const songResponse = await songService.getSongsByArtist(params.slug)
+    const { slug } = await params
+    const artistResponse = await artistService.getArtist(slug)
+    const songResponse = await songService.getSongsByArtist(slug)
 
     return (
         <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">

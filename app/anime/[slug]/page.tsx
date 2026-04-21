@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { AnimeService } from "@/app/api/anime";
 import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
 import Link from "next/link";
@@ -14,13 +15,13 @@ import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton
 import { CharacterService } from "@/app/api/character";
 import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
     const animeSerivce = new AnimeService()
     const songSerivce = new SongService();
     const episodeService = new EpisodeService();
     const characterService = new CharacterService();
 
-    const animeId = params.slug
+    const { slug: animeId } = await params
     const anime = await animeSerivce.getAnimeById(animeId);
     const songs = await songSerivce.getSongByAnime(animeId);
     const episodeResponse = await episodeService.getEpisode(animeId,"FIRST_APPEARANCE");
@@ -290,8 +291,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
                                 <td></td>
                                 <td className="flex">
                                     {episode?.characters?.map((character)=>(
-                                    <span className="ml-2">
-                                        <img 
+                                    <span key={character.id} className="ml-2">
+                                        <img
                                             src={character.image}
                                             className="w-10 h-10 rounded-full object-cover"/>
                                     </span>))}

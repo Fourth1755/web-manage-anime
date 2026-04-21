@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
