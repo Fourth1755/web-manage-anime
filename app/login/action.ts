@@ -7,15 +7,25 @@ import { AuthService } from '../api/auth';
 export async function login(email: string, password: string): Promise<{ error: string } | void> {
     try {
         const authService = new AuthService();
-        const result = await authService.login(email, password);
+        const { setCookies } = await authService.login(email, password);
         const cookieStore = await cookies();
-        cookieStore.set('token', result.token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 60 * 60 * 24,
-            path: '/',
-        });
+        for (const raw of setCookies) {
+            const parts = raw.split(';').map(p => p.trim());
+            const eqIdx = parts[0].indexOf('=');
+            const name = parts[0].slice(0, eqIdx).trim();
+            const value = parts[0].slice(eqIdx + 1);
+            const opts: Parameters<typeof cookieStore.set>[2] = { path: '/' };
+            for (const attr of parts.slice(1)) {
+                const [k, v] = attr.split('=');
+                const key = k.trim().toLowerCase();
+                if (key === 'httponly') opts.httpOnly = true;
+                if (key === 'secure') opts.secure = true;
+                if (key === 'samesite') opts.sameSite = v?.trim().toLowerCase() as 'strict' | 'lax' | 'none';
+                if (key === 'max-age') opts.maxAge = parseInt(v, 10);
+                if (key === 'path') opts.path = v?.trim();
+            }
+            if (name) cookieStore.set(name, value, opts);
+        }
     } catch {
         return { error: 'Invalid email or password' };
     }

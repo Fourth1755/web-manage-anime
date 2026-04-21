@@ -1,10 +1,6 @@
 import axios from 'axios';
 import { ConnectAnimapService } from './builder';
 
-type LoginResponse = {
-    token: string;
-};
-
 export class AuthService {
     private url: string;
 
@@ -12,8 +8,9 @@ export class AuthService {
         this.url = new ConnectAnimapService().getUrl();
     }
 
-    async login(email: string, password: string): Promise<LoginResponse> {
-        const response = await axios.post<LoginResponse>(`${this.url}/login`, { email, password });
-        return response.data;
+    async login(email: string, password: string): Promise<{ setCookies: string[] }> {
+        const response = await axios.post(`${this.url}/admin/login`, { email, password });
+        const setCookies = (response.headers['set-cookie'] as string[] | undefined) ?? [];
+        return { setCookies };
     }
 }
