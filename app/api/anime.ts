@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ConnectAnimapService } from "./builder";
-import { CreateAnimeRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeList, UpdateAnimeRequest } from "./dtos/anime";
+import { CreateAnimeRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeList, GetAnimesResponse, UpdateAnimeRequest } from "./dtos/anime";
 
 
 export class AnimeService{
@@ -27,7 +27,7 @@ export class AnimeService{
         return response.data
     }
 
-    public async getAnimes():Promise<GetAnimeList[]> {
+    public async getAnimes():Promise<GetAnimesResponse> {
         const response = await axios.get(this.url, {
             headers: this.getConfigHeaders(),
         })

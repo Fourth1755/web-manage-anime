@@ -17,6 +17,10 @@ type GetAnimeByIdResponseStudios = {
     name:string
 }
 
+export type GetAnimesResponse = {
+    animes: GetAnimeList[]
+}
+
 export type GetAnimeByIdResponse = {
     id: string;
     name: string;
@@ -35,6 +39,7 @@ export type GetAnimeByIdResponse = {
     categories:GetAnimeByIdResponseCategories[]
     categoryUniverse:GetAnimeByIdResponseCategories[]
     aired_at: string
+    my_anime_list_id:number
 }
 
 export type EditCategoryAnimeRequest = {

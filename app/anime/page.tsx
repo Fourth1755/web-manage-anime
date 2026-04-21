@@ -8,7 +8,7 @@ import { GetAnimeList } from "../api/dtos/anime";
 
 export default async function Page() {
     const animeSerivce = new AnimeService()
-    const animes = await animeSerivce.getAnimes();
+    const response = await animeSerivce.getAnimes();
     return (
         <>
         <div className="container mx-auto md:px-40 px-5 pt-20">
@@ -29,7 +29,7 @@ export default async function Page() {
                         </tr>
                     </thead>
                     <tbody>
-                        {animes?.map((anime: GetAnimeList, index: number) => (
+                        {response.animes?.map((anime: GetAnimeList, index: number) => (
                             <tr key={index}>
                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
                                 <td>

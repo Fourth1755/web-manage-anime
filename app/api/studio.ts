@@ -8,7 +8,7 @@ export class StudioService {
     
     constructor(){
         const connectAnimap = new ConnectAnimapService()
-        this.url = connectAnimap.getStudioUrl();
+        this.url = connectAnimap.getUrl();
         this.authorization = connectAnimap.getAuthorization()
     }
 
@@ -20,7 +20,7 @@ export class StudioService {
     }
 
     public async getStudio() :Promise<GetStudioResponse[]> {
-        const response = await axios.get(this.url, {
+        const response = await axios.get(`${this.url}/studios`, {
             headers: this.getConfigHeaders()
         })
         return response.data
