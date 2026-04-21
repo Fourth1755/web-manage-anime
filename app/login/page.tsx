@@ -1,6 +1,7 @@
 "use client"
 import { Card, Typography, Input, Button } from "../component/mtailwind";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { login } from "./action";
 
 type FormUserData = {
@@ -9,6 +10,7 @@ type FormUserData = {
 }
 
 export default function LoginPage() {
+    const router = useRouter();
     const [formData, setFormData] = useState<FormUserData>({ email: "", password: "" });
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState(false);
@@ -26,6 +28,8 @@ export default function LoginPage() {
         if (result?.error) {
             setError(result.error);
             setLoading(false);
+        } else {
+            router.push('/');
         }
     };
 

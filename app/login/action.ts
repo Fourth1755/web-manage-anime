@@ -29,7 +29,6 @@ export async function login(email: string, password: string): Promise<{ error: s
     } catch {
         return { error: 'Invalid email or password' };
     }
-    redirect('/');
 }
 
 export async function logout() {
