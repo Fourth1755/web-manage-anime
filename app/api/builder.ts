@@ -14,8 +14,9 @@ export class ConnectAnimapService {
     public async getAuthorization(): Promise<string> {
         try {
             const cookieStore = await cookies();
-            const token = cookieStore.get('token')?.value ?? '';
-            return `Bearer ${token}`;
+            const all = cookieStore.getAll();
+            const authCookie = all.find(c => c.value.startsWith('eyJ'));
+            return `Bearer ${authCookie?.value ?? ''}`;
         } catch {
             return 'Bearer ';
         }

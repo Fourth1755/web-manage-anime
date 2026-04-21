@@ -28,7 +28,8 @@ export default async function RootLayout({
   let user: SessionUser | null = null;
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+    const all = cookieStore.getAll();
+    const token = all.find(c => c.value.startsWith('eyJ'))?.value;
     if (token) {
       const payload = decodeJwt(token);
       user = {
