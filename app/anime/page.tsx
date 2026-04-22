@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
-import CreateAnimeButton from "./component/createAnimeButton";
+import MigrateAnimeButton from "./component/migrateAnimeButton";
 import PaginationControl from "./component/paginationControl";
 import { GetAnimeList } from "../api/dtos/anime";
 
@@ -56,7 +56,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
         <div className="container mx-auto px-5 md:px-5 pt-20">
             <div className="flex justify-between py-10">
                 <h1>Anime</h1>
-                <CreateAnimeButton name="Add anime" isEdit={false}/>
+                <MigrateAnimeButton/>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-black">
@@ -64,9 +64,8 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
                         <tr>
                             <th scope="col" className="px-4 py-3 whitespace-nowrap">No.</th>
                             <th scope="col" className="px-4 py-3">Anime</th>
-                            <th scope="col" className="px-4 py-3">Name</th>
-                            <th scope="col" className="px-4 py-3 whitespace-nowrap">Name (Thai)</th>
-                            <th scope="col" className="px-4 py-3 whitespace-nowrap">MAL ID</th>
+                            <th scope="col" className="px-2 py-3">Name</th>
+                            <th scope="col" className="px-2 py-3 whitespace-nowrap">MAL ID</th>
                             <th scope="col" className="px-4 py-3">
                                 <Link href={sortHref('aired_at')} className="flex items-center hover:text-pink-500">
                                     Aired At
@@ -74,8 +73,6 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
                                 </Link>
                             </th>
                             <th scope="col" className="px-4 py-3">Status</th>
-                            <th scope="col" className="px-4 py-3">Year</th>
-                            <th scope="col" className="px-4 py-3">Seasonal</th>
                             <th scope="col" className="px-4 py-3">Detail</th>
                         </tr>
                     </thead>
@@ -92,13 +89,16 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
                                         alt={anime.name}
                                     />
                                 </td>
-                                <td className="px-4 py-4 min-w-[160px]">{anime.name}</td>
-                                <td className="px-4 py-4 min-w-[140px]">{anime.name_thai || '-'}</td>
-                                <td className="px-4 py-4">{anime.my_anime_list_id || '-'}</td>
-                                <td className="px-4 py-4 whitespace-nowrap">{formatDate(anime.aired_at)}</td>
+                                <td className="px-2 py-4 min-w-[160px]">
+                                    <p>{anime.name}</p>
+                                    {anime.name_thai && <p className="text-sm mt-1">{anime.name_thai}</p>}
+                                </td>
+                                <td className="px-2 py-4">{anime.my_anime_list_id || '-'}</td>
+                                <td className="px-4 py-4 whitespace-nowrap">
+                                    <p>{formatDate(anime.aired_at)}</p>
+                                    <p className="text-gray-400 text-xs mt-1">{anime.seasonal} {anime.year}</p>
+                                </td>
                                 <td className="px-4 py-4 whitespace-nowrap">{anime.status || '-'}</td>
-                                <td className="px-4 py-4">{anime.year}</td>
-                                <td className="px-4 py-4">{anime.seasonal}</td>
                                 <td className="px-4 py-4">
                                     <Link href={`anime/${anime.id}`}>
                                         <Button variant="outlined" color="pink" type="submit">

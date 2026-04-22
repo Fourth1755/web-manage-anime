@@ -89,3 +89,12 @@ export type UpdateAnimeRequest = {
     type: number
     aired_at: string
 };
+
+export type MigrateSingleAnimeRequest = {
+    my_anime_list_id: number;
+};
+
+export type MigrateMultipleAnimeRequest = {
+    start_anime_id: number;
+    end_anime_id: number;
+};

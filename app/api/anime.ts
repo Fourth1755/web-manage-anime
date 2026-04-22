@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { CreateAnimeRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimesResponse, UpdateAnimeRequest } from './dtos/anime';
+import { CreateAnimeRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimesResponse, MigrateMultipleAnimeRequest, MigrateSingleAnimeRequest, UpdateAnimeRequest } from './dtos/anime';
 
 export class AnimeService {
     public async createAnime(anime: CreateAnimeRequest) {
@@ -30,5 +30,15 @@ export class AnimeService {
     public async editCategoryUniverseAnime(request: EditCategoryUniversesAnimeRequest) {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.put('/admin/animes/category-universe/edit-category-universe-anime', request, { headers });
+    }
+
+    public async migrateSingleAnime(request: MigrateSingleAnimeRequest) {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/migrate/anime', request, { headers });
+    }
+
+    public async migrateMultipleAnime(request: MigrateMultipleAnimeRequest) {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/migrate/animes', request, { headers });
     }
 }
