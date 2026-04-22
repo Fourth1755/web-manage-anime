@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic';
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
 import CreateAnimeButton from "./component/createAnimeButton";
@@ -16,7 +17,13 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     const limit = Math.max(1, parseInt(searchParams.limit ?? "10", 10));
 
     const animeSerivce = new AnimeService();
-    const response = await animeSerivce.getAnimes(page, limit);
+    let response;
+    try {
+        response = await animeSerivce.getAnimes(page, limit);
+    } catch (err: any) {
+        if (err?.response?.status === 401) redirect('/login');
+        throw err;
+    }
 
     const totalPages = response.total_pages ?? 0;
 

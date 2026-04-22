@@ -1,6 +1,5 @@
 import axios, {
   type AxiosInstance,
-  type InternalAxiosRequestConfig,
   type AxiosError,
 } from 'axios';
 import { cookies } from 'next/headers';
@@ -12,32 +11,13 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
 });
-
-async function getAuthorization(): Promise<string> {
-  try {
-    const cookieStore = await cookies();
-    const authCookie = cookieStore.getAll().find(c => c.value.startsWith('eyJ'));
-    return `Bearer ${authCookie?.value ?? ''}`;
-  } catch {
-    return 'Bearer ';
-  }
-}
-
-apiClient.interceptors.request.use(
-  async (config: InternalAxiosRequestConfig) => {
-    config.headers.set('Authorization', await getAuthorization());
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error: AxiosError) => {
     if (error.response) {
-      console.log(`[API Error] Status: ${error.response.status}`, error.response.data);
+      console.error(`[API Error] Status: ${error.response.status}`, error.response.data);
     } else if (error.request) {
       console.error('[API Error] No response:', error.request);
     } else {
@@ -46,5 +26,17 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Returns the jwt cookie string to forward to the backend.
+// The Gin middleware reads the JWT from a cookie named "jwt", not from Authorization header.
+export async function getAuthCookie(): Promise<string> {
+  try {
+    const cookieStore = await cookies();
+    const jwtCookie = cookieStore.get('jwt');
+    return jwtCookie ? `jwt=${jwtCookie.value}` : '';
+  } catch {
+    return '';
+  }
+}
 
 export default apiClient;

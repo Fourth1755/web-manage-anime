@@ -1,12 +1,14 @@
-import apiClient from './apiClient';
+import apiClient, { getAuthCookie } from './apiClient';
 import { CreateCategoryRequest, GetCategoryListResponse } from './dtos/category';
 
 export class CategoryService {
     public async getCategories(): Promise<GetCategoryListResponse[]> {
-        return apiClient.get('/category') as unknown as Promise<GetCategoryListResponse[]>;
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.get('/category', { headers }) as unknown as Promise<GetCategoryListResponse[]>;
     }
 
     public async createCategory(category: CreateCategoryRequest) {
-        return apiClient.post('/category', category);
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/category', category, { headers });
     }
 }

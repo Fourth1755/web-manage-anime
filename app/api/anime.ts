@@ -1,28 +1,34 @@
-import apiClient from './apiClient';
+import apiClient, { getAuthCookie } from './apiClient';
 import { CreateAnimeRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimesResponse, UpdateAnimeRequest } from './dtos/anime';
 
 export class AnimeService {
     public async createAnime(anime: CreateAnimeRequest) {
-        return apiClient.post('/animes', anime);
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/admin/animes', anime, { headers });
     }
 
     public async getAnimes(page = 1, limit = 10): Promise<GetAnimesResponse> {
-        return apiClient.get('/animes', { params: { page, limit } }) as unknown as Promise<GetAnimesResponse>;
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.get('/admin/animes', { params: { page, limit }, headers }) as unknown as Promise<GetAnimesResponse>;
     }
 
     public async getAnimeById(id: string): Promise<GetAnimeByIdResponse> {
-        return apiClient.get(`/animes/${id}`) as unknown as Promise<GetAnimeByIdResponse>;
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.get(`/admin/animes/${id}`, { headers }) as unknown as Promise<GetAnimeByIdResponse>;
     }
 
     public async updateAnime(anime: UpdateAnimeRequest) {
-        return apiClient.put(`/animes/${anime.id}`, anime);
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.put(`/admin/animes/${anime.id}`, anime, { headers });
     }
 
     public async editCategoryAnime(request: EditCategoryAnimeRequest) {
-        return apiClient.put('/animes/category/edit-category-anime', request);
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.put('/admin/animes/category/edit-category-anime', request, { headers });
     }
 
     public async editCategoryUniverseAnime(request: EditCategoryUniversesAnimeRequest) {
-        return apiClient.put('/animes/category-universe/edit-category-universe-anime', request);
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.put('/admin/animes/category-universe/edit-category-universe-anime', request, { headers });
     }
 }

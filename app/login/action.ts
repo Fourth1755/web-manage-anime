@@ -33,11 +33,6 @@ export async function login(email: string, password: string): Promise<{ error: s
 
 export async function logout() {
     const cookieStore = await cookies();
-    const all = cookieStore.getAll();
-    for (const cookie of all) {
-        if (cookie.value.startsWith('eyJ')) {
-            cookieStore.delete(cookie.name);
-        }
-    }
+    cookieStore.delete('jwt');
     redirect('/login');
 }
