@@ -1,10 +1,14 @@
 export type GetAnimeList = {
     id: string;
     name: string;
+    name_thai: string;
     year: string;
     score: string;
     seasonal: string;
     image: string;
+    my_anime_list_id: number;
+    aired_at: string;
+    status: string;
 }
 
 type GetAnimeByIdResponseCategories = {
