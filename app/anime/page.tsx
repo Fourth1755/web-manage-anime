@@ -3,12 +3,23 @@ import Link from "next/link";
 import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
 import CreateAnimeButton from "./component/createAnimeButton";
+import PaginationControl from "./component/paginationControl";
 import { GetAnimeList } from "../api/dtos/anime";
 
+type SearchParams = {
+    page?: string;
+    limit?: string;
+};
 
-export default async function Page() {
-    const animeSerivce = new AnimeService()
-    const response = await animeSerivce.getAnimes();
+export default async function Page({ searchParams }: { searchParams: SearchParams }) {
+    const page = Math.max(1, parseInt(searchParams.page ?? "1", 10));
+    const limit = Math.max(1, parseInt(searchParams.limit ?? "10", 10));
+
+    const animeSerivce = new AnimeService();
+    const response = await animeSerivce.getAnimes(page, limit);
+
+    const totalPages = response.total_pages ?? 0;
+
     return (
         <>
         <div className="container mx-auto md:px-40 px-5 pt-20">
@@ -31,7 +42,9 @@ export default async function Page() {
                     <tbody>
                         {response.animes?.map((anime: GetAnimeList, index: number) => (
                             <tr key={index}>
-                                <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{index + 1}</td>
+                                <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {(page - 1) * limit + index + 1}
+                                </td>
                                 <td>
                                     <img
                                         className="h-60 w-44 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50 my-1"
@@ -54,8 +67,8 @@ export default async function Page() {
                     </tbody>
                 </table>
             </div>
+            <PaginationControl page={page} limit={limit} totalPages={totalPages} />
         </div>
-        
         </>
     );
 }

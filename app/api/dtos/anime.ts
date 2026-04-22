@@ -19,6 +19,10 @@ type GetAnimeByIdResponseStudios = {
 
 export type GetAnimesResponse = {
     animes: GetAnimeList[]
+    page: number
+    limit: number
+    total_pages: number
+    total_items: number
 }
 
 export type GetAnimeByIdResponse = {
