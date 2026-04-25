@@ -26,4 +26,9 @@ export class SongService {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.post('/songs/channel', request, { headers });
     }
+
+    public async migrateAnimeSongs(my_anime_list_id: number) {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/migrate/anime-songs', { my_anime_list_id }, { headers });
+    }
 }

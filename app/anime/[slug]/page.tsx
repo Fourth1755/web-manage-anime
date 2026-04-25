@@ -14,6 +14,7 @@ import EditEpisodeButton from "./component/editEpisodeButton/editEpisodeButton";
 import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton/addCharacterToEpisodeButton";
 import { CharacterService } from "@/app/api/character";
 import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
+import MigrateSongButton from "./component/migrateSongButton";
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
     const animeSerivce = new AnimeService()
@@ -200,9 +201,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                         <Typography variant="h5">
                             Anime Song
                         </Typography>
-                        <CreateSongButton 
-                            anime_id={anime.id} 
-                            anime_name={anime.name} />
+                        <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
                     </div>
                     {showAnimeSongItem(songs.opening_song,"Anime Opening")}
                     {showAnimeSongItem(songs.ending_song,"Anime Endding")}
