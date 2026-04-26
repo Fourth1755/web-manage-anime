@@ -54,46 +54,101 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         }
     }
 
-    const showAnimeSongItem = (animeSong: GetSongByAnimeIdResponseSongDetail[],title: string) => {
-        if (!animeSong) {
-            return <></>
-        }
-        return <div>
-            <Typography variant="h6" className="py-2">
-                {title}
-            </Typography>
-            <div>
-                {animeSong.map((song) => (
-                    <div key={song.id}>                        
-                    <Typography variant="h4" color="blue-gray">
-                    {song.name}
-                    </Typography>
-                        <table className="min-w-max table-auto">
-                            <tbody>
-                                {song.song_channel.map((item) => (
-                                    <tr key={item.id}>
-                                        <td scope="col" className="px-2 py-3">            
-                                            <iframe
-                                            width="560"
-                                            height="315"
-                                            id="player"
-                                            src={`${item.link}`}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        ></iframe></td>
-                                        <td scope="col" className="px-8 py-3">
-                                            {converAnimeSongType(item.type)}</td>
-                                        <td scope="col" className="px-8 py-3">
-                                            {converAnimeSongChannel(item.channel)}</td>
-                                        <td scope="col" className="px-8 py-3">
-                                            <Button>Edit</Button></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                ))}
+    const showAnimeSongItem = (animeSong: GetSongByAnimeIdResponseSongDetail[], title: string) => {
+        if (!animeSong || animeSong.length === 0) return <></>;
+
+        return (
+            <div className="mb-6">
+                <div className="flex items-center gap-2 py-3 border-b border-blue-gray-100 mb-4">
+                    <Typography variant="h6" color="blue-gray">{title}</Typography>
+                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{animeSong.length}</span>
+                </div>
+                <div className="flex flex-col gap-4">
+                    {animeSong.map((song) => {
+                        const youtubeChannels = (song.song_channel ?? []).filter(c => c.channel === "YOUTUBE");
+                        const spotifyChannels = (song.song_channel ?? []).filter(c => c.channel === "SPOTIFY");
+                        const theme = song.themes?.[0];
+
+                        return (
+                            <div key={song.id} className="border border-blue-gray-100 rounded-xl p-4 flex flex-col gap-4 bg-gray-50">
+                                <div className="flex gap-4 items-start">
+                                    {song.image ? (
+                                        <img
+                                            src={song.image}
+                                            alt={song.name}
+                                            className="w-20 h-20 rounded-lg object-cover flex-shrink-0 shadow"
+                                        />
+                                    ) : (
+                                        <div className="w-20 h-20 rounded-lg bg-blue-gray-100 flex-shrink-0 flex items-center justify-center text-blue-gray-300 text-2xl">♪</div>
+                                    )}
+                                    <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <Typography variant="h6" color="blue-gray" className="font-bold leading-tight">
+                                                {song.name}
+                                            </Typography>
+                                            {theme && (
+                                                <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                                                    {theme.type} {theme.sequence}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {song.song_artist?.length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {song.song_artist.map((artist) => (
+                                                    <span key={artist.id} className="flex items-center gap-1 text-xs bg-white border border-gray-200 text-gray-700 px-2 py-0.5 rounded-full shadow-sm">
+                                                        {artist.image && (
+                                                            <img src={artist.image} alt={artist.name} className="w-4 h-4 rounded-full object-cover" />
+                                                        )}
+                                                        {artist.name}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                                            {song.year && <span>Year: {song.year}</span>}
+                                            {theme?.episodes && <span>Episodes: {theme.episodes}</span>}
+                                        </div>
+                                        {song.description && (
+                                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{song.description}</p>
+                                        )}
+                                        {spotifyChannels.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 mt-1">
+                                                {spotifyChannels.map((ch) => (
+                                                    <a key={ch.id} href={ch.link} target="_blank" rel="noopener noreferrer"
+                                                        className="flex items-center gap-1 text-xs bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full hover:bg-green-100 transition-colors">
+                                                        <span>▶</span>
+                                                        <span>Spotify{ch.is_main ? " · Main" : ""} — {converAnimeSongType(ch.type)}</span>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <Button size="sm" variant="outlined" color="blue-gray" className="flex-shrink-0">Edit</Button>
+                                </div>
+                                {youtubeChannels.length > 0 && (
+                                    <div className="flex flex-wrap gap-4 pt-2 border-t border-blue-gray-50">
+                                        {youtubeChannels.map((ch) => (
+                                            <div key={ch.id} className="flex flex-col gap-1">
+                                                <iframe
+                                                    width="400"
+                                                    height="225"
+                                                    src={ch.link}
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    className="rounded-lg shadow"
+                                                ></iframe>
+                                                <span className="text-xs text-gray-500 text-center">
+                                                    {converAnimeSongType(ch.type)}{ch.is_main ? " · Main" : ""}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-        </div>
+        );
     }
     return (
         <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">
@@ -201,7 +256,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                         <Typography variant="h5">
                             Anime Song
                         </Typography>
-                        <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
+                        {!anime.is_migrate_anime_song && (
+                            <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
+                        )}
                     </div>
                     {showAnimeSongItem(songs.opening_song,"Anime Opening")}
                     {showAnimeSongItem(songs.ending_song,"Anime Endding")}

@@ -47,7 +47,8 @@ export type GetAnimeByIdResponse = {
     categories:GetAnimeByIdResponseCategories[]
     categoryUniverse:GetAnimeByIdResponseCategories[]
     aired_at: string
-    my_anime_list_id:number
+    my_anime_list_id: number
+    is_migrate_anime_song: boolean
 }
 
 export type EditCategoryAnimeRequest = {

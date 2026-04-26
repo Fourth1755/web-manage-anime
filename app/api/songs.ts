@@ -14,7 +14,7 @@ export class SongService {
 
     public async getSongByAnime(anime_id: string): Promise<GetSongByAnimeIdResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get(`/songs/anime/${anime_id}`, { headers }) as unknown as Promise<GetSongByAnimeIdResponse>;
+        return apiClient.get(`/admin/songs/anime/${anime_id}`, { headers }) as unknown as Promise<GetSongByAnimeIdResponse>;
     }
 
     public async getSongsByArtist(artist_id: string): Promise<GetSongsByArtistResponse> {
@@ -29,6 +29,6 @@ export class SongService {
 
     public async migrateAnimeSongs(my_anime_list_id: number) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/migrate/anime-songs', { my_anime_list_id }, { headers });
+        return apiClient.post('/admin/migrate/anime-songs', { my_anime_list_id }, { headers });
     }
 }

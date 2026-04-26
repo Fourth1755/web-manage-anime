@@ -5,6 +5,7 @@ import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
 import MigrateAnimeButton from "./component/migrateAnimeButton";
 import PaginationControl from "./component/paginationControl";
+import AnimeSearchInput from "./component/animeSearchInput";
 import { GetAnimeList } from "../api/dtos/anime";
 
 type SearchParams = {
@@ -12,6 +13,7 @@ type SearchParams = {
     limit?: string;
     sort?: string;
     order?: string;
+    name?: string;
 };
 
 function formatDate(value: string | null | undefined): string {
@@ -34,11 +36,12 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     const limit = Math.max(1, parseInt(searchParams.limit ?? "10", 10));
     const sort  = searchParams.sort  ?? '';
     const order = searchParams.order === 'ASC' ? 'ASC' : 'DESC';
+    const name  = searchParams.name?.trim() ?? '';
 
     const animeSerivce = new AnimeService();
     let response;
     try {
-        response = await animeSerivce.getAnimes(page, limit, sort || undefined, sort ? order : undefined);
+        response = await animeSerivce.getAnimes(page, limit, sort || undefined, sort ? order : undefined, name || undefined);
     } catch (err: any) {
         if (err?.response?.status === 401) redirect('/login');
         throw err;
@@ -49,14 +52,19 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     // Build href for a sortable column header — toggles asc/desc, resets to page 1
     function sortHref(col: string) {
         const nextOrder = sort === col && order === 'ASC' ? 'DESC' : 'ASC';
-        return `?page=1&limit=${limit}&sort=${col}&order=${nextOrder}`;
+        const params = new URLSearchParams({ page: '1', limit: String(limit), sort: col, order: nextOrder });
+        if (name) params.set('name', name);
+        return `?${params.toString()}`;
     }
 
     return (
         <div className="container mx-auto px-5 md:px-5 pt-20">
-            <div className="flex justify-between py-10">
+            <div className="flex justify-between items-center py-10">
                 <h1>Anime</h1>
-                <MigrateAnimeButton/>
+                <div className="flex items-center gap-3">
+                    <AnimeSearchInput defaultValue={name} />
+                    <MigrateAnimeButton/>
+                </div>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-black">

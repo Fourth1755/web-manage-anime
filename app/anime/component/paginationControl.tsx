@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
     page: number;
@@ -32,9 +33,15 @@ function buildPageItems(page: number, totalPages: number): (number | '...')[] {
 }
 
 export default function PaginationControl({ page, limit, totalPages }: Props) {
+    const searchParams = useSearchParams();
     if (totalPages <= 1) return null;
 
-    const buildHref = (p: number) => `?page=${p}&limit=${limit}`;
+    const buildHref = (p: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('page', String(p));
+        params.set('limit', String(limit));
+        return `?${params.toString()}`;
+    };
     const items = buildPageItems(page, totalPages);
 
     return (

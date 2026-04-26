@@ -16,26 +16,42 @@ export type CreateAnimeSongRequest = {
     artist_list: string[]
 }
 
-type SongChannel ={
-    id:string
+type SongChannel = {
+    id: string
     channel: string
-    type:string
-    link:string
-    is_main:boolean
+    type: string
+    link: string
+    is_main: boolean
+}
+
+type SongTheme = {
+    type: string
+    sequence: number
+    episodes: string
+}
+
+type SongArtist = {
+    id: string
+    name: string
+    image: string
 }
 
 export type GetSongByAnimeIdResponseSongDetail = {
-    id:string
-    name:string
-    type:string
-    sequence:number
-    song_channel:SongChannel[]
+    id: string
+    name: string
+    image: string
+    description: string
+    year: string
+    themes: SongTheme[]
+    anime_id: string
+    song_artist: SongArtist[]
+    song_channel: SongChannel[] | null
 }
 
-export type GetSongByAnimeIdResponse= {
-    opening_song:GetSongByAnimeIdResponseSongDetail[]
-    ending_song:GetSongByAnimeIdResponseSongDetail[]
-    soundtrack_song:GetSongByAnimeIdResponseSongDetail[]
+export type GetSongByAnimeIdResponse = {
+    opening_song: GetSongByAnimeIdResponseSongDetail[]
+    ending_song: GetSongByAnimeIdResponseSongDetail[]
+    soundtrack_song: GetSongByAnimeIdResponseSongDetail[]
 }
 
 export type GetAllSongResponse ={

@@ -7,9 +7,9 @@ export class AnimeService {
         return apiClient.post('/admin/animes', anime, { headers });
     }
 
-    public async getAnimes(page = 1, limit = 10, sortBy?: string, orderBy?: string): Promise<GetAnimesResponse> {
+    public async getAnimes(page = 1, limit = 10, sortBy?: string, orderBy?: string, name?: string): Promise<GetAnimesResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get('/admin/animes', { params: { page, limit, sortBy, orderBy }, headers }) as unknown as Promise<GetAnimesResponse>;
+        return apiClient.get('/admin/animes', { params: { page, limit, sortBy, orderBy, name }, headers }) as unknown as Promise<GetAnimesResponse>;
     }
 
     public async getAnimeById(id: string): Promise<GetAnimeByIdResponse> {
@@ -34,11 +34,11 @@ export class AnimeService {
 
     public async migrateSingleAnime(request: MigrateSingleAnimeRequest) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/migrate/anime', request, { headers });
+        return apiClient.post('/admin/migrate/anime', request, { headers });
     }
 
     public async migrateMultipleAnime(request: MigrateMultipleAnimeRequest) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/migrate/animes', request, { headers });
+        return apiClient.post('/admin/migrate/animes', request, { headers });
     }
 }
