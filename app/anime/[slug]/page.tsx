@@ -15,6 +15,7 @@ import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton
 import { CharacterService } from "@/app/api/character";
 import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
 import MigrateSongButton from "./component/migrateSongButton";
+import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
     const animeSerivce = new AnimeService()
@@ -54,7 +55,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         }
     }
 
-    const showAnimeSongItem = (animeSong: GetSongByAnimeIdResponseSongDetail[], title: string) => {
+    const showAnimeSongItem = (animeSong: GetSongByAnimeIdResponseSongDetail[], title: string, animeId: string) => {
         if (!animeSong || animeSong.length === 0) return <></>;
 
         return (
@@ -123,7 +124,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                                             </div>
                                         )}
                                     </div>
-                                    <Button size="sm" variant="outlined" color="blue-gray" className="flex-shrink-0">Edit</Button>
+                                    <div className="flex flex-col gap-1 flex-shrink-0">
+                                        <AddSongChannelButton song_id={song.id} song_name={song.name} anime_id={animeId} />
+                                        <Button size="sm" variant="outlined" color="blue-gray">Edit</Button>
+                                    </div>
                                 </div>
                                 {youtubeChannels.length > 0 && (
                                     <div className="flex flex-wrap gap-4 pt-2 border-t border-blue-gray-50">
@@ -260,9 +264,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                             <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
                         )}
                     </div>
-                    {showAnimeSongItem(songs.opening_song,"Anime Opening")}
-                    {showAnimeSongItem(songs.ending_song,"Anime Endding")}
-                    {showAnimeSongItem(songs.soundtrack_song,"Anime Soundtrack")}
+                    {showAnimeSongItem(songs.opening_song, "Anime Opening", animeId)}
+                    {showAnimeSongItem(songs.ending_song, "Anime Ending", animeId)}
+                    {showAnimeSongItem(songs.soundtrack_song, "Anime Soundtrack", animeId)}
                 </CardBody>
             </Card>
             <Card className="h-full w-full">

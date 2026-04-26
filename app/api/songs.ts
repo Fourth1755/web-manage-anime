@@ -24,7 +24,7 @@ export class SongService {
 
     public async createSongChannel(request: CreateSongChannelRequest) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/songs/channel', request, { headers });
+        return apiClient.post('/admin/songs/channel', request, { headers });
     }
 
     public async migrateAnimeSongs(my_anime_list_id: number) {
