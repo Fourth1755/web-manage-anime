@@ -97,7 +97,7 @@ export default async function Page({ params }: Props) {
                                                     width="280"
                                                     height="176"
                                                     id="player"
-                                                    src={`${item.link}`}
+                                                    src={`${item.link_embed}`}
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 ></iframe>
                                                 </td>

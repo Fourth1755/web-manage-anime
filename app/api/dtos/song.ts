@@ -20,7 +20,7 @@ type SongChannel = {
     id: string
     channel: string
     type: string
-    link: string
+    link_embed: string
     is_main: boolean
 }
 

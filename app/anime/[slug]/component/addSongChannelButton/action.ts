@@ -11,6 +11,6 @@ export async function createSongChannel(request: CreateSongChannelRequest, anime
         revalidatePath(`/anime/${anime_id}`)
         return res.data.message
     } catch (error: any) {
-        return error.response.data.message
+        return error?.response?.data?.message ?? error?.message ?? 'Something went wrong'
     }
 }
