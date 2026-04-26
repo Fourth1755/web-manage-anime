@@ -53,11 +53,17 @@ export default async function Page({ params }: Props) {
                             </Typography>
                             {/* <CreateAnimeButton name="Edit anime" isEdit={true} anime={anime} /> */}
                         </div>
-                        <img
-                            className="h-60 w-60 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
-                            src={artistResponse.image}
-                            alt="nature image"
-                        />
+                        {artistResponse.image ? (
+                            <img
+                                className="h-60 w-60 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
+                                src={artistResponse.image}
+                                alt={artistResponse.name}
+                            />
+                        ) : (
+                            <div className="h-60 w-60 rounded-lg bg-gray-200 flex items-center justify-center shadow-xl shadow-blue-gray-900/50 text-gray-500 font-bold text-6xl">
+                                {artistResponse.name.charAt(0).toUpperCase()}
+                            </div>
+                        )}
                     </div>
                 </CardBody>
             </Card>
