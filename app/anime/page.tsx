@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
 import MigrateAnimeButton from "./component/migrateAnimeButton";
-import PaginationControl from "./component/paginationControl";
+import PaginationControl from "../component/paginationControl";
 import AnimeSearchInput from "./component/animeSearchInput";
 import { GetAnimeList } from "../api/dtos/anime";
 

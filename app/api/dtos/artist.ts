@@ -21,6 +21,10 @@ type GetArtistListResponseArtist = {
 
 export type GetArtistListResponse = {
     artists: GetArtistListResponseArtist[]
+    page: number
+    limit: number
+    total_pages: number
+    total_items: number
 }
 
 export type CreateArtistRequest = {

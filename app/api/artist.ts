@@ -4,16 +4,16 @@ import { CreateArtistRequest, GetArtistListResponse, GetArtistResponse } from '.
 export class ArtistSerivce {
     public async getArtist(id: string): Promise<GetArtistResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get(`/artists/${id}`, { headers }) as unknown as Promise<GetArtistResponse>;
+        return apiClient.get(`/admin/artists/${id}`, { headers }) as unknown as Promise<GetArtistResponse>;
     }
 
-    public async getArtists(): Promise<GetArtistListResponse> {
+    public async getArtists(page = 1, limit = 10): Promise<GetArtistListResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get('/artists', { headers }) as unknown as Promise<GetArtistListResponse>;
+        return apiClient.get('/admin/artists', { params: { page, limit }, headers }) as unknown as Promise<GetArtistListResponse>;
     }
 
     public async createArtist(request: CreateArtistRequest) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/artists', request, { headers });
+        return apiClient.post('/admin/artists', request, { headers });
     }
 }

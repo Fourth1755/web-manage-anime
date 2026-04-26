@@ -83,7 +83,7 @@ export default async function Page({ params }: Props) {
                                 </div>
                                 <table className="w-full text-sm text-left text-black">
                                     <tbody>
-                                        {song.song_channel.map((item,index_2)=>(
+                                        {song.song_channel?.map((item,index_2)=>(
                                             <tr key={index_2}>
                                                 <td></td>
                                                 <td scope="col" className="px-2 py-3">            
