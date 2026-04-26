@@ -4,6 +4,7 @@ import { Button } from "../component/mtailwind";
 import { ArtistSerivce } from "../api/artist";
 import CreateArtistButton from "./component/createArtistButton/createArtistButton";
 import PaginationControl from "../component/paginationControl";
+import MigrateSpotifyButton from "./component/migrateSpotifyButton/migrateSpotifyButton";
 
 type SearchParams = {
     page?: string;
@@ -32,6 +33,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
                             <th scope="col" className="px-6 py-3">No.</th>
                             <th scope="col" className="px-6 py-3">Artist</th>
                             <th scope="col" className="px-6 py-3">Detail</th>
+                            <th scope="col" className="px-6 py-3">Migrate</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,6 +64,9 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
                                             <span>Detail</span>
                                         </Button>
                                     </Link>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <MigrateSpotifyButton artist_id={artist.id} artist_name={artist.name} />
                                 </td>
                             </tr>
                         ))}

@@ -16,4 +16,9 @@ export class ArtistSerivce {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.post('/admin/artists', request, { headers });
     }
+
+    public async migrateSpotify(artist_id: string) {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/admin/migrate/artist-spotify', { artist_id }, { headers });
+    }
 }
