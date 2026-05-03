@@ -7,7 +7,6 @@ import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import CreateSongButton from "./component/createSongButton/createSongButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
-import CreateEpisodeButton from "./component/createEpisodeButton/createEpisodeButton";
 import { EpisodeService } from "@/app/api/episode";
 import { GetEpisodeByAnimeResponse } from "@/app/api/dtos/episode";
 import EditEpisodeButton from "./component/editEpisodeButton/editEpisodeButton";
@@ -316,7 +315,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                         <Typography variant="h5">
                             Anime Episode
                         </Typography>
-                        <CreateEpisodeButton anime_id={anime.id} />
                     </div>
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-black">
