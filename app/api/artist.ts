@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { CreateArtistRequest, GetArtistListResponse, GetArtistResponse } from './dtos/artist';
+import { ConfirmSpotifyArtistRequest, CreateArtistRequest, GetArtistListResponse, GetArtistResponse, MigrateSpotifyArtistResponse } from './dtos/artist';
 
 export class ArtistSerivce {
     public async getArtist(id: string): Promise<GetArtistResponse> {
@@ -17,8 +17,13 @@ export class ArtistSerivce {
         return apiClient.post('/admin/artists', request, { headers });
     }
 
-    public async migrateSpotify(artist_id: string) {
+    public async migrateSpotify(artist_id: string): Promise<MigrateSpotifyArtistResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/admin/migrate/spotify-artist', { artist_id }, { headers });
+        return apiClient.post('/admin/migrate/spotify-artist', { artist_id }, { headers }) as unknown as Promise<MigrateSpotifyArtistResponse>;
+    }
+
+    public async confirmSpotifyArtist(request: ConfirmSpotifyArtistRequest) {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/admin/migrate/spotify-artist/confirm', request, { headers });
     }
 }

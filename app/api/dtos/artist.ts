@@ -27,6 +27,28 @@ export type GetArtistListResponse = {
     total_items: number
 }
 
+export type SpotifyArtistCandidate = {
+    spotify_id: string
+    name: string
+    followers: number
+    genres: string[]
+    popularity: number
+    image_url: string
+}
+
+export type MigrateSpotifyArtistResponse = {
+    artist_id: string
+    artist_name: string
+    spotify_artist_id?: string
+    status: 'mapped' | 'candidates'
+    candidates?: SpotifyArtistCandidate[]
+}
+
+export type ConfirmSpotifyArtistRequest = {
+    artist_id: string
+    spotify_artist_id: string
+}
+
 export type CreateArtistRequest = {
     name:string
     name_japan: string
