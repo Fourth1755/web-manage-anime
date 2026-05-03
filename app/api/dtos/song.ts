@@ -88,3 +88,25 @@ export type CreateSongChannelRequest = {
     link:string
     is_main:boolean
 }
+
+export type SpotifyTrackCandidate = {
+    spotify_id: string
+    name: string
+    artists: string[]
+    album: string
+    duration_ms: number
+    preview_url: string
+}
+
+export type MigrateSpotifySongResponse = {
+    song_id: string
+    song_name: string
+    spotify_track_id?: string
+    status: 'mapped' | 'candidates'
+    candidates?: SpotifyTrackCandidate[]
+}
+
+export type ConfirmSpotifySongRequest = {
+    song_id: string
+    spotify_track_id: string
+}
