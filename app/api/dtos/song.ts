@@ -21,6 +21,7 @@ type SongChannel = {
     channel: string
     type: string
     link_embed: string
+    link: string
     is_main: boolean
 }
 

@@ -16,6 +16,7 @@ import CreateCharacterButton from "./component/createCharacterButton/createChara
 import MigrateSongButton from "./component/migrateSongButton";
 import RevertMigrateSongButton from "./component/revertMigrateSongButton";
 import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
+import MigrateSpotifySongButton from "./component/migrateSpotifySongButton/migrateSpotifySongButton";
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
     const animeSerivce = new AnimeService()
@@ -126,7 +127,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                                     </div>
                                     <div className="flex flex-col gap-1 flex-shrink-0">
                                         <AddSongChannelButton song_id={song.id} song_name={song.name} anime_id={animeId} />
-                                        <Button size="sm" variant="outlined" color="blue-gray">Edit</Button>
+                                        <MigrateSpotifySongButton song_id={song.id} song_name={song.name} anime_id={animeId} />
                                     </div>
                                 </div>
                                 {youtubeChannels.length > 0 && (
