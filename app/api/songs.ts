@@ -31,4 +31,9 @@ export class SongService {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.post('/admin/migrate/anime-songs', { my_anime_list_id }, { headers });
     }
+
+    public async revertMigrateAnimeSongs(my_anime_list_id: number) {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.delete('/admin/migrate/anime-songs', { headers, data: { my_anime_list_id } });
+    }
 }

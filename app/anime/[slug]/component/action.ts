@@ -50,3 +50,14 @@ export async function migrateAnimeSongs(my_anime_list_id: number, anime_id: stri
         return { success: false, error: error?.response?.data?.message ?? "Migration failed" };
     }
 }
+
+export async function revertMigrateAnimeSongs(my_anime_list_id: number, anime_id: string): Promise<MigrateResult> {
+    try {
+        const songService = new SongService();
+        await songService.revertMigrateAnimeSongs(my_anime_list_id);
+        revalidatePath(`/anime/${anime_id}`);
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error?.response?.data?.message ?? "Revert failed" };
+    }
+}

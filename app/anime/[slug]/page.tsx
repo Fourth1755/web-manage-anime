@@ -15,6 +15,7 @@ import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton
 import { CharacterService } from "@/app/api/character";
 import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
 import MigrateSongButton from "./component/migrateSongButton";
+import RevertMigrateSongButton from "./component/revertMigrateSongButton";
 import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -260,7 +261,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                         <Typography variant="h5">
                             Anime Song
                         </Typography>
-                        {!anime.is_migrate_anime_song && (
+                        {anime.is_migrate_anime_song ? (
+                            <RevertMigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
+                        ) : (
                             <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
                         )}
                     </div>

@@ -2,6 +2,8 @@ import axios, {
   type AxiosInstance,
   type AxiosError,
 } from 'axios';
+import http from 'http';
+import https from 'https';
 import { cookies } from 'next/headers';
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8080';
@@ -11,6 +13,8 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  httpAgent: new http.Agent({ keepAlive: false }),
+  httpsAgent: new https.Agent({ keepAlive: false }),
 });
 
 apiClient.interceptors.response.use(
