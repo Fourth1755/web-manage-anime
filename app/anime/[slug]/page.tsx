@@ -115,8 +115,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                                         )}
                                         {spotifyChannels.length > 0 && (
                                             <div className="flex flex-wrap gap-2 mt-1">
-                                                {spotifyChannels.map((ch) => (
-                                                    <a key={ch.id} href={ch.link} target="_blank" rel="noopener noreferrer"
+                                                {spotifyChannels.map((ch, idx) => (
+                                                    <a key={ch.id ?? idx} href={ch.link} target="_blank" rel="noopener noreferrer"
                                                         className="flex items-center gap-1 text-xs bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full hover:bg-green-100 transition-colors">
                                                         <span>▶</span>
                                                         <span>Spotify{ch.is_main ? " · Main" : ""} — {converAnimeSongType(ch.type)}</span>
@@ -132,8 +132,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                                 </div>
                                 {youtubeChannels.length > 0 && (
                                     <div className="flex flex-wrap gap-4 pt-2 border-t border-blue-gray-50">
-                                        {youtubeChannels.map((ch) => (
-                                            <div key={ch.id} className="flex flex-col gap-1">
+                                        {youtubeChannels.map((ch, idx) => (
+                                            <div key={ch.id ?? idx} className="flex flex-col gap-1">
                                                 <iframe
                                                     width="400"
                                                     height="225"
@@ -310,7 +310,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                     </div>
                 </CardBody>
             </Card>
-            <Card className="h-full w-full">
+            {/* <Card className="h-full w-full">
                 <CardBody>
                     <div className="flex justify-between">
                         <Typography variant="h5">
@@ -338,11 +338,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                                 <td>{episode.name_thai}</td>
                                 <td>{episode.name_japan}</td>
                                 <td>
-                                    {/* <Link href={`anime/${anime.id}`}>
-                                        <Button variant="outlined" color="pink" type="submit">
-                                            <span>Detail</span>
-                                        </Button>
-                                    </Link> */}
                                     <EditEpisodeButton episode={episode} anime_id={animeId}/>
                                 </td>
                                 <td>
@@ -366,7 +361,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 </table>
             </div>
                 </CardBody>
-            </Card>
+            </Card> */}
         </div>
     );
 }

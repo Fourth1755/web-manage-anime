@@ -87,32 +87,30 @@ export default async function Page({ params }: Props) {
                                         <AddSongChannelButton song_id={song.id}/>
                                     </div>
                                 </div>
-                                <table className="w-full text-sm text-left text-black">
-                                    <tbody>
-                                        {song.song_channel?.map((item,index_2)=>(
-                                            <tr key={index_2}>
-                                                <td></td>
-                                                <td scope="col" className="px-2 py-3">            
-                                                    <iframe
+                                <div className="flex flex-wrap gap-4 pt-2">
+                                    {song.song_channel?.map((item, index_2) => (
+                                        <div key={index_2} className="flex flex-col gap-1">
+                                            {item.channel === "YOUTUBE" ? (
+                                                <iframe
                                                     width="280"
                                                     height="176"
-                                                    id="player"
-                                                    src={`${item.link_embed}`}
+                                                    src={item.link}
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    className="rounded-lg shadow"
                                                 ></iframe>
-                                                </td>
-                                                <td>{item.is_main}</td>
-                                                <td scope="col" className="px-8 py-3">
-                                                    {converAnimeSongType(item.type)}</td>
-                                                <td scope="col" className="px-8 py-3">
-                                                    {converAnimeSongChannel(item.channel)}</td>
-                                                <td>
-                                                    {/* <AddSongChannelButton song_id={song.id}/> */}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                            ) : (
+                                                <a href={item.link} target="_blank" rel="noopener noreferrer"
+                                                    className="flex items-center gap-1 text-xs bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full hover:bg-green-100 transition-colors">
+                                                    <span>▶</span>
+                                                    <span>{converAnimeSongChannel(item.channel)}</span>
+                                                </a>
+                                            )}
+                                            <span className="text-xs text-gray-500 text-center">
+                                                {converAnimeSongType(item.type)}{item.is_main ? " · Main" : ""}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         ))}
 

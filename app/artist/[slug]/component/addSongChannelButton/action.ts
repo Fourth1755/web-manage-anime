@@ -6,11 +6,11 @@ import { CreateSongChannelRequest } from '@/app/api/dtos/song';
 
 export async function createSongChannel(request:CreateSongChannelRequest) {
     const songService = new SongService()
-    try{
+    try {
         const res = await songService.createSongChannel(request)
         revalidatePath('/artist')
-        return res.data.message
-    } catch(error:any) {
-        return error.response.data.message
+        return res.data?.message ?? 'Channel added'
+    } catch (error: any) {
+        return error?.response?.data?.message ?? error?.message ?? 'Something went wrong'
     }
 }
