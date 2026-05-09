@@ -94,8 +94,9 @@ export default async function Page({ params }: Props) {
                                                 <iframe
                                                     width="280"
                                                     height="176"
-                                                    src={item.link}
+                                                    src={item.link_embed}
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
                                                     className="rounded-lg shadow"
                                                 ></iframe>
                                             ) : (

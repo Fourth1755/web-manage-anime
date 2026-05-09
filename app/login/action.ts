@@ -33,6 +33,6 @@ export async function login(email: string, password: string): Promise<{ error: s
 
 export async function logout() {
     const cookieStore = await cookies();
-    cookieStore.delete('jwt');
+    cookieStore.delete('admin_jwt');
     redirect('/login');
 }

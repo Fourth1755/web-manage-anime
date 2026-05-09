@@ -137,8 +137,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                                                 <iframe
                                                     width="400"
                                                     height="225"
-                                                    src={ch.link}
+                                                    src={ch.link_embed}
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
                                                     className="rounded-lg shadow"
                                                 ></iframe>
                                                 <span className="text-xs text-gray-500 text-center">

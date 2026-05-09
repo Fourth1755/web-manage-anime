@@ -31,13 +31,13 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Returns the jwt cookie string to forward to the backend.
-// The Gin middleware reads the JWT from a cookie named "jwt", not from Authorization header.
+// Returns the admin_jwt cookie string to forward to the backend.
+// The Gin middleware reads the JWT from a cookie named "admin_jwt", not from Authorization header.
 export async function getAuthCookie(): Promise<string> {
   try {
     const cookieStore = await cookies();
-    const jwtCookie = cookieStore.get('jwt');
-    return jwtCookie ? `jwt=${jwtCookie.value}` : '';
+    const jwtCookie = cookieStore.get('admin_jwt');
+    return jwtCookie ? `admin_jwt=${jwtCookie.value}` : '';
   } catch {
     return '';
   }
