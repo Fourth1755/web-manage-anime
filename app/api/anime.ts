@@ -19,7 +19,8 @@ export class AnimeService {
 
     public async updateAnime(anime: UpdateAnimeRequest) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.put(`/admin/animes/${anime.id}`, anime, { headers });
+        const { id, ...body } = anime;
+        return apiClient.put(`/admin/animes/${id}`, body, { headers });
     }
 
     public async editCategoryAnime(request: EditCategoryAnimeRequest) {

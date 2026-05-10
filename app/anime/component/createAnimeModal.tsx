@@ -9,7 +9,6 @@ import {
     Textarea,
     Select,
     Option,
-    Typography,
     Chip
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
@@ -36,6 +35,15 @@ type AnimeData = {
     aired_at: string
 };
 
+type EditAnimeData = {
+    id: string;
+    name_thai?: string;
+    description?: string;
+    is_sub_anime?: boolean;
+    is_show?: boolean;
+    status?: string;
+};
+
 type PropsCreateAnimeModal = {
     open: boolean;
     handler: () => void;
@@ -59,6 +67,14 @@ type FormData = {
     trailer: string
     aired_at: string
     my_anime_list_id: number
+}
+
+type EditFormData = {
+    name_thai: string;
+    description: string;
+    is_sub_anime: boolean;
+    is_show: boolean;
+    status: string;
 }
 
 const seasonalList = [
@@ -93,6 +109,13 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         aired_at: "",
         my_anime_list_id:0,
     });
+    const [editFormData, setEditFormData] = useState<EditFormData>({
+        name_thai: "",
+        description: "",
+        is_sub_anime: false,
+        is_show: false,
+        status: "",
+    });
     const [studioList, setStduioList] = useState<GetStudioResponse[]>();
     const [chipOpen, setChipOpen] = useState(true);
 
@@ -112,6 +135,13 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement> | any) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
+    }
+    const handleEditInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setEditFormData({ ...editFormData, [name]: value });
+    }
+    const changeEditBoolean = (name: keyof EditFormData, val = "") => {
+        setEditFormData({ ...editFormData, [name]: val === "true" });
     }
     const changeSeasonal = (val = "") => {
         setFormData({ ...formData, "seasonal": val });
@@ -133,31 +163,37 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         setFormData({ ...formData, "aired_at": date }); 
     }
     const handleSubmit = async () => {
-        //event.preventDefault();
-        const anime: AnimeData = {
-            id: "",
-            name: formData.name,
-            name_english: formData.name_english,
-            name_thai:formData.name_thai,
-            episodes: +formData.episodes,
-            seasonal: formData.seasonal,
-            image: formData.image,
-            studio: formData.studio,
-            description: formData.description,
-            duration: formData.duration,
-            year: formData.year,
-            type: +formData.type,
-            wallpaper: formData.wallpaper,
-            trailer: formData.trailer,
-            aired_at: formData.aired_at
-        }
         if (isEdit && animeData) {
-            anime.id = animeData.id
-            await updateAnime(anime)
+            const editAnime: EditAnimeData = {
+                id: animeData.id,
+                name_thai: editFormData.name_thai || undefined,
+                description: editFormData.description || undefined,
+                is_sub_anime: editFormData.is_sub_anime,
+                is_show: editFormData.is_show,
+                status: editFormData.status || undefined,
+            };
+            await updateAnime(editAnime);
         } else {
-            await createAnime(anime)
+            const anime: AnimeData = {
+                id: "",
+                name: formData.name,
+                name_english: formData.name_english,
+                name_thai: formData.name_thai,
+                episodes: +formData.episodes,
+                seasonal: formData.seasonal,
+                image: formData.image,
+                studio: formData.studio,
+                description: formData.description,
+                duration: formData.duration,
+                year: formData.year,
+                type: +formData.type,
+                wallpaper: formData.wallpaper,
+                trailer: formData.trailer,
+                aired_at: formData.aired_at,
+            };
+            await createAnime(anime);
         }
-        handleOpen()
+        handleOpen();
     }
     const onCloseChipStudio = (id:String) => {
         const stuidoVal = formData.studio.filter((item)=>item!=id)
@@ -165,25 +201,14 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         setFormData({ ...formData, "studio": stuidoVal });
     }
     useEffect(() => {
-        console.log(isEdit, animeData)
         if (isEdit && animeData) {
-            setFormData({
-                name: animeData.name,
-                name_english: animeData.name_english,
-                name_thai:animeData.name_thai,
-                episodes: +animeData.episodes,
-                seasonal: animeData.seasonal,
-                image: animeData.image,
-                studio: animeData.studios.map(item=>item.id),
-                description: animeData.description,
-                duration: animeData.duration,
-                year: animeData.year,
-                type: animeData.type.toString(),
-                wallpaper: animeData.wallpaper,
-                trailer: animeData.trailer,
-                aired_at: animeData.aired_at,
-                my_anime_list_id: animeData.my_anime_list_id
-            })
+            setEditFormData({
+                name_thai: animeData.name_thai ?? "",
+                description: animeData.description ?? "",
+                is_sub_anime: false,
+                is_show: false,
+                status: "",
+            });
         }
     }, [])
     return (
@@ -199,162 +224,210 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
             >
                 <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
                     <DialogBody className="space-y-4 pb-6 overflow-scroll h-96">
-                        <Input
-                            label="anime name"
-                            crossOrigin={undefined}
-                            value={formData.name}
-                            name="name"
-                            onChange={handleInputChange}
-                        />
-                        <Input
-                            label="anime english name"
-                            crossOrigin={undefined}
-                            value={formData.name_english}
-                            name="name_english"
-                            onChange={handleInputChange}
-                        />
-                        <Input
-                            label="anime thai name"
-                            crossOrigin={undefined}
-                            value={formData.name_thai}
-                            name="name_thai"
-                            onChange={handleInputChange}
-                        />
-                        <Input
-                            label="image"
-                            type="text"
-                            crossOrigin={undefined}
-                            value={formData.image}
-                            name="image"
-                            onChange={handleInputChange}
-                        />
-                        {formData?.studio?.length?<div>
-                            {formData.studio.map((item,index)=>(
-                                <div 
-                                    key={index}
-                                    className="py-1">
-                                    <Chip
-                                        open={chipOpen}
-                                        onClose={() => onCloseChipStudio(item)}
-
-                                        value={studioMap.get(item)}/>
-                                </div>
-
-                            ))}
-                        </div>:<></>}
-                        <div className="w-full">
-                            <Select
-                                variant="outlined"
-                                label="Choose a Studio"
-                                color="green"
-                                value={formData.type}
-                                name="type"
-                                onChange={changeStudio}
-                            >
-                                {studioList?.map((item) => (
-                                    <Option key={item.id} value={item.id}>
-                                        {item.name}
-                                    </Option>
-                                ))}
-                            </Select>
-                        </div>
-                        <div className="flex gap-4">
-                            <div className="w-full">
-                                <Select
-                                    variant="outlined"
-                                    label="Choose a Seasonal"
-                                    color="green"
-                                    value={formData.seasonal}
-                                    name="seasonal"
-                                    onChange={changeSeasonal}
-                                >
-                                    {seasonalList.map((item) => (
-                                        <Option key={item} value={item}>
-                                            {item}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </div>
-                            <div className="w-full">
+                        {isEdit ? (
+                            <>
                                 <Input
-                                    label="year"
+                                    label="anime thai name"
                                     crossOrigin={undefined}
-                                    value={formData.year}
-                                    name="year"
+                                    value={editFormData.name_thai}
+                                    name="name_thai"
+                                    onChange={handleEditInputChange}
+                                />
+                                <Textarea
+                                    label="description"
+                                    value={editFormData.description}
+                                    name="description"
+                                    onChange={handleEditInputChange}
+                                />
+                                <Input
+                                    label="status"
+                                    crossOrigin={undefined}
+                                    value={editFormData.status}
+                                    name="status"
+                                    onChange={handleEditInputChange}
+                                />
+                                <div className="w-full">
+                                    <Select
+                                        variant="outlined"
+                                        label="Is Sub Anime"
+                                        color="green"
+                                        value={editFormData.is_sub_anime.toString()}
+                                        onChange={(val) => changeEditBoolean("is_sub_anime", val)}
+                                    >
+                                        <Option value="false">No</Option>
+                                        <Option value="true">Yes</Option>
+                                    </Select>
+                                </div>
+                                <div className="w-full">
+                                    <Select
+                                        variant="outlined"
+                                        label="Is Show"
+                                        color="green"
+                                        value={editFormData.is_show.toString()}
+                                        onChange={(val) => changeEditBoolean("is_show", val)}
+                                    >
+                                        <Option value="false">No</Option>
+                                        <Option value="true">Yes</Option>
+                                    </Select>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <Input
+                                    label="anime name"
+                                    crossOrigin={undefined}
+                                    value={formData.name}
+                                    name="name"
                                     onChange={handleInputChange}
                                 />
-                            </div>
-                        </div>
-                        <div aria-hidden={true}>
-                            <DatePicker handler={handleChangeAiredDate}/>
-                        </div>
-                        <div className="flex gap-4">
-                            <div className="w-full">
-                                <Select
-                                    variant="outlined"
-                                    label="Choose a Type"
-                                    color="green"
-                                    value={formData.type}
-                                    name="type"
-                                    onChange={changeAnimeType}
-                                >
-                                    {animeTypeList.map((item) => (
-                                        <Option key={item.id} value={item.id}>
-                                            {item.name}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </div>
-                            <div className="w-full">
                                 <Input
-                                    label="episodes"
+                                    label="anime english name"
+                                    crossOrigin={undefined}
+                                    value={formData.name_english}
+                                    name="name_english"
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    label="anime thai name"
+                                    crossOrigin={undefined}
+                                    value={formData.name_thai}
+                                    name="name_thai"
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    label="image"
+                                    type="text"
+                                    crossOrigin={undefined}
+                                    value={formData.image}
+                                    name="image"
+                                    onChange={handleInputChange}
+                                />
+                                {formData?.studio?.length ? <div>
+                                    {formData.studio.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="py-1">
+                                            <Chip
+                                                open={chipOpen}
+                                                onClose={() => onCloseChipStudio(item)}
+                                                value={studioMap.get(item)} />
+                                        </div>
+                                    ))}
+                                </div> : <></>}
+                                <div className="w-full">
+                                    <Select
+                                        variant="outlined"
+                                        label="Choose a Studio"
+                                        color="green"
+                                        value={formData.type}
+                                        name="type"
+                                        onChange={changeStudio}
+                                    >
+                                        {studioList?.map((item) => (
+                                            <Option key={item.id} value={item.id}>
+                                                {item.name}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-full">
+                                        <Select
+                                            variant="outlined"
+                                            label="Choose a Seasonal"
+                                            color="green"
+                                            value={formData.seasonal}
+                                            name="seasonal"
+                                            onChange={changeSeasonal}
+                                        >
+                                            {seasonalList.map((item) => (
+                                                <Option key={item} value={item}>
+                                                    {item}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div className="w-full">
+                                        <Input
+                                            label="year"
+                                            crossOrigin={undefined}
+                                            value={formData.year}
+                                            name="year"
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div aria-hidden={true}>
+                                    <DatePicker handler={handleChangeAiredDate} />
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-full">
+                                        <Select
+                                            variant="outlined"
+                                            label="Choose a Type"
+                                            color="green"
+                                            value={formData.type}
+                                            name="type"
+                                            onChange={changeAnimeType}
+                                        >
+                                            {animeTypeList.map((item) => (
+                                                <Option key={item.id} value={item.id}>
+                                                    {item.name}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div className="w-full">
+                                        <Input
+                                            label="episodes"
+                                            type="number"
+                                            crossOrigin={undefined}
+                                            value={formData.episodes}
+                                            name="episodes"
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+                                <Input
+                                    label="duration"
+                                    type="text"
+                                    crossOrigin={undefined}
+                                    value={formData.duration}
+                                    name="duration"
+                                    onChange={handleInputChange}
+                                />
+                                <Textarea
+                                    label="description"
+                                    value={formData.description}
+                                    name="description"
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    label="anime wallpaper"
+                                    type="text"
+                                    crossOrigin={undefined}
+                                    value={formData.wallpaper}
+                                    name="wallpaper"
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    label="trailer"
+                                    type="text"
+                                    crossOrigin={undefined}
+                                    value={formData.trailer}
+                                    name="trailer"
+                                    onChange={handleInputChange}
+                                />
+                                <Input
+                                    label="my_anime_list_id"
                                     type="number"
                                     crossOrigin={undefined}
-                                    value={formData.episodes}
-                                    name="episodes"
+                                    value={formData.my_anime_list_id}
+                                    name="my_anime_list_id"
                                     onChange={handleInputChange}
                                 />
-                            </div>
-                        </div>
-
-                        <Input
-                            label="duration"
-                            type="text"
-                            crossOrigin={undefined}
-                            value={formData.duration}
-                            name="duration"
-                            onChange={handleInputChange}
-                        />
-                        <Textarea
-                            label="description"
-                            value={formData.description}
-                            name="description"
-                            onChange={handleInputChange}
-                        />
-                        <Input
-                            label="anime wallpaper"
-                            type="text"
-                            crossOrigin={undefined}
-                            value={formData.wallpaper}
-                            name="wallpaper"
-                            onChange={handleInputChange}
-                        />
-                        <Input
-                            label="trailer"
-                            type="text"
-                            crossOrigin={undefined}
-                            value={formData.trailer}
-                            name="trailer"
-                            onChange={handleInputChange}
-                        />
-                        <Input
-                            label="my_anime_list_id"
-                            type="number"
-                            crossOrigin={undefined}
-                            value={formData.my_anime_list_id}
-                            name="my_anime_list_id"
-                            onChange={handleInputChange}
-                        />
+                            </>
+                        )}
                     </DialogBody>
                     <DialogFooter>
                         <Button

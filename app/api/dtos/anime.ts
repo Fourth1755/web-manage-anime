@@ -78,17 +78,11 @@ export type CreateAnimeRequest = {
 
 export type UpdateAnimeRequest = {
     id: string;
-    name: string;
-    name_english: string
-    name_thai: string
-    episodes: number
-    seasonal: string;
-    image: string
-    description: string
-    duration: string
-    year: string;
-    type: number
-    aired_at: string
+    name_thai?: string;
+    description?: string;
+    is_sub_anime?: boolean;
+    is_show?: boolean;
+    status?: string;
 };
 
 export type MigrateSingleAnimeRequest = {
