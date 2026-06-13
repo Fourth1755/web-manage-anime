@@ -11,9 +11,10 @@ type SearchParams = {
     limit?: string;
 };
 
-export default async function Page({ searchParams }: { searchParams: SearchParams }) {
-    const page  = Math.max(1, parseInt(searchParams.page  ?? "1",  10));
-    const limit = Math.max(1, parseInt(searchParams.limit ?? "20", 10));
+export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
+    const params = await searchParams;
+    const page  = Math.max(1, parseInt(params.page  ?? "1",  10));
+    const limit = Math.max(1, parseInt(params.limit ?? "20", 10));
 
     const artistService = new ArtistSerivce();
     const artistResponse = await artistService.getArtists(page, limit);

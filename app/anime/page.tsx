@@ -31,12 +31,13 @@ function SortIcon({ active, order }: { active: boolean; order: string }) {
     return <span className="ml-1">{order === 'ASC' ? '↑' : '↓'}</span>;
 }
 
-export default async function Page({ searchParams }: { searchParams: SearchParams }) {
-    const page  = Math.max(1, parseInt(searchParams.page  ?? "1",  10));
-    const limit = Math.max(1, parseInt(searchParams.limit ?? "10", 10));
-    const sort  = searchParams.sort  ?? '';
-    const order = searchParams.order === 'ASC' ? 'ASC' : 'DESC';
-    const name  = searchParams.name?.trim() ?? '';
+export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
+    const params = await searchParams;
+    const page  = Math.max(1, parseInt(params.page  ?? "1",  10));
+    const limit = Math.max(1, parseInt(params.limit ?? "10", 10));
+    const sort  = params.sort  ?? '';
+    const order = params.order === 'ASC' ? 'ASC' : 'DESC';
+    const name  = params.name?.trim() ?? '';
 
     const animeSerivce = new AnimeService();
     let response;
