@@ -43,6 +43,7 @@ export type GetSongByAnimeIdResponseSongDetail = {
     image: string
     description: string
     year: string
+    spotify_track_id?: string | null
     themes: SongTheme[]
     anime_id: string
     song_artist: SongArtist[]

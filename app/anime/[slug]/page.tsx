@@ -137,7 +137,13 @@ export default async function Page(props: any) {
                                     </div>
                                     <div className="flex flex-col gap-1 flex-shrink-0">
                                         <AddSongChannelButton song_id={song.id} song_name={song.name} anime_id={animeId} />
-                                        <MigrateSpotifySongButton song_id={song.id} song_name={song.name} anime_id={animeId} />
+                                        {song.spotify_track_id ? (
+                                            <span className="rounded-md border px-3 py-2 text-center text-xs font-semibol">
+                                                Migrate Complete
+                                            </span>
+                                        ) : (
+                                            <MigrateSpotifySongButton song_id={song.id} song_name={song.name} anime_id={animeId} />
+                                        )}
                                     </div>
                                 </div>
                                 {youtubeChannels.length > 0 && (
