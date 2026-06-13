@@ -45,7 +45,7 @@ export type GetAnimeByIdResponse = {
     wallpaper: string
     trailer: string
     categories:GetAnimeByIdResponseCategories[]
-    categoryUniverse:GetAnimeByIdResponseCategories[]
+    category_universe:GetAnimeByIdResponseCategories[]
     aired_at: string
     my_anime_list_id: number
     is_migrate_anime_song: boolean
@@ -58,7 +58,7 @@ export type EditCategoryAnimeRequest = {
 
 export type EditCategoryUniversesAnimeRequest = {
     anime_id: string
-    category_universe_ids: string[]
+    category_universe_id: string
 }
 
 export type CreateAnimeRequest = {

@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { AnimeService } from "@/app/api/anime";
 import { StudioService } from "@/app/api/studio";
@@ -32,7 +31,6 @@ export async function createAnime(anime: CreateAnimeRequest) {
     console.error(error);
   }
   revalidatePath("/anime"); // Update cached posts
-  redirect(`/anime`); // Navigate to the new post page
 }
 
 export async function updateAnime(anime: UpdateAnimeRequest) {
@@ -44,7 +42,6 @@ export async function updateAnime(anime: UpdateAnimeRequest) {
   }
 
   revalidatePath("/anime");
-  redirect(`/anime`);
 }
 
 export async function getStudios(): Promise<GetStudioResponse[]> {

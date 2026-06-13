@@ -1,5 +1,5 @@
 "use client";
-import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, Typography, Card, CardBody, Chip } from "../../../component/mtailwind";
+import { Dialog, Button, DialogHeader, DialogBody, Option, DialogFooter, Select, CardBody, Chip } from "../../../component/mtailwind";
 import { useEffect, useState } from "react";
 import { EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest } from "@/app/api/dtos/anime";
 import { editCategoryAnime, editCategoryUniverseAnime, getCategories, getCategoryUniverses } from "./action";
@@ -40,14 +40,18 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
 
     const [categoryList, setCategoryList] = useState<CategoryList[]>()
     const changeCategory = (val = "") => {
-        let categoryVal: string[] = [];
-        if(formData.category_ids.length != 0) {
-            categoryVal = formData.category_ids
-        } 
-    
-        categoryVal.push(val)
-        console.log(categoryVal)
-        setFormData({ ...formData, "category_ids": categoryVal });
+        if (!val) return;
+
+        setCategory(val);
+        setFormData((current) => {
+            const categoryIds = prop.is_universe
+                ? [val]
+                : current.category_ids.includes(val)
+                    ? current.category_ids
+                    : [...current.category_ids, val];
+
+            return { ...current, category_ids: categoryIds };
+        });
     };
 
 
@@ -55,7 +59,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
         if(prop.is_universe){
             const request:EditCategoryUniversesAnimeRequest = {
                 anime_id: prop.anime_id,
-                category_universe_ids: formData.category_ids
+                category_universe_id: formData.category_ids[0] ?? ""
             }
             await editCategoryUniverseAnime(request);
         }else {
@@ -88,6 +92,9 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
         const categoryVal = formData.category_ids.filter((item)=>item!=id)
         console.log(categoryVal)
         setFormData({ ...formData, "category_ids": categoryVal });
+        if (prop.is_universe) {
+            setCategory("");
+        }
     }
 
     //fetch list of category
@@ -118,7 +125,12 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
         } else {
             initCategories();
         }
-    }, []);
+    }, [prop.is_universe]);
+    useEffect(() => {
+        const categoryIds = categoryDataList?.map((item) => item.id) ?? [];
+        setFormData({ category_ids: prop.is_universe ? categoryIds.slice(0, 1) : categoryIds });
+        setCategory(prop.is_universe ? categoryIds[0] ?? "" : "");
+    }, [categoryDataList, prop.is_universe]);
     return (
         <>
             <Dialog
@@ -130,7 +142,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
                 }}
                 size="sm"
             >
-                <DialogHeader>Manage Tag Anime</DialogHeader>
+                <DialogHeader>{prop.is_universe ? "Manage Universe Anime" : "Manage Tag Anime"}</DialogHeader>
                     <DialogBody className="space-y-4 pb-6">
                                 <CardBody className="flex justify-between">
                                     {formData?.category_ids?.length?<div>
@@ -150,7 +162,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
                                 </CardBody>
                         <Select
                             variant="outlined"
-                            label="Choose a Category"
+                            label={prop.is_universe ? "Choose a Universe" : "Choose a Category"}
                             color="green"
                             value={category}
                             name="category"
@@ -176,6 +188,7 @@ export default function AddCategoryToAnimeModal(prop: PropsAddCategoryToAnimeMod
                             variant="gradient" 
                             color="green" 
                             type="submit"
+                            disabled={prop.is_universe && formData.category_ids.length === 0}
                             onClick={handleSubmit}>
                             <span>Save</span>
                         </Button>

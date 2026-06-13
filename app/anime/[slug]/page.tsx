@@ -248,15 +248,15 @@ export default async function Page(props: any) {
                                     </td>
                                     <td className="flex">
                                         <div className="flex">                                        
-                                            {anime.categoryUniverse?.map((item, index) => (
+                                            {anime.category_universe?.map((item, index) => (
                                             <span key={item.id} className="px-1">
                                                 {item.name}
-                                                <p>{index == anime.categoryUniverse.length ? "," : ""}</p>
+                                                <p>{index == anime.category_universe.length ? "," : ""}</p>
                                             </span>
                                         ))}</div>
                                         <AddCategoryToAnimeButton 
                                             name="Add Tag" 
-                                            category={anime.categoryUniverse} 
+                                            category={anime.category_universe} 
                                             anime_id={anime.id}
                                             is_universe={true}/>
                                     </td>
