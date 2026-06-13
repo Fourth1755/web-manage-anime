@@ -109,7 +109,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                                 </td>
                                 <td className="px-4 py-4 whitespace-nowrap">{anime.status || '-'}</td>
                                 <td className="px-4 py-4">
-                                    <Link href={`anime/${anime.id}`}>
+                                    <Link href={`anime/${anime.my_anime_list_id}`}>
                                         <Button variant="outlined" color="pink" type="submit">
                                             <span>Detail</span>
                                         </Button>

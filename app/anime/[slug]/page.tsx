@@ -1,34 +1,55 @@
 export const dynamic = 'force-dynamic';
 import { AnimeService } from "@/app/api/anime";
-import { CardBody, Card, Typography, Button } from "../../component/mtailwind";
+import { CardBody, Card, Typography } from "../../component/mtailwind";
 import Link from "next/link";
 import CreateAnimeButton from "../component/createAnimeButton";
 import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
-import CreateSongButton from "./component/createSongButton/createSongButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
-import { EpisodeService } from "@/app/api/episode";
-import { GetEpisodeByAnimeResponse } from "@/app/api/dtos/episode";
-import EditEpisodeButton from "./component/editEpisodeButton/editEpisodeButton";
-import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton/addCharacterToEpisodeButton";
 import { CharacterService } from "@/app/api/character";
 import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
 import MigrateSongButton from "./component/migrateSongButton";
 import RevertMigrateSongButton from "./component/revertMigrateSongButton";
 import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
 import MigrateSpotifySongButton from "./component/migrateSpotifySongButton/migrateSpotifySongButton";
+import { AxiosError } from "axios";
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-    const animeSerivce = new AnimeService()
+export default async function Page(props: any) {
+    const params = await props.params;
+
+    let anime;
+    try {
+        const animeService = new AnimeService()
+        anime = await animeService.getAnimeById(params.slug);
+    } catch (error) {
+        const status = (error as AxiosError)?.response?.status;
+        if (status === 404) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen text-white gap-6">
+            <img
+                src="https://media.tenor.com/RO4khL1FMxgAAAAM/tokyo.gif"
+                alt="Not found"
+                width={220}
+                height={124}
+                className="rounded-xl"
+            />
+            <h1 className="text-4xl font-extrabold">404 - Page Not Found</h1>
+            <p className="text-gray-400 text-lg">This anime does not exist.</p>
+            <Link href="/" className="text-blue-400 hover:underline">
+                Go back home
+            </Link>
+            </div>
+        );
+        }
+        throw error;
+    }
     const songSerivce = new SongService();
-    const episodeService = new EpisodeService();
     const characterService = new CharacterService();
 
-    const { slug: animeId } = await params
-    const anime = await animeSerivce.getAnimeById(animeId);
-    const songs = await songSerivce.getSongByAnime(animeId);
-    const episodeResponse = await episodeService.getEpisode(animeId,"FIRST_APPEARANCE");
-    const characterResponse = await characterService.getCharacterByAnimeId(animeId)
+  const [songs, characterResponse] = await Promise.all([
+    songSerivce.getSongByAnime(anime.id),
+    characterService.getCharacterByAnimeId(anime.id)
+  ]);
 
     const converAnimeSongType = (type: string) => {
         switch (type) {
@@ -40,17 +61,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 return "Full Size Unofficial"
             case "FIRST_TAKE":
                 return "First Take"
-            default:
-                return ""
-        }
-    }
-
-    const converAnimeSongChannel = (type: string) => {
-        switch (type) {
-            case "YOUTUBE":
-                return "Youtube"
-            case "SPOTIFY":
-                return "Spotify"
             default:
                 return ""
         }
@@ -268,9 +278,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                             <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
                         )}
                     </div>
-                    {showAnimeSongItem(songs.opening_song, "Anime Opening", animeId)}
-                    {showAnimeSongItem(songs.ending_song, "Anime Ending", animeId)}
-                    {showAnimeSongItem(songs.soundtrack_song, "Anime Soundtrack", animeId)}
+                    {showAnimeSongItem(songs.opening_song, "Anime Opening", anime.id)}
+                    {showAnimeSongItem(songs.ending_song, "Anime Ending", anime.id)}
+                    {showAnimeSongItem(songs.soundtrack_song, "Anime Soundtrack", anime.id)}
                 </CardBody>
             </Card>
             <Card className="h-full w-full">
