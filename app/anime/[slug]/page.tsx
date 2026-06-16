@@ -6,6 +6,7 @@ import CreateAnimeButton from "../component/createAnimeButton";
 import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
+import { GetAnimeTrailerItem, GetAnimeTrailersResponse } from "@/app/api/dtos/anime";
 import { CharacterService } from "@/app/api/character";
 import CreateCharacterButton from "./component/createCharacterButton/createCharacterButton";
 import MigrateSongButton from "./component/migrateSongButton";
@@ -13,13 +14,14 @@ import RevertMigrateSongButton from "./component/revertMigrateSongButton";
 import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
 import MigrateSpotifySongButton from "./component/migrateSpotifySongButton/migrateSpotifySongButton";
 import { AxiosError } from "axios";
+import CreateTrailerButton from "./component/createTrailerButton/createTrailerButton";
 
 export default async function Page(props: any) {
     const params = await props.params;
+    const animeService = new AnimeService()
 
     let anime;
     try {
-        const animeService = new AnimeService()
         anime = await animeService.getAnimeById(params.slug);
     } catch (error) {
         const status = (error as AxiosError)?.response?.status;
@@ -46,10 +48,29 @@ export default async function Page(props: any) {
     const songSerivce = new SongService();
     const characterService = new CharacterService();
 
-  const [songs, characterResponse] = await Promise.all([
-    songSerivce.getSongByAnime(anime.id),
-    characterService.getCharacterByAnimeId(anime.id)
-  ]);
+    const [songs, characterResponse, trailerResponse] = await Promise.all([
+        songSerivce.getSongByAnime(anime.id),
+        characterService.getCharacterByAnimeId(anime.id),
+        animeService.getAnimeTrailers(anime.id).catch(() => [] as GetAnimeTrailerItem[]),
+    ]);
+
+    const normalizeTrailers = (trailers: GetAnimeTrailersResponse): GetAnimeTrailerItem[] => {
+        if (Array.isArray(trailers)) {
+            return trailers;
+        }
+
+        if (Array.isArray(trailers?.trailers)) {
+            return trailers.trailers;
+        }
+
+        if (Array.isArray(trailers?.data)) {
+            return trailers.data;
+        }
+
+        return [];
+    };
+
+    const animeTrailers = normalizeTrailers(trailerResponse as GetAnimeTrailersResponse);
 
     const converAnimeSongType = (type: string) => {
         switch (type) {
@@ -172,6 +193,84 @@ export default async function Page(props: any) {
             </div>
         );
     }
+
+    const getYoutubeEmbedLink = (link: string) => {
+        try {
+            const url = new URL(link);
+
+            if (url.hostname.includes("youtu.be")) {
+                const videoId = url.pathname.replace("/", "");
+                return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+            }
+
+            if (url.hostname.includes("youtube.com")) {
+                const videoId = url.searchParams.get("v");
+                return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+            }
+        } catch {
+            return "";
+        }
+
+        return "";
+    };
+
+    const showAnimeTrailerItem = (trailers: GetAnimeTrailerItem[]) => {
+        if (!trailers || trailers.length === 0) {
+            return (
+                <div className="rounded-xl border border-dashed border-blue-gray-100 p-6 text-center text-sm text-gray-500">
+                    No trailers yet.
+                </div>
+            );
+        }
+
+        return (
+            <div className="grid gap-4">
+                {trailers.map((trailer, index) => {
+                    const trailerLink = trailer.url;
+                    const embedLink = trailer.embed_url || getYoutubeEmbedLink(trailer.url);
+                    const trailerTitle = trailer.name || `Trailer ${index + 1}`;
+
+                    return (
+                        <div key={trailer.id ?? `${trailerTitle}-${index}`} className="rounded-xl border border-blue-gray-100 p-4 bg-gray-50 flex flex-col gap-3">
+                            <Typography variant="h6" color="blue-gray">
+                                {trailerTitle}
+                            </Typography>
+                            {embedLink ? (
+                                <iframe
+                                    width="100%"
+                                    height="240"
+                                    src={embedLink}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="rounded-lg shadow"
+                                ></iframe>
+                            ) : null}
+                            {trailer.video_id ? (
+                                <Typography variant="small" className="text-gray-500">
+                                    Video ID: {trailer.video_id}
+                                </Typography>
+                            ) : null}
+                            {trailerLink ? (
+                                <a
+                                    href={trailerLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-blue-600 hover:underline break-all"
+                                >
+                                    {trailerLink}
+                                </a>
+                            ) : (
+                                <Typography variant="small" className="text-gray-500">
+                                    Trailer link unavailable
+                                </Typography>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     return (
         <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">
             <Card className="h-full w-full">
@@ -269,6 +368,19 @@ export default async function Page(props: any) {
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </CardBody>
+            </Card>
+            <Card className="h-full w-full">
+                <CardBody>
+                    <div className="flex justify-between items-center">
+                        <Typography variant="h5">
+                            Anime Trailers
+                        </Typography>
+                        <CreateTrailerButton anime_id={anime.id} anime_name={anime.name} />
+                    </div>
+                    <div className="mt-4">
+                        {showAnimeTrailerItem(animeTrailers)}
                     </div>
                 </CardBody>
             </Card>

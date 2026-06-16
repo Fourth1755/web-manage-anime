@@ -51,6 +51,33 @@ export type GetAnimeByIdResponse = {
     is_migrate_anime_song: boolean
 }
 
+export type AnimeTrailerRequest = {
+    name: string
+    video_id?: string
+    url: string
+}
+
+export type CreateAnimeTrailersRequest = {
+    anime_id: string
+    trailers: AnimeTrailerRequest[]
+}
+
+export type GetAnimeTrailerItem = {
+    id: string
+    name: string
+    anime_id: string
+    video_id: string
+    url: string
+    embed_url: string
+}
+
+export type GetAnimeTrailersResponse =
+    | GetAnimeTrailerItem[]
+    | {
+        trailers?: GetAnimeTrailerItem[]
+        data?: GetAnimeTrailerItem[]
+    }
+
 export type EditCategoryAnimeRequest = {
     anime_id: string
     category_ids: string[]
