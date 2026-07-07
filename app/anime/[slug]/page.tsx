@@ -15,6 +15,7 @@ import AddSongChannelButton from "./component/addSongChannelButton/addSongChanne
 import MigrateSpotifySongButton from "./component/migrateSpotifySongButton/migrateSpotifySongButton";
 import { AxiosError } from "axios";
 import CreateTrailerButton from "./component/createTrailerButton/createTrailerButton";
+import AnilistTrailerToggle from "../component/anilistTrailerToggle";
 
 export default async function Page(props: any) {
     const params = await props.params;
@@ -377,7 +378,10 @@ export default async function Page(props: any) {
                         <Typography variant="h5">
                             Anime Trailers
                         </Typography>
-                        <CreateTrailerButton anime_id={anime.id} anime_name={anime.name} />
+                        <div className="flex items-center gap-3">
+                            <AnilistTrailerToggle animeId={anime.id} />
+                            <CreateTrailerButton anime_id={anime.id} anime_name={anime.name} />
+                        </div>
                     </div>
                     <div className="mt-4">
                         {showAnimeTrailerItem(animeTrailers)}

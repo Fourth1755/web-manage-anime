@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { CreateAnimeRequest, CreateAnimeTrailersRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeTrailersResponse, GetAnimesResponse, MigrateMultipleAnimeRequest, MigrateSingleAnimeRequest, UpdateAnimeRequest } from './dtos/anime';
+import { AnilistTrailerSettingResponse, CreateAnimeRequest, CreateAnimeTrailersRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeTrailersResponse, GetAnimesResponse, MigrateMultipleAnimeRequest, MigrateSingleAnimeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from './dtos/anime';
 
 export class AnimeService {
     public async createAnime(anime: CreateAnimeRequest) {
@@ -51,5 +51,10 @@ export class AnimeService {
     public async migrateMultipleAnime(request: MigrateMultipleAnimeRequest) {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.post('/admin/migrate/animes', request, { headers });
+    }
+
+    public async updateAnilistTrailerSetting(id: string, request: UpdateAnilistTrailerSettingRequest): Promise<AnilistTrailerSettingResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.put(`/admin/animes/${id}/anilist-trailer`, request, { headers }) as unknown as Promise<AnilistTrailerSettingResponse>;
     }
 }

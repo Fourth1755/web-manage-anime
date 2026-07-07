@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { AnimeService } from "@/app/api/anime";
 import { StudioService } from "@/app/api/studio";
-import { CreateAnimeRequest, UpdateAnimeRequest } from "@/app/api/dtos/anime";
+import { AnilistTrailerSettingResponse, CreateAnimeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from "@/app/api/dtos/anime";
 import { GetStudioResponse } from "@/app/api/dtos/studio";
 
 export type MigrateResult = { success: boolean; alreadyExists?: boolean; error?: string };
@@ -71,5 +71,23 @@ export async function migrateMultipleAnime(start_anime_id: number, end_anime_id:
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error?.response?.data?.message ?? "Migration failed" };
+  }
+}
+
+export async function updateAnilistTrailerSetting(
+  animeId: string,
+  request: UpdateAnilistTrailerSettingRequest
+): Promise<{ success: boolean; data?: AnilistTrailerSettingResponse; error?: string }> {
+  try {
+    const animeService = new AnimeService();
+    const data = await animeService.updateAnilistTrailerSetting(animeId, request);
+    revalidatePath("/anime");
+    revalidatePath(`/anime/${animeId}`);
+    return { success: true, data };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.response?.data?.message ?? "Failed to update AniList trailer setting",
+    };
   }
 }

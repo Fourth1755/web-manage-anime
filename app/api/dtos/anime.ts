@@ -120,3 +120,12 @@ export type MigrateMultipleAnimeRequest = {
     start_anime_id: number;
     end_anime_id: number;
 };
+
+export type UpdateAnilistTrailerSettingRequest = {
+    is_active: boolean;
+};
+
+export type AnilistTrailerSettingResponse = {
+    key: string;
+    is_active: boolean;
+};
