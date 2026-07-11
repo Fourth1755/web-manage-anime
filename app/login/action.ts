@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { AuthService } from '../api/auth';
+import { ADMIN_SESSION_COOKIE } from '@/lib/adminSession';
 
 export async function login(email: string, password: string): Promise<{ error: string } | void> {
     try {
@@ -12,8 +13,10 @@ export async function login(email: string, password: string): Promise<{ error: s
         for (const raw of setCookies) {
             const parts = raw.split(';').map(p => p.trim());
             const eqIdx = parts[0].indexOf('=');
+            if (eqIdx < 0) continue;
             const name = parts[0].slice(0, eqIdx).trim();
             const value = parts[0].slice(eqIdx + 1);
+            if (name !== ADMIN_SESSION_COOKIE) continue;
             const opts: Parameters<typeof cookieStore.set>[2] = { path: '/' };
             for (const attr of parts.slice(1)) {
                 const [k, v] = attr.split('=');
@@ -33,6 +36,6 @@ export async function login(email: string, password: string): Promise<{ error: s
 
 export async function logout() {
     const cookieStore = await cookies();
-    cookieStore.delete('admin_jwt');
+    cookieStore.delete(ADMIN_SESSION_COOKIE);
     redirect('/login');
 }

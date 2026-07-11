@@ -5,6 +5,7 @@ import axios, {
 import http from 'http';
 import https from 'https';
 import { cookies } from 'next/headers';
+import { ADMIN_SESSION_COOKIE, isAdminSessionToken } from '@/lib/adminSession';
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8080';
 
@@ -31,13 +32,12 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Returns the admin_jwt cookie string to forward to the backend.
-// The Gin middleware reads the JWT from a cookie named "admin_jwt", not from Authorization header.
+// Return only this app's admin session. Other JWT cookies may belong to the user app.
 export async function getAuthCookie(): Promise<string> {
   try {
     const cookieStore = await cookies();
-    const jwtCookie = cookieStore.get('admin_jwt');
-    return jwtCookie ? `admin_jwt=${jwtCookie.value}` : '';
+    const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+    return isAdminSessionToken(token) ? `${ADMIN_SESSION_COOKIE}=${token}` : '';
   } catch {
     return '';
   }

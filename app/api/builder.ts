@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { ADMIN_SESSION_COOKIE, isAdminSessionToken } from '@/lib/adminSession';
 
 export class ConnectAnimapService {
     private url: string;
@@ -14,9 +15,8 @@ export class ConnectAnimapService {
     public async getAuthorization(): Promise<string> {
         try {
             const cookieStore = await cookies();
-            const all = cookieStore.getAll();
-            const authCookie = all.find(c => c.value.startsWith('eyJ'));
-            return `Bearer ${authCookie?.value ?? ''}`;
+            const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+            return `Bearer ${isAdminSessionToken(token) ? token : ''}`;
         } catch {
             return 'Bearer ';
         }

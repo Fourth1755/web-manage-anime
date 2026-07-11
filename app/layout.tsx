@@ -5,6 +5,7 @@ import { ReduxProvider } from "@/lib/provider";
 import Navbar from "./component/navbar/navbar";
 import { cookies } from "next/headers";
 import { decodeJwt } from "jose";
+import { ADMIN_SESSION_COOKIE, isAdminSessionToken } from "@/lib/adminSession";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,9 +29,8 @@ export default async function RootLayout({
   let user: SessionUser | null = null;
   try {
     const cookieStore = await cookies();
-    const all = cookieStore.getAll();
-    const token = all.find(c => c.value.startsWith('eyJ'))?.value;
-    if (token) {
+    const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+    if (token && isAdminSessionToken(token)) {
       const payload = decodeJwt(token);
       user = {
         uuid: payload.uuid as string,
