@@ -108,6 +108,11 @@ export type MigrateSpotifySongResponse = {
     candidates?: SpotifyTrackCandidate[]
 }
 
+export type MigrateSpotifySongRequest = {
+    song_id: string
+    song_name: string
+}
+
 export type ConfirmSpotifySongRequest = {
     song_id: string
     spotify_track_id: string

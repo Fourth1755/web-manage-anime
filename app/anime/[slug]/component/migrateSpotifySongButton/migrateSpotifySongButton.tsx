@@ -29,6 +29,7 @@ function formatDuration(ms: number): string {
 
 export default function MigrateSpotifySongButton({ song_id, song_name, anime_id }: Props) {
     const [open, setOpen] = useState(false)
+    const [editableSongName, setEditableSongName] = useState(song_name)
     const [view, setView] = useState<View>('confirm')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -38,6 +39,7 @@ export default function MigrateSpotifySongButton({ song_id, song_name, anime_id 
 
     const handleClose = () => {
         setView('confirm')
+        setEditableSongName(song_name)
         setLoading(false)
         setError(null)
         setCandidates([])
@@ -46,9 +48,14 @@ export default function MigrateSpotifySongButton({ song_id, song_name, anime_id 
     }
 
     const handleMigrate = async () => {
+        const trimmedSongName = editableSongName.trim()
+        if (!trimmedSongName) {
+            setError('Song name is required')
+            return
+        }
         setLoading(true)
         setError(null)
-        const res = await migrateSpotifySong(song_id, anime_id)
+        const res = await migrateSpotifySong(song_id, trimmedSongName, anime_id)
         setLoading(false)
         if (!res.success) {
             setError(res.error ?? 'Migration failed')
@@ -90,15 +97,29 @@ export default function MigrateSpotifySongButton({ song_id, song_name, anime_id 
             >
                 <DialogHeader>
                     {view === 'confirm' && 'Migrate Spotify Song'}
-                    {view === 'candidates' && `Select Spotify Track for "${song_name}"`}
+                    {view === 'candidates' && `Select Spotify Track for "${editableSongName}"`}
                     {view === 'done' && 'Migrate Spotify Song'}
                 </DialogHeader>
 
                 <DialogBody className={view === 'candidates' ? 'max-h-[60vh] overflow-y-auto' : ''}>
                     {view === 'confirm' && (
-                        <p className="text-sm text-gray-700">
-                            Migrate Spotify data for <span className="font-semibold">{song_name}</span>.
-                        </p>
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="spotify-song-name" className="text-sm font-medium text-gray-700">
+                                Song name
+                            </label>
+                            <input
+                                id="spotify-song-name"
+                                type="text"
+                                value={editableSongName}
+                                onChange={(event) => setEditableSongName(event.target.value)}
+                                className="w-full rounded-lg border border-blue-gray-200 px-3 py-2 text-sm text-blue-gray-800 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                                placeholder="Enter song name"
+                                disabled={loading}
+                            />
+                            <p className="text-xs text-gray-500">
+                                Edit the name used to search Spotify before migrating.
+                            </p>
+                        </div>
                     )}
 
                     {view === 'candidates' && (

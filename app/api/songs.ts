@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { ConfirmSpotifySongRequest, CreateAnimeSongRequest, CreateSongChannelRequest, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateSpotifySongResponse } from './dtos/song';
+import { ConfirmSpotifySongRequest, CreateAnimeSongRequest, CreateSongChannelRequest, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateSpotifySongRequest, MigrateSpotifySongResponse } from './dtos/song';
 
 export class SongService {
     public async getSongs(): Promise<GetAllSongResponse[]> {
@@ -37,9 +37,9 @@ export class SongService {
         return apiClient.delete('/admin/migrate/anime-songs', { headers, data: { my_anime_list_id } });
     }
 
-    public async migrateSpotifySong(song_id: string): Promise<MigrateSpotifySongResponse> {
+    public async migrateSpotifySong(request: MigrateSpotifySongRequest): Promise<MigrateSpotifySongResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/admin/migrate/spotify-song', { song_id }, { headers }) as unknown as Promise<MigrateSpotifySongResponse>;
+        return apiClient.post('/admin/migrate/spotify-song', request, { headers }) as unknown as Promise<MigrateSpotifySongResponse>;
     }
 
     public async confirmSpotifySong(request: ConfirmSpotifySongRequest) {

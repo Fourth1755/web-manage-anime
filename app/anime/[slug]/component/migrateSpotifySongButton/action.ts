@@ -14,10 +14,10 @@ export type MigrateSpotifySongResult = {
     candidates?: SpotifyTrackCandidate[]
 }
 
-export async function migrateSpotifySong(song_id: string, anime_id: string): Promise<MigrateSpotifySongResult> {
+export async function migrateSpotifySong(song_id: string, song_name: string, anime_id: string): Promise<MigrateSpotifySongResult> {
     try {
         const songService = new SongService()
-        const data = await songService.migrateSpotifySong(song_id)
+        const data = await songService.migrateSpotifySong({ song_id, song_name })
         if (data.status === 'mapped') {
             revalidatePath(`/anime/${anime_id}`)
         }
