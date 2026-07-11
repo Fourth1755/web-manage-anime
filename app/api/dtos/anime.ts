@@ -52,8 +52,6 @@ export type GetAnimeByIdResponse = {
 }
 
 export type AnimeTrailerRequest = {
-    name: string
-    video_id?: string
     url: string
 }
 

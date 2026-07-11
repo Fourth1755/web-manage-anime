@@ -9,7 +9,7 @@ import {
     Input,
     Typography,
 } from "../../../../component/mtailwind";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { CreateAnimeTrailersRequest } from "@/app/api/dtos/anime";
 import { createAnimeTrailers } from "./action";
 
@@ -22,24 +22,20 @@ type PropsCreateTrailerModal = {
 };
 
 type TrailerFormData = {
-    name: string;
-    video_id: string;
     url: string;
 };
 
 const emptyTrailer = (): TrailerFormData => ({
-    name: "",
-    video_id: "",
     url: "",
 });
 
 export default function CreateTrailerModal(props: PropsCreateTrailerModal) {
     const [trailers, setTrailers] = useState<TrailerFormData[]>([emptyTrailer()]);
 
-    const handleTrailerChange = (index: number, name: keyof TrailerFormData, value: string) => {
+    const handleTrailerChange = (index: number, value: string) => {
         setTrailers((currentTrailers) =>
             currentTrailers.map((item, itemIndex) =>
-                itemIndex === index ? { ...item, [name]: value } : item
+                itemIndex === index ? { ...item, url: value } : item
             )
         );
     };
@@ -58,21 +54,18 @@ export default function CreateTrailerModal(props: PropsCreateTrailerModal) {
         });
     };
 
-    const handleSubmit = () => {
-        const filteredTrailers = trailers.filter((item) => item.url.trim() !== "");
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const trailerUrls = trailers.map((item) => item.url.trim());
 
-        if (filteredTrailers.length === 0) {
-            props.handlerResponseMessage("Please add at least one trailer URL");
+        if (trailerUrls.some((url) => url === "")) {
+            props.handlerResponseMessage("Trailer URL is required");
             return;
         }
 
         const request: CreateAnimeTrailersRequest = {
             anime_id: props.anime_id,
-            trailers: filteredTrailers.map((item) => ({
-                name: item.name.trim(),
-                video_id: item.video_id.trim() || undefined,
-                url: item.url.trim(),
-            })),
+            trailers: trailerUrls.map((url) => ({ url })),
         };
 
         const response = createAnimeTrailers(request, props.anime_id);
@@ -92,48 +85,39 @@ export default function CreateTrailerModal(props: PropsCreateTrailerModal) {
             size="md"
         >
             <DialogHeader>Create Anime Trailers</DialogHeader>
-            <DialogBody className="space-y-4 pb-6 overflow-y-scroll max-h-[32rem]">
-                <Typography variant="h6">{props.anime_name}</Typography>
-                {trailers.map((item, index) => (
-                    <div key={index} className="rounded-lg border border-blue-gray-100 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                            <Typography variant="small" className="font-bold">
-                                Trailer {index + 1}
-                            </Typography>
-                            <Button
-                                type="button"
-                                variant="text"
-                                color="red"
-                                onClick={() => handleRemoveTrailer(index)}
-                            >
-                                Remove
-                            </Button>
+            <form onSubmit={handleSubmit}>
+                <DialogBody className="space-y-4 pb-6 overflow-y-scroll max-h-[32rem]">
+                    <Typography variant="h6">{props.anime_name}</Typography>
+                    {trailers.map((item, index) => (
+                        <div key={index} className="rounded-lg border border-blue-gray-100 p-4 space-y-3">
+                            <div className="flex items-center justify-between">
+                                <Typography variant="small" className="font-bold">
+                                    Trailer {index + 1}
+                                </Typography>
+                                <Button
+                                    type="button"
+                                    variant="text"
+                                    color="red"
+                                    onClick={() => handleRemoveTrailer(index)}
+                                >
+                                    Remove
+                                </Button>
+                            </div>
+                            <Input
+                                label="URL"
+                                type="url"
+                                required
+                                crossOrigin={undefined}
+                                value={item.url}
+                                onChange={(event) => handleTrailerChange(index, event.target.value)}
+                            />
                         </div>
-                        <Input
-                            label="Name"
-                            crossOrigin={undefined}
-                            value={item.name}
-                            onChange={(event) => handleTrailerChange(index, "name", event.target.value)}
-                        />
-                        <Input
-                            label="Video ID"
-                            crossOrigin={undefined}
-                            value={item.video_id}
-                            onChange={(event) => handleTrailerChange(index, "video_id", event.target.value)}
-                        />
-                        <Input
-                            label="URL"
-                            crossOrigin={undefined}
-                            value={item.url}
-                            onChange={(event) => handleTrailerChange(index, "url", event.target.value)}
-                        />
-                    </div>
-                ))}
-                <Button type="button" variant="outlined" color="green" onClick={handleAddTrailer}>
-                    <span>Add More Trailer</span>
-                </Button>
-            </DialogBody>
-            <DialogFooter>
+                    ))}
+                    <Button type="button" variant="outlined" color="green" onClick={handleAddTrailer}>
+                        <span>Add More Trailer</span>
+                    </Button>
+                </DialogBody>
+                <DialogFooter>
                 <Button
                     variant="text"
                     color="red"
@@ -142,10 +126,11 @@ export default function CreateTrailerModal(props: PropsCreateTrailerModal) {
                 >
                     <span>Cancel</span>
                 </Button>
-                <Button variant="gradient" color="green" type="button" onClick={handleSubmit}>
+                <Button variant="gradient" color="green" type="submit">
                     <span>Create</span>
                 </Button>
-            </DialogFooter>
+                </DialogFooter>
+            </form>
         </Dialog>
     );
 }
