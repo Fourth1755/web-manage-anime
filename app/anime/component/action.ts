@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { AnimeService } from "@/app/api/anime";
 import { StudioService } from "@/app/api/studio";
-import { AnilistTrailerSettingResponse, CreateAnimeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from "@/app/api/dtos/anime";
+import { AnilistEpisodeSettingResponse, AnilistTrailerSettingResponse, CreateAnimeRequest, UpdateAnimeAniListEpisodeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from "@/app/api/dtos/anime";
 import { GetStudioResponse } from "@/app/api/dtos/studio";
 
 export type MigrateResult = { success: boolean; alreadyExists?: boolean; error?: string };
@@ -88,6 +88,24 @@ export async function updateAnilistTrailerSetting(
     return {
       success: false,
       error: error?.response?.data?.message ?? "Failed to update AniList trailer setting",
+    };
+  }
+}
+
+export async function updateAnilistEpisodeSetting(
+  animeId: string,
+  request: UpdateAnimeAniListEpisodeRequest
+): Promise<{ success: boolean; data?: AnilistEpisodeSettingResponse; error?: string }> {
+  try {
+    const animeService = new AnimeService();
+    const data = await animeService.updateAnilistEpisodeSetting(animeId, request);
+    revalidatePath("/anime");
+    revalidatePath(`/anime/${animeId}`);
+    return { success: true, data };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.response?.data?.message ?? "Failed to update AniList episode setting",
     };
   }
 }

@@ -7,7 +7,7 @@ type GetEpisodeByAnimeResponseCharacters = {
     appearance: boolean
 }
 
-type GetEpisodeByAnimeResponseEpisode = {
+export type GetEpisodeByAnimeResponseEpisode = {
     id: string
     number: number
     name: string

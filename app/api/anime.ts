@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { AnilistTrailerSettingResponse, CreateAnimeRequest, CreateAnimeTrailersRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeTrailersResponse, GetAnimesResponse, MigrateMultipleAnimeRequest, MigrateSingleAnimeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from './dtos/anime';
+import { AnilistEpisodeSettingResponse, AnilistTrailerSettingResponse, CreateAnimeRequest, CreateAnimeTrailersRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeTrailersResponse, GetAnimesResponse, MigrateMultipleAnimeRequest, MigrateSingleAnimeRequest, UpdateAnimeAniListEpisodeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from './dtos/anime';
 
 export class AnimeService {
     public async createAnime(anime: CreateAnimeRequest) {
@@ -56,5 +56,10 @@ export class AnimeService {
     public async updateAnilistTrailerSetting(id: string, request: UpdateAnilistTrailerSettingRequest): Promise<AnilistTrailerSettingResponse> {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.put(`/admin/animes/${id}/anilist-trailer`, request, { headers }) as unknown as Promise<AnilistTrailerSettingResponse>;
+    }
+
+    public async updateAnilistEpisodeSetting(id: string, request: UpdateAnimeAniListEpisodeRequest): Promise<AnilistEpisodeSettingResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.patch(`/admin/animes/${id}/anilist-episode`, request, { headers }) as unknown as Promise<AnilistEpisodeSettingResponse>;
     }
 }

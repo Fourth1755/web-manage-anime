@@ -16,6 +16,10 @@ import MigrateSpotifySongButton from "./component/migrateSpotifySongButton/migra
 import { AxiosError } from "axios";
 import CreateTrailerButton from "./component/createTrailerButton/createTrailerButton";
 import AnilistTrailerToggle from "../component/anilistTrailerToggle";
+import AnilistEpisodeToggle from "../component/anilistEpisodeToggle";
+import { EpisodeService } from "@/app/api/episode";
+import EditEpisodeButton from "./component/editEpisodeButton/editEpisodeButton";
+import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton/addCharacterToEpisodeButton";
 
 export default async function Page(props: any) {
     const params = await props.params;
@@ -48,11 +52,13 @@ export default async function Page(props: any) {
     }
     const songSerivce = new SongService();
     const characterService = new CharacterService();
+    const episodeService = new EpisodeService();
 
-    const [songs, characterResponse, trailerResponse] = await Promise.all([
+    const [songs, characterResponse, trailerResponse, episodeResponse] = await Promise.all([
         songSerivce.getSongByAnime(anime.id),
         characterService.getCharacterByAnimeId(anime.id),
         animeService.getAnimeTrailers(anime.id).catch(() => [] as GetAnimeTrailerItem[]),
+        episodeService.getEpisode(anime.id, "anilist").catch(() => ({ episodes: [] })),
     ]);
 
     const normalizeTrailers = (trailers: GetAnimeTrailersResponse): GetAnimeTrailerItem[] => {
@@ -374,12 +380,55 @@ export default async function Page(props: any) {
             </Card>
             <Card className="h-full w-full">
                 <CardBody>
+                    <div className="flex flex-wrap justify-between items-center gap-3">
+                        <Typography variant="h5">Manage Episodes</Typography>
+                        <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-600">Use AniList Episodes</span>
+                            <AnilistEpisodeToggle animeId={anime.id} initialValue={anime.is_anilist_episode_active} />
+                        </div>
+                    </div>
+                    {/* <div className="mt-4 relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table className="w-full text-sm text-left text-black">
+                            <thead>
+                                <tr>
+                                    <th className="px-6 py-3">No.</th>
+                                    <th className="px-6 py-3">Name English</th>
+                                    <th className="px-6 py-3">Name Thai</th>
+                                    <th className="px-6 py-3">Name Japan</th>
+                                    <th className="px-6 py-3">Manage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {episodeResponse?.episodes?.map((episode) => (
+                                    <tr key={episode.id} className="border-b">
+                                        <td className="px-6 py-4 font-medium">{episode.number}</td>
+                                        <td className="px-6 py-4">{episode.name_english}</td>
+                                        <td className="px-6 py-4">{episode.name_thai}</td>
+                                        <td className="px-6 py-4">{episode.name_japan}</td>
+                                        <td className="px-6 py-4 flex gap-2">
+                                            <EditEpisodeButton episode={episode} anime_id={anime.id} />
+                                            <AddCharacterToEpisodeButton episode={episode} anime_id={anime.id} />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {episodeResponse?.episodes?.length === 0 ? <p className="p-6 text-center text-sm text-gray-500">No AniList episodes found.</p> : null}
+                    </div> */}
+                </CardBody>
+            </Card>
+            <Card className="h-full w-full">
+                <CardBody>
                     <div className="flex justify-between items-center">
                         <Typography variant="h5">
                             Anime Trailers
                         </Typography>
                         <div className="flex items-center gap-3">
-                            <AnilistTrailerToggle animeId={anime.id} />
+                            <h4>Use AniList Trailer</h4>
+                            <AnilistTrailerToggle
+                                animeId={anime.id}
+                                initialValue={anime.is_anilist_trailer_active}
+                            />
                             <CreateTrailerButton anime_id={anime.id} anime_name={anime.name} />
                         </div>
                     </div>
@@ -443,58 +492,6 @@ export default async function Page(props: any) {
                     </div>
                 </CardBody>
             </Card>
-            {/* <Card className="h-full w-full">
-                <CardBody>
-                    <div className="flex justify-between">
-                        <Typography variant="h5">
-                            Anime Episode
-                        </Typography>
-                    </div>
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left text-black">
-                    <thead>
-                        <tr>
-                            <th  scope="col" className="px-6 py-3">No.</th>
-                            <th  scope="col" className="px-6 py-3">Name English</th>
-                            <th  scope="col" className="px-6 py-3">Name Thai</th>
-                            <th  scope="col" className="px-6 py-3">Name Japan</th>
-                            <th  scope="col" className="px-6 py-3">Edit</th>
-                            <th  scope="col" className="px-6 py-3">Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {episodeResponse?.episodes?.map((episode, index: number) => (
-                            <>
-                            <tr key={index}>
-                                <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{episode.number}</td>
-                                <td>{episode.name_english}</td>
-                                <td>{episode.name_thai}</td>
-                                <td>{episode.name_japan}</td>
-                                <td>
-                                    <EditEpisodeButton episode={episode} anime_id={animeId}/>
-                                </td>
-                                <td>
-                                    <AddCharacterToEpisodeButton episode={episode} anime_id={animeId}/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td className="flex">
-                                    {episode?.characters?.map((character)=>(
-                                    <span key={character.id} className="ml-2">
-                                        <img
-                                            src={character.image}
-                                            className="w-10 h-10 rounded-full object-cover"/>
-                                    </span>))}
-                                </td>
-                            </tr>
-                            </>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-                </CardBody>
-            </Card> */}
         </div>
     );
 }

@@ -49,6 +49,8 @@ export type GetAnimeByIdResponse = {
     aired_at: string
     my_anime_list_id: number
     is_migrate_anime_song: boolean
+    is_anilist_trailer_active: boolean
+    is_anilist_episode_active: boolean
 }
 
 export type AnimeTrailerRequest = {
@@ -123,7 +125,16 @@ export type UpdateAnilistTrailerSettingRequest = {
     is_active: boolean;
 };
 
+export type UpdateAnimeAniListEpisodeRequest = {
+    is_active: boolean;
+};
+
 export type AnilistTrailerSettingResponse = {
+    key: string;
+    is_active: boolean;
+};
+
+export type AnilistEpisodeSettingResponse = {
     key: string;
     is_active: boolean;
 };
