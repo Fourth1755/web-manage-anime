@@ -11,3 +11,8 @@ export type CreateCategoryRequest = {
     image: string
     is_universe: boolean
 }
+
+export type CreateCategoryUniverseRequest = {
+    name: string
+    image: string
+}
