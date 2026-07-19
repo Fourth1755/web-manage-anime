@@ -16,6 +16,13 @@ export type CreateAnimeSongRequest = {
     artist_list: string[]
 }
 
+export type MigrateAnimeSongsSource = 'jikan' | 'my_anime_list'
+
+export type MigrateAnimeSongsRequest = {
+    my_anime_list_id: number
+    source: MigrateAnimeSongsSource
+}
+
 type SongChannel = {
     id: string
     channel: string

@@ -9,6 +9,7 @@ import { CategoryUniverseService } from '@/app/api/categoryUniverse';
 import { CharacterService } from '@/app/api/character';
 import { GetCategoryListResponse } from '@/app/api/dtos/category';
 import { GetCharacterByAnimeIdResponse } from '@/app/api/dtos/character';
+import { MigrateAnimeSongsSource } from '@/app/api/dtos/song';
 
 export type MigrateResult = { success: boolean; error?: string };
 
@@ -41,10 +42,10 @@ export async function getCharactersByAnime(anime_id: string): Promise<GetCharact
     return characterService.getCharacterByAnimeId(anime_id)
 }
 
-export async function migrateAnimeSongs(my_anime_list_id: number, anime_id: string): Promise<MigrateResult> {
+export async function migrateAnimeSongs(my_anime_list_id: number, anime_id: string, source: MigrateAnimeSongsSource): Promise<MigrateResult> {
     try {
         const songService = new SongService();
-        await songService.migrateAnimeSongs(my_anime_list_id);
+        await songService.migrateAnimeSongs({ my_anime_list_id, source });
         revalidatePath(`/anime/${anime_id}`);
         return { success: true };
     } catch (error: any) {
