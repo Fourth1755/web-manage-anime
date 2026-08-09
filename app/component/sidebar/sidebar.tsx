@@ -39,6 +39,11 @@ export default function Sidebar(props: PropsSidebar) {
       url: "/artist",
       logo: "M17 15.5V5s3 1 3 4m-7-3H4m9 4H4m4 4H4m13 2.4c0 1.326-1.343 2.4-3 2.4s-3-1.075-3-2.4 1.343-2.4 3-2.4 3 1.075 3 2.4Z",
     },
+    {
+      name: "Users",
+      url: "/user",
+      logo: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m7-8a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7-3v6m3-3h-6",
+    },
   ];
 
 

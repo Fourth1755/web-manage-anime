@@ -18,8 +18,6 @@ import CreateTrailerButton from "./component/createTrailerButton/createTrailerBu
 import AnilistTrailerToggle from "../component/anilistTrailerToggle";
 import AnilistEpisodeToggle from "../component/anilistEpisodeToggle";
 import { EpisodeService } from "@/app/api/episode";
-import EditEpisodeButton from "./component/editEpisodeButton/editEpisodeButton";
-import AddCharacterToEpisodeButton from "./component/addCharacterToEpisodeButton/addCharacterToEpisodeButton";
 
 export default async function Page(props: any) {
     const params = await props.params;
