@@ -29,6 +29,11 @@ export default function Sidebar(props: PropsSidebar) {
       url: "/category-universe",
       logo: "M12 3v18m9-9H3m15.364-6.364-12.728 12.728m0-12.728 12.728 12.728",
     },
+    {
+      name: "Tier Templates",
+      url: "/tier-template",
+      logo: "M4 5h16M4 12h16M4 19h16",
+    },
     // {
     //   name: "Song",
     //   url: "/song",
