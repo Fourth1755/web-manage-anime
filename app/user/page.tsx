@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { UserService } from '../api/user';
 import PaginationControl from '../component/paginationControl';
 import UserSearchInput from './component/userSearchInput';
+import DeleteUserButton from './component/deleteUserButton';
 import { User } from '../api/dtos/user';
 
 type SearchParams = {
@@ -52,6 +53,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                             <th scope="col" className="px-6 py-3">Email</th>
                             <th scope="col" className="px-6 py-3">Role</th>
                             <th scope="col" className="px-6 py-3">ID</th>
+                            <th scope="col" className="px-6 py-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,10 +64,17 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                                 <td className="px-6 py-4">{user.email}</td>
                                 <td className="px-6 py-4">{user.role || '-'}</td>
                                 <td className="max-w-xs truncate px-6 py-4 text-gray-500">{user.uuid || user.id || '-'}</td>
+                                <td className="px-6 py-4">
+                                    {(user.uuid || user.id) ? (
+                                        <DeleteUserButton email={user.email} id={user.uuid || user.id || ''} />
+                                    ) : (
+                                        <span className="text-gray-400">-</span>
+                                    )}
+                                </td>
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">No users found.</td>
+                                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">No users found.</td>
                             </tr>
                         )}
                     </tbody>

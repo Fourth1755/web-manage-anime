@@ -8,6 +8,10 @@ export type User = {
     created_at?: string | null;
 };
 
+export type DeleteUserRequest = {
+    id: string;
+};
+
 export type GetUserListResponse = {
     users: User[];
     page?: number;
