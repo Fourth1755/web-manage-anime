@@ -7,15 +7,23 @@ import { createCategoryUniverse } from "./action";
 type Props = {
     open: boolean;
     handler: () => void;
+    handlerResponseMessage: (message: string) => void;
 };
 
-export default function CreateCategoryUniverseModal({ open, handler }: Props) {
+export default function CreateCategoryUniverseModal({ open, handler, handlerResponseMessage }: Props) {
     const [name, setName] = useState("");
     const [image, setImage] = useState("");
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        await createCategoryUniverse({ name, image });
+
+        const result = await createCategoryUniverse({ name, image });
+        if (result?.error) {
+            handler();
+            handlerResponseMessage(result.error);
+            return;
+        }
+
         setName("");
         setImage("");
         handler();

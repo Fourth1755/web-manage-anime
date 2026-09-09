@@ -6,7 +6,16 @@ import { CategoryUniverseService } from "../../api/categoryUniverse";
 
 export async function createCategoryUniverse(categoryUniverse: { name: string; image: string }) {
     const categoryUniverseService = new CategoryUniverseService();
-    await categoryUniverseService.createCategoryUniverse(categoryUniverse);
+
+    try {
+        await categoryUniverseService.createCategoryUniverse(categoryUniverse);
+    } catch (error: any) {
+        return {
+            success: false,
+            error: error?.response?.data?.message ?? "Unable to create category universe",
+        };
+    }
+
     revalidatePath("/category-universe");
     redirect("/category-universe");
 }
