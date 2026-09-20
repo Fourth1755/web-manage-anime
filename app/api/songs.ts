@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateAnimeSongRequest, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse } from './dtos/song';
+import { ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateAnimeSongRequest, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse, UpdateAnimeSongRequest, UpdateAnimeSongResponse } from './dtos/song';
 
 export class SongService {
     public async getSongs(): Promise<GetAllSongResponse[]> {
@@ -15,6 +15,11 @@ export class SongService {
     public async createSongForAnime(animeId: string, song: CreateAnimeSongForAnimeRequest): Promise<CreateAnimeSongForAnimeResponse> {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.post(`/admin/animes/${animeId}/songs`, song, { headers }) as unknown as Promise<CreateAnimeSongForAnimeResponse>;
+    }
+
+    public async updateSong(songId: string, song: UpdateAnimeSongRequest): Promise<UpdateAnimeSongResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.put(`/admin/songs/${songId}`, song, { headers }) as unknown as Promise<UpdateAnimeSongResponse>;
     }
 
     public async getSongByAnime(anime_id: string): Promise<GetSongByAnimeIdResponse> {

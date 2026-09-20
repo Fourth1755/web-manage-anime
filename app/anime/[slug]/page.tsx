@@ -19,6 +19,7 @@ import AnilistTrailerToggle from "../component/anilistTrailerToggle";
 import AnilistEpisodeToggle from "../component/anilistEpisodeToggle";
 import { EpisodeService } from "@/app/api/episode";
 import CreateSongButton from "./component/createSongButton/createSongButton";
+import EditSongButton from "./component/createSongButton/editSongButton";
 
 export default async function Page(props: any) {
     const params = await props.params;
@@ -163,6 +164,7 @@ export default async function Page(props: any) {
                                         )}
                                     </div>
                                     <div className="flex flex-col gap-1 flex-shrink-0">
+                                        <EditSongButton anime_id={animeId} anime_name={anime.name} song={song} />
                                         <AddSongChannelButton song_id={song.id} song_name={song.name} anime_id={animeId} />
                                         {song.spotify_track_id ? (
                                             <span className="rounded-md border px-3 py-2 text-center text-xs font-semibol">

@@ -34,6 +34,9 @@ export type CreateAnimeSongForAnimeResponse = {
     message: string
 }
 
+export type UpdateAnimeSongRequest = CreateAnimeSongForAnimeRequest
+export type UpdateAnimeSongResponse = CreateAnimeSongForAnimeResponse
+
 export type MigrateAnimeSongsSource = 'jikan' | 'my_anime_list'
 
 export type MigrateAnimeSongsRequest = {
@@ -65,6 +68,7 @@ type SongArtist = {
 export type GetSongByAnimeIdResponseSongDetail = {
     id: string
     name: string
+    name_japan?: string | null
     image: string
     description: string
     year: string

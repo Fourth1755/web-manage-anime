@@ -3,35 +3,38 @@
 import { useState } from "react"
 import { Button } from "../../../../component/mtailwind"
 import AlertModal from "@/app/component/alertModal/alertModal"
+import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song"
 import CreateSongModal from "./createSongModal"
 
-type PropsCreateSongButton = {
+type Props = {
     anime_id: string
     anime_name: string
+    song: GetSongByAnimeIdResponseSongDetail
 }
 
-export default function CreateSongButton(props: PropsCreateSongButton) {
+export default function EditSongButton({ anime_id, anime_name, song }: Props) {
     const [openModal, setOpenModal] = useState(false)
     const [openAlert, setOpenAlert] = useState(false)
     const [message, setMessage] = useState("")
 
-    const handleCreated = (message: string) => {
-        setMessage(message)
+    const handleSaved = (responseMessage: string) => {
+        setMessage(responseMessage)
         setOpenModal(false)
         setOpenAlert(true)
     }
 
     return (
         <>
-            <Button variant="gradient" color="green" onClick={() => setOpenModal(true)}>
-                <span>Create Song</span>
+            <Button size="sm" variant="outlined" color="blue" onClick={() => setOpenModal(true)}>
+                Edit Song
             </Button>
             <CreateSongModal
                 open={openModal}
                 handler={() => setOpenModal(false)}
-                anime_id={props.anime_id}
-                anime_name={props.anime_name}
-                onSaved={handleCreated}
+                anime_id={anime_id}
+                anime_name={anime_name}
+                song={song}
+                onSaved={handleSaved}
             />
             <AlertModal
                 open={openAlert}

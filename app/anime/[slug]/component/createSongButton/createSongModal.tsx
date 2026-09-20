@@ -12,15 +12,16 @@ import {
     Textarea,
     Typography,
 } from "../../../../component/mtailwind"
-import { CreateAnimeSongForAnimeRequest, CreateAnimeSongThemeRequest } from "@/app/api/dtos/song"
-import { createSong, getAllArtist } from "./action"
+import { CreateAnimeSongForAnimeRequest, CreateAnimeSongThemeRequest, GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song"
+import { createSong, getAllArtist, updateSong } from "./action"
 
 type Props = {
     open: boolean
     handler: () => void
     anime_id: string
     anime_name: string
-    onCreated: (message: string) => void
+    song?: GetSongByAnimeIdResponseSongDetail
+    onSaved: (message: string) => void
 }
 
 type ArtistOption = {
@@ -47,7 +48,7 @@ const emptyForm = () => ({
     description: "",
 })
 
-export default function CreateSongModal({ open, handler, anime_id, anime_name, onCreated }: Props) {
+export default function CreateSongModal({ open, handler, anime_id, anime_name, song, onSaved }: Props) {
     const [form, setForm] = useState(emptyForm)
     const [themes, setThemes] = useState<ThemeForm[]>([emptyTheme()])
     const [artists, setArtists] = useState<ArtistOption[]>([])
@@ -55,6 +56,35 @@ export default function CreateSongModal({ open, handler, anime_id, anime_name, o
     const [loadingArtists, setLoadingArtists] = useState(false)
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState("")
+    const isEditing = Boolean(song)
+
+    useEffect(() => {
+        if (!open) return
+
+        if (!song) {
+            setForm(emptyForm())
+            setThemes([emptyTheme()])
+            setSelectedArtists([])
+            setError("")
+            return
+        }
+
+        setForm({
+            name: song.name ?? "",
+            name_japan: song.name_japan ?? "",
+            description: song.description ?? "",
+        })
+        setThemes(song.themes?.length > 0
+            ? song.themes.map((theme) => ({
+                type: theme.type as CreateAnimeSongThemeRequest["type"],
+                sequence: theme.sequence.toString(),
+                episodes: theme.episodes ?? "",
+            }))
+            : [emptyTheme()]
+        )
+        setSelectedArtists(song.song_artist?.map((artist) => artist.id) ?? [])
+        setError("")
+    }, [open, song])
 
     useEffect(() => {
         if (!open || artists.length > 0) return
@@ -137,7 +167,9 @@ export default function CreateSongModal({ open, handler, anime_id, anime_name, o
         }
 
         setSubmitting(true)
-        const result = await createSong(anime_id, request)
+        const result = song
+            ? await updateSong(song.id, anime_id, request)
+            : await createSong(anime_id, request)
         setSubmitting(false)
 
         if (!result.success) {
@@ -146,13 +178,13 @@ export default function CreateSongModal({ open, handler, anime_id, anime_name, o
         }
 
         reset()
-        onCreated(result.message)
+        onSaved(result.message)
     }
 
     return (
         <Dialog open={open} handler={handleClose} size="lg">
             <DialogHeader className="flex flex-col items-start gap-1">
-                <span>Create Song</span>
+                <span>{isEditing ? "Edit Song" : "Create Song"}</span>
                 <Typography variant="small" className="font-normal text-gray-500">
                     {anime_name}
                 </Typography>
@@ -277,7 +309,9 @@ export default function CreateSongModal({ open, handler, anime_id, anime_name, o
                     </Button>
                     <Button type="submit" variant="gradient" color="green" disabled={submitting || loadingArtists} className="flex items-center gap-2">
                         {submitting && <Spinner className="h-4 w-4" />}
-                        {submitting ? "Creating..." : "Create Song"}
+                        {submitting
+                            ? (isEditing ? "Saving..." : "Creating...")
+                            : (isEditing ? "Save Changes" : "Create Song")}
                     </Button>
                 </DialogFooter>
             </form>
