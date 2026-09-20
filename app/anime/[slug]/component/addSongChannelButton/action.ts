@@ -9,7 +9,7 @@ export async function createSongChannel(request: CreateSongChannelRequest, anime
     try {
         const res = await songService.createSongChannel(request)
         revalidatePath(`/anime/${anime_id}`)
-        return res.data.message
+        return res.message ?? 'Channel added'
     } catch (error: any) {
         return error?.response?.data?.message ?? error?.message ?? 'Something went wrong'
     }

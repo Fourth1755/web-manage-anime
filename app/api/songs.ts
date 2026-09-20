@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { ConfirmSpotifySongRequest, CreateAnimeSongRequest, CreateSongChannelRequest, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse } from './dtos/song';
+import { ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateAnimeSongRequest, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse } from './dtos/song';
 
 export class SongService {
     public async getSongs(): Promise<GetAllSongResponse[]> {
@@ -12,6 +12,11 @@ export class SongService {
         return apiClient.post('/songs', song, { headers });
     }
 
+    public async createSongForAnime(animeId: string, song: CreateAnimeSongForAnimeRequest): Promise<CreateAnimeSongForAnimeResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post(`/admin/animes/${animeId}/songs`, song, { headers }) as unknown as Promise<CreateAnimeSongForAnimeResponse>;
+    }
+
     public async getSongByAnime(anime_id: string): Promise<GetSongByAnimeIdResponse> {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.get(`/admin/songs/anime/${anime_id}`, { headers }) as unknown as Promise<GetSongByAnimeIdResponse>;
@@ -22,9 +27,9 @@ export class SongService {
         return apiClient.get(`/songs/artist/${artist_id}`, { headers }) as unknown as Promise<GetSongsByArtistResponse>;
     }
 
-    public async createSongChannel(request: CreateSongChannelRequest) {
+    public async createSongChannel(request: CreateSongChannelRequest): Promise<CreateSongChannelResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/admin/songs/channel', request, { headers });
+        return apiClient.post('/admin/songs/channel', request, { headers }) as unknown as Promise<CreateSongChannelResponse>;
     }
 
     public async migrateAnimeSongs(request: MigrateAnimeSongsRequest) {

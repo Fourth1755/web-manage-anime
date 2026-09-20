@@ -9,7 +9,7 @@ export async function createSongChannel(request:CreateSongChannelRequest) {
     try {
         const res = await songService.createSongChannel(request)
         revalidatePath('/artist')
-        return res.data?.message ?? 'Channel added'
+        return res.message ?? 'Channel added'
     } catch (error: any) {
         return error?.response?.data?.message ?? error?.message ?? 'Something went wrong'
     }

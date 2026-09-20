@@ -18,6 +18,7 @@ import CreateTrailerButton from "./component/createTrailerButton/createTrailerBu
 import AnilistTrailerToggle from "../component/anilistTrailerToggle";
 import AnilistEpisodeToggle from "../component/anilistEpisodeToggle";
 import { EpisodeService } from "@/app/api/episode";
+import CreateSongButton from "./component/createSongButton/createSongButton";
 
 export default async function Page(props: any) {
     const params = await props.params;
@@ -441,11 +442,14 @@ export default async function Page(props: any) {
                         <Typography variant="h5">
                             Anime Song
                         </Typography>
-                        {anime.is_migrate_anime_song ? (
-                            <RevertMigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
-                        ) : (
-                            <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
-                        )}
+                        <div className="flex items-center gap-2">
+                            <CreateSongButton anime_id={anime.id} anime_name={anime.name} />
+                            {anime.is_migrate_anime_song ? (
+                                <RevertMigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
+                            ) : (
+                                <MigrateSongButton anime_id={anime.id} my_anime_list_id={anime.my_anime_list_id} />
+                            )}
+                        </div>
                     </div>
                     {showAnimeSongItem(songs.opening_song, "Anime Opening", anime.id)}
                     {showAnimeSongItem(songs.ending_song, "Anime Ending", anime.id)}

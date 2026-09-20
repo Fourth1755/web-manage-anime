@@ -1,386 +1,286 @@
-"use client";
+"use client"
+
+import { useEffect, useState } from "react"
 import {
     Button,
     Dialog,
-    DialogHeader,
     DialogBody,
     DialogFooter,
+    DialogHeader,
     Input,
+    Spinner,
     Textarea,
-    Select,
-    Option,
     Typography,
-} from "../../../../component/mtailwind";
-import { useEffect, useState } from "react";
-import { createSong, getAllArtist } from "./action";
-import React from "react";
-import { CreateAnimeSongRequest, CreateAnimeSongRequestSongChannel } from "@/app/api/dtos/song";
+} from "../../../../component/mtailwind"
+import { CreateAnimeSongForAnimeRequest, CreateAnimeSongThemeRequest } from "@/app/api/dtos/song"
+import { createSong, getAllArtist } from "./action"
 
-type AnimeSongChannel = {
-    channel: number;
-    type: number;
-    link: string;
-}
-type AnimeSongData = {
-    id: string;
-    name: string;
-    image: string;
-    description: string;
-    year: string;
-    type: number;
-    anime_id: string;
-    song_channel: AnimeSongChannel[];
-    artist_list: number[]
-};
-
-type PropsCreateSongeModal = {
-    open: boolean;
-    handler: () => void;
-    isEdit: boolean;
-    song?: AnimeSongData;
-    anime_id: string;
+type Props = {
+    open: boolean
+    handler: () => void
+    anime_id: string
     anime_name: string
-    handlerResponseMessage: (message:string) => void;
-};
-
-type FormSongChannelData = {
-    channel: string;
-    type: string;
-    link: string;
-};
-
-type FormSongData = {
-    name: string;
-    image: string;
-    description: string;
-    year: string;
-    type: string;
-    song_channel: FormSongChannelData[];
-    artists: string
-};
-
-type SongType = {
-    id: string;
-    name: string;
-};
-
-type ArtistList = {
-    id: number;
-    name: string;
-    image: string;
-    description?: string;
-    record_label?: string;
-    is_music_band?: boolean;
-};
-
-type ChannelSelect= {
-    id: string;
-    name: string;
-    image: string;
+    onCreated: (message: string) => void
 }
 
-//OPENING, ENDING, SOUNDTRACK
-const songType: SongType[] = [
-    { id: "OPENING", name: "opening" },
-    { id: "ENDING", name: "ending" },
-    { id: "SOUNDTRACK", name: "soundtrack" },
-];
+type ArtistOption = {
+    id: string
+    name: string
+    image: string
+}
 
-// YOUTUBE,SPOTIFY
-const channelSelect:ChannelSelect[] = [
-    { id: "YOUTUBE", name: "Youtube", image: "https://www.youtube.com/img/desktop/yt_1200.png"},
-    { id: "SPOTIFY", name: "Spotify", image: "https://m.media-amazon.com/images/I/51rttY7a+9L._h1_.png"},
-] 
+type ThemeForm = {
+    type: CreateAnimeSongThemeRequest["type"]
+    sequence: string
+    episodes: string
+}
 
-//TV_SIZE, FULL_SIZE_OFFICIAL, FULL_SIZE_UNOFFICIAL, FIRST_TAKE
-const channelTypeSelect=[
-    { id: "TV_SIZE", name: "TV size" },
-    { id: "FULL_SIZE_OFFICIAL", name: "Full size Official" },
-    { id: "FULL_SIZE_UNOFFICIAL", name: "Full size Unofficial" },
-    { id: "FIRST_TAKE", name: "Fitst Take" },
-]
+const emptyTheme = (): ThemeForm => ({
+    type: "OPENING",
+    sequence: "1",
+    episodes: "",
+})
 
-export default function CreateSongModal(prop: PropsCreateSongeModal) {
-    const open = prop.open;
-    const handleOpen = prop.handler;
-    const isEdit = prop.isEdit;
-    const songData = prop.song;
-    const handlerResponseMessage = prop.handlerResponseMessage;
+const emptyForm = () => ({
+    name: "",
+    name_japan: "",
+    description: "",
+})
 
-    const [artistList, setArtistList] = useState<ArtistList[]>();
-    const [formSongChannelData, setFormSongChannelData] =
-        useState<FormSongChannelData>({
-            channel: "",
-            type: "",
-            link: "",
-        });
-
-    const [formData, setFormData] = useState<FormSongData>({
-        name: "",
-        image: "",
-        description: "",
-        year: "",
-        type: "",
-        song_channel: [formSongChannelData],
-        artists: ""
-    });
-
-    const handleInputChange = (
-        event: React.ChangeEvent<HTMLInputElement> | any
-    ) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const changeType = (val = "") => {
-        setFormData({ ...formData, type: val });
-    };
-
-    const handleChangeArtists = (val = "") => {
-        setFormData({ ...formData, artists: val });
-    };
-
-    const handleChangeChannel = (value = "") => {
-        setFormSongChannelData({ ...formSongChannelData, channel: value });
-    };
-
-    const handleChangeTypeChannel = (value = "") => {
-        setFormSongChannelData({ ...formSongChannelData, type: value });
-    };
-
-    const handleChannelInputChange = (
-        event: React.ChangeEvent<HTMLInputElement> | any
-    ) => {
-        const { name, value } = event.target;
-        setFormSongChannelData({ ...formSongChannelData, [name]: value });
-    };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const songChannel:CreateAnimeSongRequestSongChannel = {
-            channel:formSongChannelData.channel,
-            type:formSongChannelData.type,
-            link:formSongChannelData.link
-        }
-        const song: CreateAnimeSongRequest = {
-            id: "",
-            name: formData.name,
-            image: formData.image,
-            description: formData.description,
-            year: formData.year,
-            type: formData.type,
-            anime_id: prop.anime_id,
-            song_channel: [songChannel],
-            artist_list: [formData.artists],
-        };
-        
-        if (isEdit && songData) {
-            //PATCH:/blogs
-            song.id = songData.id;
-            //await updateBlog(song, songData.id)
-            handleOpen();
-        } else {
-            const res = createSong(song);
-            res.then((data)=>handlerResponseMessage(data))
-            handleOpen();
-        }
-        
-    };
-    useEffect(() => {
-        if (isEdit && songData) {
-            const songChannel:FormSongChannelData = {
-                channel:songData.song_channel[0].channel.toString(),
-                type:songData.song_channel[0].type.toString(),
-                link:songData.song_channel[0].link
-            }
-            setFormData({
-                name: songData.name,
-                image: songData.image,
-                description: songData.description,
-                year: songData.year,
-                type: songData.type.toString(),
-                song_channel: [songChannel],
-                artists: songData.artist_list[0].toString()
-            });
-        }
-    }, []);
-
-    //fetch list of artist
-    const initArtist = () => {
-        const response = getAllArtist()
-        response.then((data)=>setArtistList(data.artists));
-    };
+export default function CreateSongModal({ open, handler, anime_id, anime_name, onCreated }: Props) {
+    const [form, setForm] = useState(emptyForm)
+    const [themes, setThemes] = useState<ThemeForm[]>([emptyTheme()])
+    const [artists, setArtists] = useState<ArtistOption[]>([])
+    const [selectedArtists, setSelectedArtists] = useState<string[]>([])
+    const [loadingArtists, setLoadingArtists] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [error, setError] = useState("")
 
     useEffect(() => {
-        initArtist();
-    }, [prop]);
+        if (!open || artists.length > 0) return
+
+        let active = true
+        setLoadingArtists(true)
+        getAllArtist()
+            .then((response) => {
+                if (active) setArtists(response.artists ?? [])
+            })
+            .catch(() => {
+                if (active) setError("Unable to load artists")
+            })
+            .finally(() => {
+                if (active) setLoadingArtists(false)
+            })
+
+        return () => {
+            active = false
+        }
+    }, [open, artists.length])
+
+    const reset = () => {
+        setForm(emptyForm())
+        setThemes([emptyTheme()])
+        setSelectedArtists([])
+        setError("")
+        setSubmitting(false)
+    }
+
+    const handleClose = () => {
+        if (submitting) return
+        reset()
+        handler()
+    }
+
+    const updateTheme = (index: number, field: keyof ThemeForm, value: string) => {
+        setThemes((current) => current.map((theme, themeIndex) => (
+            themeIndex === index ? { ...theme, [field]: value } : theme
+        )))
+    }
+
+    const toggleArtist = (artistId: string) => {
+        setSelectedArtists((current) => (
+            current.includes(artistId)
+                ? current.filter((id) => id !== artistId)
+                : [...current, artistId]
+        ))
+    }
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        setError("")
+
+        if (!form.name.trim()) {
+            setError("Song name is required")
+            return
+        }
+
+        if (themes.some((theme) => !theme.episodes.trim() || Number(theme.sequence) < 1)) {
+            setError("Every theme must have a sequence of at least 1 and an episode range")
+            return
+        }
+
+        if (selectedArtists.length === 0) {
+            setError("Select at least one artist")
+            return
+        }
+
+        const request: CreateAnimeSongForAnimeRequest = {
+            name: form.name.trim(),
+            name_japan: form.name_japan.trim(),
+            description: form.description.trim(),
+            themes: themes.map((theme) => ({
+                type: theme.type,
+                sequence: Number(theme.sequence),
+                episodes: theme.episodes.trim(),
+            })),
+            artist_list: selectedArtists,
+        }
+
+        setSubmitting(true)
+        const result = await createSong(anime_id, request)
+        setSubmitting(false)
+
+        if (!result.success) {
+            setError(result.error)
+            return
+        }
+
+        reset()
+        onCreated(result.message)
+    }
+
     return (
-        <>
-            <Dialog
-                open={open}
-                handler={handleOpen}
-                animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 0.9, y: -100 },
-                }}
-            >
-                <DialogHeader>{isEdit ? "Edit Song" : "Create Song"}</DialogHeader>
-                <form onSubmit={handleSubmit}>
-                    <DialogBody className="h-[32rem] overflow-y-scroll">
-                        <div className="grid gap-6">
-                            <Typography variant="h6">{prop.anime_name}</Typography>
+        <Dialog open={open} handler={handleClose} size="lg">
+            <DialogHeader className="flex flex-col items-start gap-1">
+                <span>Create Song</span>
+                <Typography variant="small" className="font-normal text-gray-500">
+                    {anime_name}
+                </Typography>
+            </DialogHeader>
+            <form onSubmit={handleSubmit}>
+                <DialogBody className="max-h-[70vh] overflow-y-auto">
+                    <div className="grid gap-5">
+                        <div className="grid gap-4 md:grid-cols-2">
                             <Input
-                                label="Anime song name"
+                                label="Song name *"
                                 crossOrigin={undefined}
-                                value={formData.name}
-                                name="name"
-                                onChange={handleInputChange}
+                                value={form.name}
+                                onChange={(event) => setForm({ ...form, name: event.target.value })}
                             />
                             <Input
-                                label="Image of anime song"
+                                label="Japanese name"
                                 crossOrigin={undefined}
-                                value={formData.image}
-                                name="image"
-                                onChange={handleInputChange}
-                            />
-                            <div className="flex gap-4">
-                                <div className="w-full">
-                                    <Select
-                                        variant="outlined"
-                                        label="Choose a Type of Song"
-                                        color="green"
-                                        value={formData.type}
-                                        name="type"
-                                        onChange={changeType}
-                                    >
-                                        {songType.map((item) => (
-                                            <Option key={item.id} value={item.id}>
-                                                {item.name}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                                <div className="w-full">
-                                    <Input
-                                        label="year"
-                                        crossOrigin={undefined}
-                                        value={formData.year}
-                                        name="year"
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <div className="w-full">
-                                    <Select
-                                        variant="outlined"
-                                        label="Choose a Artist"
-                                        color="green"
-                                        value={formData.artists}
-                                        name="artists"
-                                        onChange={handleChangeArtists}
-                                        selected={(element) =>
-                                            element &&
-                                            React.cloneElement(element, {
-                                              disabled: true,
-                                              className:
-                                                "flex items-center opacity-100 px-0 gap-2 pointer-events-none",
-                                            })
-                                          }
-                                    >
-                                        {artistList?.map((item) => (
-                                            <Option key={item.id} value={item.id.toString()} className="flex items-center gap-2">
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className="h-7 w-7 rounded-full object-cover"
-                                                />
-                                                {item.name}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                            </div>
-                            <Textarea
-                                label="Description"
-                                value={formData.description}
-                                name="description"
-                                onChange={handleInputChange}
-                            />
-                            <Typography className="-mb-2" variant="h6">
-                                Song Channel
-                            </Typography>
-                            <div className="flex gap-4">
-                                <div className="w-full">
-                                    <Select
-                                        variant="outlined"
-                                        label="Choose a Channel"
-                                        color="green"
-                                        value={formSongChannelData.channel}
-                                        name="channel"
-                                        onChange={handleChangeChannel}
-                                        selected={(element) =>
-                                            element &&
-                                            React.cloneElement(element, {
-                                              disabled: true,
-                                              className:
-                                                "flex items-center opacity-100 px-0 gap-2 pointer-events-none",
-                                            })
-                                          }
-                                    >
-                                        {channelSelect.map((item) => (
-                                            <Option key={item.id} value={item.id} className="flex items-center gap-2">
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className="h-5 w-5 rounded-full object-cover"
-                                                />
-                                                {item.name}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                                <div className="w-full">
-                                    <Select
-                                        variant="outlined"
-                                        label="Choose a Channel type"
-                                        color="green"
-                                        value={formSongChannelData.type}
-                                        name="type"
-                                        onChange={handleChangeTypeChannel}
-                                    >
-                                        {channelTypeSelect.map((item) => (
-                                            <Option key={item.id} value={item.id} className="flex items-center gap-2">
-                                                {item.name}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </div>
-                            </div>
-                            <Input
-                                label="link"
-                                crossOrigin={undefined}
-                                value={formSongChannelData.link}
-                                name="link"
-                                onChange={handleChannelInputChange}
+                                value={form.name_japan}
+                                onChange={(event) => setForm({ ...form, name_japan: event.target.value })}
                             />
                         </div>
-                    </DialogBody>
-                    <DialogFooter>
-                        <Button
-                            variant="text"
-                            color="green"
-                            onClick={handleOpen}
-                            className="mr-1"
-                        >
-                            <span>Cancel</span>
-                        </Button>
-                        <Button variant="gradient" color="green" type="submit">
-                            <span>Create</span>
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </Dialog>
-        </>
-    );
+
+                        <Textarea
+                            label="Description"
+                            value={form.description}
+                            onChange={(event) => setForm({ ...form, description: event.target.value })}
+                        />
+
+                        <section className="rounded-lg border border-blue-gray-100 p-4">
+                            <div className="mb-4 flex items-center justify-between">
+                                <Typography variant="h6">Themes</Typography>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outlined"
+                                    onClick={() => setThemes((current) => [...current, emptyTheme()])}
+                                >
+                                    + Add Theme
+                                </Button>
+                            </div>
+                            <div className="grid gap-3">
+                                {themes.map((theme, index) => (
+                                    <div key={index} className="grid items-center gap-3 rounded-lg bg-gray-50 p-3 md:grid-cols-[1fr_120px_1fr_auto]">
+                                        <select
+                                            aria-label={`Theme ${index + 1} type`}
+                                            value={theme.type}
+                                            onChange={(event) => updateTheme(index, "type", event.target.value)}
+                                            className="h-10 rounded-md border border-blue-gray-200 bg-white px-3 text-sm text-blue-gray-700"
+                                        >
+                                            <option value="OPENING">Opening</option>
+                                            <option value="ENDING">Ending</option>
+                                            <option value="SOUNDTRACK">Soundtrack</option>
+                                        </select>
+                                        <Input
+                                            label="Sequence"
+                                            type="number"
+                                            min={1}
+                                            crossOrigin={undefined}
+                                            value={theme.sequence}
+                                            onChange={(event) => updateTheme(index, "sequence", event.target.value)}
+                                        />
+                                        <Input
+                                            label="Episodes *"
+                                            placeholder="1-26"
+                                            crossOrigin={undefined}
+                                            value={theme.episodes}
+                                            onChange={(event) => updateTheme(index, "episodes", event.target.value)}
+                                        />
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="text"
+                                            color="red"
+                                            disabled={themes.length === 1}
+                                            onClick={() => setThemes((current) => current.filter((_, themeIndex) => themeIndex !== index))}
+                                        >
+                                            Remove
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className="rounded-lg border border-blue-gray-100 p-4">
+                            <Typography variant="h6" className="mb-3">Artists *</Typography>
+                            {loadingArtists ? (
+                                <div className="flex items-center gap-2 text-sm text-gray-500">
+                                    <Spinner className="h-4 w-4" /> Loading artists...
+                                </div>
+                            ) : artists.length === 0 ? (
+                                <Typography variant="small" className="text-gray-500">No artists found.</Typography>
+                            ) : (
+                                <div className="grid max-h-48 gap-2 overflow-y-auto md:grid-cols-2">
+                                    {artists.map((artist) => (
+                                        <label key={artist.id} className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-2 hover:bg-gray-50">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedArtists.includes(artist.id)}
+                                                onChange={() => toggleArtist(artist.id)}
+                                                className="h-4 w-4 accent-green-500"
+                                            />
+                                            {artist.image ? (
+                                                <img src={artist.image} alt={artist.name} className="h-8 w-8 rounded-full object-cover" />
+                                            ) : (
+                                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
+                                                    {artist.name.charAt(0).toUpperCase()}
+                                                </span>
+                                            )}
+                                            <span className="text-sm text-gray-800">{artist.name}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+
+                        {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+                    </div>
+                </DialogBody>
+                <DialogFooter>
+                    <Button variant="text" color="red" onClick={handleClose} disabled={submitting} className="mr-1">
+                        Cancel
+                    </Button>
+                    <Button type="submit" variant="gradient" color="green" disabled={submitting || loadingArtists} className="flex items-center gap-2">
+                        {submitting && <Spinner className="h-4 w-4" />}
+                        {submitting ? "Creating..." : "Create Song"}
+                    </Button>
+                </DialogFooter>
+            </form>
+        </Dialog>
+    )
 }

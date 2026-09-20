@@ -16,6 +16,24 @@ export type CreateAnimeSongRequest = {
     artist_list: string[]
 }
 
+export type CreateAnimeSongThemeRequest = {
+    type: 'OPENING' | 'ENDING' | 'SOUNDTRACK'
+    sequence: number
+    episodes: string
+}
+
+export type CreateAnimeSongForAnimeRequest = {
+    name: string
+    name_japan: string
+    description: string
+    themes: CreateAnimeSongThemeRequest[]
+    artist_list: string[]
+}
+
+export type CreateAnimeSongForAnimeResponse = {
+    message: string
+}
+
 export type MigrateAnimeSongsSource = 'jikan' | 'my_anime_list'
 
 export type MigrateAnimeSongsRequest = {
@@ -96,6 +114,10 @@ export type CreateSongChannelRequest = {
     type:string
     link:string
     is_main:boolean
+}
+
+export type CreateSongChannelResponse = {
+    message: string
 }
 
 export type SpotifyTrackCandidate = {
