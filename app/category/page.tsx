@@ -15,7 +15,7 @@ export default async function Page() {
     const categorySerivce = new CategoryService()
     const categories = await categorySerivce.getCategories()
     return (<div>
-        <div className="container mx-auto md:px-40 px-5 pt-20">
+        <div className="container mx-auto md:px-8 px-5 pt-8">
             <div className="flex justify-between py-10">
                 <h1>Category</h1>
                 <CreateCategoryButton name="Create Category" category={undefined} isEdit={false}/>

@@ -8,7 +8,7 @@ export default async function CategoryUniversePage() {
     const categoryUniverses = await categoryUniverseService.getCategoryUniverse();
 
     return (
-        <div className="container mx-auto px-5 pt-20 md:px-40">
+        <div className="container mx-auto px-5 pt-8 md:px-8">
             <div className="flex justify-between py-10">
                 <h1>Category Universe</h1>
                 <CreateCategoryUniverseButton />

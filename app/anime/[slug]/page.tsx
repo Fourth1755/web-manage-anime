@@ -280,7 +280,7 @@ export default async function Page(props: any) {
     };
 
     return (
-        <div className="container mx-auto md:px-40 px-5 pt-20 gap-6 flex flex-col">
+        <div className="container mx-auto md:px-8 px-5 pt-8 gap-6 flex flex-col">
             <Card className="h-full w-full">
                 <CardBody>
                     <div className="flex flex-col gap-4">

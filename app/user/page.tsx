@@ -35,7 +35,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     const users = response.users ?? [];
 
     return (
-        <main className="container mx-auto px-5 pt-20 md:px-40">
+        <main className="container mx-auto px-5 pt-8 md:px-8">
             <div className="flex flex-wrap items-center justify-between gap-4 py-10">
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900">Users</h1>

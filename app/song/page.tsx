@@ -8,7 +8,7 @@ export default async function Page() {
     const songSerivce = new SongService()
     const songs = await songSerivce.getSongs();
     return(<>
-        <div className="container mx-auto md:px-40 px-5 pt-20">
+        <div className="container mx-auto md:px-8 px-5 pt-8">
             <div className="flex justify-between py-10">
                 <h1>Anime Song</h1>
             </div>

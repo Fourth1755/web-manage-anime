@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 type PropsSidebar = {
   open: boolean;
-  onClose: any;
+  onClose: () => void;
 };
 
 export default function Sidebar(props: PropsSidebar) {
@@ -52,96 +53,49 @@ export default function Sidebar(props: PropsSidebar) {
   ];
 
 
-  const [isOpen, setOpen] = useState(false);
+  const pathname = usePathname();
   useEffect(() => {
-    setOpen(props.open);
-  }, [props.open]);
-
-  const closeSideBar = () => {
-    props.onClose();
-    setOpen(false);
-  };
-
+    if (!props.open) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") props.onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [props.open, props.onClose]);
 
   return (
     <>
+      {props.open && (
+        <button
+          type="button"
+          className="fixed inset-0 top-16 z-30 bg-black/30 md:hidden"
+          aria-label="Close sidebar"
+          onClick={props.onClose}
+        />
+      )}
       <aside
         id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full  md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        className={`fixed bottom-0 left-0 top-16 z-40 w-64 border-r border-gray-200 bg-white transition-transform md:translate-x-0 ${props.open ? "translate-x-0" : "-translate-x-full invisible md:visible"}`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 pb-4 overflow-y-auto dark:bg-gray-800">
+        <nav aria-label="Main navigation" className="h-full overflow-y-auto px-3 py-6">
           <ul className="space-y-2 font-medium">
-            {menuSidebar.map((item) => (
-              <li key={item.name}>
-                <Link
-                  href={item.url}
-                  className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                >
-                  <svg
-                    className="flex-shrink-0 w-6 h-6 text-pink-500 transition duration-75 group-hover:text-gray-900"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 2 24 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d={item.logo}
-                    />
-                  </svg>
-                  <span className="flex-1 ms-3 whitespace-nowrap text-pink-500">
-                    {item.name}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </aside>
-      {isOpen ? (
-        <aside
-          id="logo-sidebar"
-          className="md:hidden fixed top-0 right-0 z-40 w-64 h-screen pt-10 bg-pink-500"
-          aria-label="Sidebar"
-        >
-          <button
-            className="px-4 py-2 mx-2 items-center"
-            onClick={closeSideBar}
-          >
-            <svg
-              className="flex-shrink-0 w-7 h-7 transition duration-75 dark:text-gray-400 group-hover:text-gray-900"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 18 20"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </button>
-          <div className="pt-2 h-full px-3 pb-4 overflow-y-auto dark:bg-gray-800">
-            <ul className="space-y-2 font-medium">
-              {menuSidebar.map((item) => (
+            {menuSidebar.map((item) => {
+              const active = item.url === "/" ? pathname === "/" : pathname === item.url || pathname.startsWith(`${item.url}/`);
+              return (
                 <li key={item.name}>
                   <Link
                     href={item.url}
-                    className="flex items-center p-2 rounded-lg  hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    onClick={props.onClose}
+                    aria-current={active ? "page" : undefined}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors ${active ? "bg-pink-50 text-pink-600" : "text-gray-600 hover:bg-gray-50 hover:text-pink-600"}`}
                   >
                     <svg
-                      className="flex-shrink-0 w-5 h-5 transition duration-75"
+                      className="h-6 w-6 shrink-0"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      viewBox="0 0 18 20"
+                      viewBox="0 0 24 24"
                     >
                       <path
                         stroke="currentColor"
@@ -151,18 +105,14 @@ export default function Sidebar(props: PropsSidebar) {
                         d={item.logo}
                       />
                     </svg>
-                    <span className="flex-1 ms-3 whitespace-nowrap">
-                      {item.name}
-                    </span>
+                    <span>{item.name}</span>
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-      ) : (
-        <></>
-      )}
+              );
+            })}
+          </ul>
+        </nav>
+      </aside>
     </>
   );
 }

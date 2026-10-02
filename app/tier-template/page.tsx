@@ -22,7 +22,7 @@ export default async function TierTemplatePage() {
     const tierTemplates = response?.data ?? [];
 
     return (
-        <div className="container mx-auto px-5 pt-20 md:px-8">
+        <div className="container mx-auto px-5 pt-8 md:px-8">
             <div className="flex items-center justify-between py-10">
                 <div>
                     <h1>Tier Templates</h1>

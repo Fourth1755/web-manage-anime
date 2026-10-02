@@ -59,16 +59,16 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     }
 
     return (
-        <div className="container mx-auto px-5 md:px-5 pt-20">
-            <div className="flex justify-between items-center py-10">
-                <h1>Anime</h1>
-                <div className="flex items-center gap-3">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-8 pt-8 sm:px-6 lg:px-8">
+            <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                <h1 className="text-2xl font-semibold text-gray-900">Anime</h1>
+                <div className="flex min-w-0 flex-wrap items-center gap-3">
                     <AnimeSearchInput defaultValue={name} />
                     <MigrateAnimeButton/>
                 </div>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left text-black">
+                <table className="w-full min-w-[800px] text-sm text-left text-black">
                     <thead className="bg-gray-50 text-gray-700 uppercase text-xs">
                         <tr>
                             <th scope="col" className="px-4 py-3 whitespace-nowrap">No.</th>
@@ -93,13 +93,13 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                                 </td>
                                 <td className="px-4 py-2">
                                     <img
-                                        className="h-40 w-28 rounded-lg object-cover object-center shadow-md"
+                                        className="h-28 w-20 max-w-none rounded-lg object-cover object-center shadow-sm"
                                         src={anime.image}
                                         alt={anime.name}
                                     />
                                 </td>
-                                <td className="px-2 py-4 min-w-[160px]">
-                                    <p>{anime.name}</p>
+                                <td className="px-2 py-4 min-w-[200px] max-w-xl">
+                                    <p className="break-words font-medium">{anime.name}</p>
                                     {anime.name_thai && <p className="text-sm mt-1">{anime.name_thai}</p>}
                                 </td>
                                 <td className="px-2 py-4">{anime.my_anime_list_id || '-'}</td>

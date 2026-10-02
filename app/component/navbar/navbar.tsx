@@ -4,7 +4,7 @@ import Sidebar from "../sidebar/sidebar";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { Button } from "../mtailwind";
-import { SessionUser } from "@/app/layout";
+import type { SessionUser } from "@/app/layout";
 import LogoutButton from "./logoutButton";
 
 type NavbarProps = {
@@ -20,14 +20,14 @@ export default function Navbar({ user }: NavbarProps) {
     <>
       {pathname !== "/login" ? (
         <>
-          <nav className="bg-pink-500 w-full p-2 flex justify-between fixed z-10">
-            <div className="flex justify-center w-40">
+          <nav className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between gap-4 bg-pink-500 px-4 md:px-6">
+            <Link href="/" className="flex shrink-0 items-center">
               <h1 className="my-auto font-castoro italic text-lg">Animap</h1>
-            </div>
-            <div className="md:flex hidden items-center gap-3">
+            </Link>
+            <div className="ml-auto flex min-w-0 items-center gap-3">
               {user ? (
                 <>
-                  <span className="text-white text-sm font-medium">{user.name || user.email}</span>
+                  <span className="hidden max-w-48 truncate text-white text-sm font-medium sm:block">{user.name || user.email}</span>
                   <LogoutButton />
                 </>
               ) : (
@@ -37,12 +37,11 @@ export default function Navbar({ user }: NavbarProps) {
               )}
             </div>
             <button
-              data-drawer-target="default-sidebar"
-              data-drawer-toggle="default-sidebar"
-              aria-controls="default-sidebar"
+              aria-controls="logo-sidebar"
+              aria-expanded={isSidebarOpen}
               type="button"
               onClick={() => setSidebarOpen(!isSidebarOpen)}
-              className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="inline-flex shrink-0 items-center rounded-lg p-2 text-sm text-white md:hidden hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <span className="sr-only">Open sidebar</span>
               <svg

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/lib/provider";
-import Navbar from "./component/navbar/navbar";
+import AppShell from "./component/appShell";
 import { cookies } from "next/headers";
 import { decodeJwt } from "jose";
 import { ADMIN_SESSION_COOKIE, isAdminSessionToken } from "@/lib/adminSession";
@@ -47,8 +47,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ReduxProvider>
-          <Navbar user={user} />
-          {children}
+          <AppShell user={user}>{children}</AppShell>
         </ReduxProvider>
       </body>
     </html>

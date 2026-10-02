@@ -43,7 +43,7 @@ export default function PaginationControl({ page, limit, totalPages }: Props) {
     const items = buildPageItems(page, totalPages);
 
     return (
-        <div className="flex items-center justify-center gap-2 py-6">
+        <div className="flex flex-wrap items-center justify-center gap-2 py-6">
             <Link
                 href={buildHref(page - 1)}
                 className={`px-3 py-1 rounded border text-sm ${page <= 1 ? "pointer-events-none opacity-40" : "hover:bg-gray-100"}`}

@@ -22,7 +22,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     const totalPages = artistResponse.total_pages ?? 0;
 
     return (
-        <div className="container mx-auto md:px-40 px-5 pt-20">
+        <div className="container mx-auto md:px-8 px-5 pt-8">
             <div className="flex justify-between items-center py-10">
                 <h1>Artists</h1>
                 <CreateArtistButton isEdit={false} />

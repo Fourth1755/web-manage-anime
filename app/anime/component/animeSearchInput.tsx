@@ -29,19 +29,21 @@ export default function AnimeSearchInput({ defaultValue }: { defaultValue: strin
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <div className="relative">
+        <form onSubmit={handleSubmit} className="flex w-full min-w-0 items-center gap-2 sm:w-auto">
+            <div className="relative min-w-0 flex-1 sm:w-64">
                 <input
                     type="text"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     placeholder="Search anime name..."
-                    className="border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 w-64"
+                    aria-label="Search anime name"
+                    className="h-10 w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
                 {value && (
                     <button
                         type="button"
                         onClick={handleClear}
+                        aria-label="Clear search"
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
                     >
                         ×
@@ -50,7 +52,7 @@ export default function AnimeSearchInput({ defaultValue }: { defaultValue: strin
             </div>
             <button
                 type="submit"
-                className="px-4 py-2 bg-pink-500 text-white text-sm rounded-lg hover:bg-pink-600 transition-colors"
+                className="h-10 shrink-0 px-4 py-2 bg-pink-500 text-white text-sm rounded-lg hover:bg-pink-600 transition-colors"
             >
                 Search
             </button>
