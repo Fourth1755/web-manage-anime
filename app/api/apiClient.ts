@@ -18,6 +18,16 @@ const apiClient: AxiosInstance = axios.create({
   httpsAgent: new https.Agent({ keepAlive: false }),
 });
 
+// This client forwards admin sessions only; never send them to user or external APIs.
+apiClient.interceptors.request.use((config) => {
+  const target = new URL(config.url ?? '', API_BASE_URL);
+  if (!config.url?.startsWith('/admin/') || !target.pathname.startsWith('/admin/') ||
+      target.origin !== new URL(API_BASE_URL).origin || config.baseURL !== API_BASE_URL) {
+    throw new Error('Admin API client only supports /admin/ endpoints on API_BASE_URL');
+  }
+  return config;
+});
+
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error: AxiosError) => {

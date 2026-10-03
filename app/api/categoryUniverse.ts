@@ -4,11 +4,11 @@ import { CreateCategoryUniverseRequest, GetCategoryListResponse } from './dtos/c
 export class CategoryUniverseService {
     public async getCategoryUniverse(): Promise<GetCategoryListResponse[]> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get('/category-universe', { headers }) as unknown as Promise<GetCategoryListResponse[]>;
+        return apiClient.get('/admin/category-universe', { headers }) as unknown as Promise<GetCategoryListResponse[]>;
     }
 
     public async createCategoryUniverse(categoryUniverse: CreateCategoryUniverseRequest) {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/category-universe', categoryUniverse, { headers });
+        return apiClient.post('/admin/category-universe', categoryUniverse, { headers });
     }
 }

@@ -1,15 +1,10 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateAnimeSongRequest, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse, UpdateAnimeSongRequest, UpdateAnimeSongResponse } from './dtos/song';
+import { ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse, UpdateAnimeSongRequest, UpdateAnimeSongResponse } from './dtos/song';
 
 export class SongService {
     public async getSongs(): Promise<GetAllSongResponse[]> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get('/songs', { headers }) as unknown as Promise<GetAllSongResponse[]>;
-    }
-
-    public async createSong(song: CreateAnimeSongRequest) {
-        const headers = { Cookie: await getAuthCookie() };
-        return apiClient.post('/songs', song, { headers });
+        return apiClient.get('/admin/songs', { headers }) as unknown as Promise<GetAllSongResponse[]>;
     }
 
     public async createSongForAnime(animeId: string, song: CreateAnimeSongForAnimeRequest): Promise<CreateAnimeSongForAnimeResponse> {
@@ -29,7 +24,7 @@ export class SongService {
 
     public async getSongsByArtist(artist_id: string): Promise<GetSongsByArtistResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get(`/songs/artist/${artist_id}`, { headers }) as unknown as Promise<GetSongsByArtistResponse>;
+        return apiClient.get(`/admin/songs/artist/${artist_id}`, { headers }) as unknown as Promise<GetSongsByArtistResponse>;
     }
 
     public async createSongChannel(request: CreateSongChannelRequest): Promise<CreateSongChannelResponse> {
