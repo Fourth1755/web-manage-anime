@@ -1,7 +1,12 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse, UpdateAnimeSongRequest, UpdateAnimeSongResponse } from './dtos/song';
+import { CreateArtistSongRequest, CreateArtistSongResponse, ConfirmSpotifySongRequest, CreateAnimeSongForAnimeRequest, CreateAnimeSongForAnimeResponse, CreateSongChannelRequest, CreateSongChannelResponse, GetAllSongResponse, GetSongByAnimeIdResponse, GetSongsByArtistResponse, MigrateAnimeSongsRequest, MigrateSpotifySongRequest, MigrateSpotifySongResponse, UpdateAnimeSongRequest, UpdateAnimeSongResponse } from './dtos/song';
 
 export class SongService {
+    public async createSongForArtist(artistId: string, song: CreateArtistSongRequest): Promise<CreateArtistSongResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post(`/admin/artists/${artistId}/songs`, song, { headers }) as unknown as Promise<CreateArtistSongResponse>;
+    }
+
     public async getSongs(): Promise<GetAllSongResponse[]> {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.get('/admin/songs', { headers }) as unknown as Promise<GetAllSongResponse[]>;

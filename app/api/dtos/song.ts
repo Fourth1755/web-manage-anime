@@ -1,3 +1,15 @@
+export type CreateArtistSongRequest = {
+    name: string
+    is_anime_song: boolean
+}
+
+export type CreateArtistSongResponse = {
+    id: string
+    name: string
+    artist_id: string
+    is_anime_song: boolean
+}
+
 export type CreateAnimeSongRequestSongChannel = {
     channel: string
     type: string
@@ -97,6 +109,7 @@ export type GetAllSongResponse ={
     anime_name: string,
 }
 type GetSongsByArtistResponseSong = {
+    is_anime_song: boolean
     id:string
     name:string
     image: string
