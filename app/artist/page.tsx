@@ -5,19 +5,22 @@ import { ArtistSerivce } from "../api/artist";
 import CreateArtistButton from "./component/createArtistButton/createArtistButton";
 import PaginationControl from "../component/paginationControl";
 import MigrateSpotifyButton from "./component/migrateSpotifyButton/migrateSpotifyButton";
+import MergeArtistControls, { MergeArtistButton } from "./component/mergeArtistButton/mergeArtistControls";
 
 type SearchParams = {
     page?: string;
     limit?: string;
+    name?: string;
 };
 
 export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
     const params = await searchParams;
     const page  = Math.max(1, parseInt(params.page  ?? "1",  10));
     const limit = Math.max(1, parseInt(params.limit ?? "20", 10));
+    const name = params.name?.trim() ?? "";
 
     const artistService = new ArtistSerivce();
-    const artistResponse = await artistService.getArtists(page, limit);
+    const artistResponse = await artistService.getArtists(page, limit, name);
 
     const totalPages = artistResponse.total_pages ?? 0;
 
@@ -27,6 +30,33 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                 <h1>Artists</h1>
                 <CreateArtistButton isEdit={false} />
             </div>
+            <form action="/artist" method="get" className="mb-6 flex flex-wrap items-end gap-2">
+                <input type="hidden" name="page" value="1" />
+                <input type="hidden" name="limit" value={limit} />
+                <div className="w-full sm:w-64">
+                    <label htmlFor="artist-name" className="mb-1 block text-sm font-medium text-gray-700">
+                        Artist name
+                    </label>
+                    <input
+                        key={name}
+                        id="artist-name"
+                        name="name"
+                        type="search"
+                        defaultValue={name}
+                        placeholder="Search artist name..."
+                        className="h-10 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                    />
+                </div>
+                <button type="submit" className="h-10 rounded-lg bg-pink-500 px-4 py-2 text-sm text-white hover:bg-pink-600">
+                    Search
+                </button>
+                {name && (
+                    <Link href={`/artist?page=1&limit=${limit}`} className="inline-flex h-10 items-center rounded-lg border border-gray-300 px-4 text-sm hover:bg-gray-100">
+                        Clear
+                    </Link>
+                )}
+            </form>
+            <MergeArtistControls>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-black">
                     <thead className="bg-gray-50 text-gray-700 uppercase text-xs">
@@ -35,9 +65,17 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                             <th scope="col" className="px-6 py-3">Artist</th>
                             <th scope="col" className="px-6 py-3">Detail</th>
                             <th scope="col" className="px-6 py-3">Migrate</th>
+                            <th scope="col" className="px-6 py-3">Merge</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {artistResponse.artists.length === 0 && (
+                            <tr>
+                                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                                    {name ? "No artists found matching your search." : "No artists found."}
+                                </td>
+                            </tr>
+                        )}
                         {artistResponse?.artists.map((artist, index) => (
                             <tr key={artist.id} className="border-b hover:bg-gray-50">
                                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
@@ -67,13 +105,23 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                                     </Link>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <MigrateSpotifyButton artist_id={artist.id} artist_name={artist.name} />
+                                    {artist.spotify_artist_id?.trim() ? (
+                                        <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                            Migrate Complete
+                                        </span>
+                                    ) : (
+                                        <MigrateSpotifyButton artist_id={artist.id} artist_name={artist.name} />
+                                    )}
+                                </td>
+                                <td className="px-6 py-4">
+                                    <MergeArtistButton artist={artist} />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+            </MergeArtistControls>
             <PaginationControl page={page} limit={limit} totalPages={totalPages} />
         </div>
     );

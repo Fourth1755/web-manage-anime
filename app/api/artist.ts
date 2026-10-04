@@ -1,5 +1,5 @@
 import apiClient, { getAuthCookie } from './apiClient';
-import { ConfirmSpotifyArtistRequest, CreateArtistRequest, GetArtistListResponse, GetArtistResponse, MigrateSpotifyArtistResponse } from './dtos/artist';
+import { ConfirmSpotifyArtistRequest, CreateArtistRequest, GetArtistListResponse, GetArtistResponse, MigrateSpotifyArtistResponse, MergeArtistsRequest, MergeArtistsResponse } from './dtos/artist';
 
 export class ArtistSerivce {
     public async getArtist(id: string): Promise<GetArtistResponse> {
@@ -7,9 +7,14 @@ export class ArtistSerivce {
         return apiClient.get(`/admin/artists/${id}`, { headers }) as unknown as Promise<GetArtistResponse>;
     }
 
-    public async getArtists(page = 1, limit = 10): Promise<GetArtistListResponse> {
+    public async getArtists(page = 1, limit = 10, name?: string): Promise<GetArtistListResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get('/admin/artists', { params: { page, limit }, headers }) as unknown as Promise<GetArtistListResponse>;
+        return apiClient.get('/admin/artists', { params: { page, pageSize: limit, name: name?.trim() || undefined }, headers }) as unknown as Promise<GetArtistListResponse>;
+    }
+
+    public async mergeArtists(request: MergeArtistsRequest): Promise<MergeArtistsResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.post('/admin/artists/merge', request, { headers }) as unknown as Promise<MergeArtistsResponse>;
     }
 
     public async createArtist(request: CreateArtistRequest) {
