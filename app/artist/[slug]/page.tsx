@@ -5,6 +5,7 @@ import { SongService } from "@/app/api/songs";
 import AddSongChannelButton from "./component/addSongChannelButton/addSongChannelButton";
 
 import CreateSongButton from "./component/createSongButton/createSongButton";
+import MigrateSpotifySongButton from "@/app/anime/[slug]/component/migrateSpotifySongButton/migrateSpotifySongButton";
 
 type Props = {
     params: Promise<{ slug: string }>
@@ -71,7 +72,7 @@ export default async function Page({ params }: Props) {
             </Card>
             <Card className="h-full w-full">
                 <CardBody>
-                    <div className="flex justify-between">
+                    <div className="mb-6 flex items-center justify-between gap-4">
                         <Typography variant="h5">
                             Song
                         </Typography>
@@ -87,8 +88,15 @@ export default async function Page({ params }: Props) {
                                         <span className="pl-5">{song.name}{song.anime_name ? " | " + song.anime_name : ""}</span>
                                         <span className="ml-3 self-center rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">{song.is_anime_song ? "Anime song" : "Non-anime song"}</span>
                                     </div>
-                                    <div>
+                                    <div className="flex flex-col items-end gap-2">
                                         <AddSongChannelButton song_id={song.id}/>
+                                        {song.spotify_track_id?.trim() ? (
+                                            <span className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-center text-xs font-semibold text-green-700">
+                                                Migrate Complete
+                                            </span>
+                                        ) : (
+                                            <MigrateSpotifySongButton song_id={song.id} song_name={song.name} anime_id={song.anime_id} artist_id={slug} />
+                                        )}
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap gap-4 pt-2">

@@ -17,7 +17,8 @@ type View = 'confirm' | 'candidates' | 'done'
 type Props = {
     song_id: string
     song_name: string
-    anime_id: string
+    anime_id?: string | null
+    artist_id?: string
 }
 
 function formatDuration(ms: number): string {
@@ -27,7 +28,7 @@ function formatDuration(ms: number): string {
     return `${min}:${sec.toString().padStart(2, '0')}`
 }
 
-export default function MigrateSpotifySongButton({ song_id, song_name, anime_id }: Props) {
+export default function MigrateSpotifySongButton({ song_id, song_name, anime_id, artist_id }: Props) {
     const [open, setOpen] = useState(false)
     const [editableSongName, setEditableSongName] = useState(song_name)
     const [view, setView] = useState<View>('confirm')
@@ -55,7 +56,7 @@ export default function MigrateSpotifySongButton({ song_id, song_name, anime_id 
         }
         setLoading(true)
         setError(null)
-        const res = await migrateSpotifySong(song_id, trimmedSongName, anime_id)
+        const res = await migrateSpotifySong(song_id, trimmedSongName, anime_id, artist_id)
         setLoading(false)
         if (!res.success) {
             setError(res.error ?? 'Migration failed')
@@ -73,7 +74,7 @@ export default function MigrateSpotifySongButton({ song_id, song_name, anime_id 
     const handleConfirm = async (spotify_track_id: string) => {
         setConfirmingId(spotify_track_id)
         setError(null)
-        const res = await confirmSpotifySong(resolvedSongId, spotify_track_id, anime_id)
+        const res = await confirmSpotifySong(resolvedSongId, spotify_track_id, anime_id, artist_id)
         setConfirmingId(null)
         if (!res.success) {
             setError(res.error ?? 'Confirm failed')

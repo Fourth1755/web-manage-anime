@@ -14,12 +14,14 @@ export type MigrateSpotifySongResult = {
     candidates?: SpotifyTrackCandidate[]
 }
 
-export async function migrateSpotifySong(song_id: string, song_name: string, anime_id: string): Promise<MigrateSpotifySongResult> {
+export async function migrateSpotifySong(song_id: string, song_name: string, anime_id?: string | null, artist_id?: string): Promise<MigrateSpotifySongResult> {
     try {
         const songService = new SongService()
         const data = await songService.migrateSpotifySong({ song_id, song_name })
         if (data.status === 'mapped') {
-            revalidatePath(`/anime/${anime_id}`)
+            revalidatePath('/song')
+            if (anime_id) revalidatePath(`/anime/${anime_id}`)
+            if (artist_id) revalidatePath(`/artist/${artist_id}`)
         }
         return {
             success: true,
@@ -32,11 +34,13 @@ export async function migrateSpotifySong(song_id: string, song_name: string, ani
     }
 }
 
-export async function confirmSpotifySong(song_id: string, spotify_track_id: string, anime_id: string): Promise<SimpleResult> {
+export async function confirmSpotifySong(song_id: string, spotify_track_id: string, anime_id?: string | null, artist_id?: string): Promise<SimpleResult> {
     try {
         const songService = new SongService()
         await songService.confirmSpotifySong({ song_id, spotify_track_id })
-        revalidatePath(`/anime/${anime_id}`)
+        revalidatePath('/song')
+        if (anime_id) revalidatePath(`/anime/${anime_id}`)
+        if (artist_id) revalidatePath(`/artist/${artist_id}`)
         return { success: true }
     } catch (error: any) {
         return { success: false, error: error?.response?.data?.message ?? 'Confirm failed' }

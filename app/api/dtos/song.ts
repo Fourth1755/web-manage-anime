@@ -99,6 +99,7 @@ export type GetSongByAnimeIdResponse = {
 
 export type GetAllSongResponse ={
     id: string
+    spotify_track_id?: string | null
     name: string,
     image: string,
     description: string,
@@ -109,6 +110,8 @@ export type GetAllSongResponse ={
     anime_name: string,
 }
 type GetSongsByArtistResponseSong = {
+    spotify_track_id?: string | null
+    anime_id?: string | null
     is_anime_song: boolean
     id:string
     name:string
