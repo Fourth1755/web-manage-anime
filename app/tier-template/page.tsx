@@ -23,15 +23,18 @@ export default async function TierTemplatePage() {
 
     return (
         <div className="container mx-auto px-5 pt-8 md:px-8">
-            <div className="flex items-center justify-between py-10">
+            <div className="flex flex-wrap items-center justify-between gap-4 py-10">
                 <div>
                     <h1>Tier Templates</h1>
                     <p className="mt-1 text-sm text-gray-500">Manage tier list templates</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                     <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600">
                         {tierTemplates.length} templates
                     </span>
+                    <Link href="/tier-template/suggested-animes" className="rounded-lg bg-pink-500 px-4 py-2 text-sm font-medium text-white hover:bg-pink-600">
+                        Manage Suggested Anime
+                    </Link>
                     <Link href="/tier-template/create" className="rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600">
                         Create Tier Template
                     </Link>
