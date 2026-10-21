@@ -6,6 +6,7 @@ import { Button } from "../component/mtailwind";
 import PaginationControl from "../component/paginationControl";
 import AnimeSearchInput from "./component/animeSearchInput";
 import { GetAnimeList } from "../api/dtos/anime";
+import VisibilityToggle from "./migrate/visibilityToggle";
 
 type SearchParams = {
     page?: string;
@@ -90,13 +91,13 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                                     <SortIcon active={sort === 'aired_at'} order={order} />
                                 </Link>
                             </th>
-                            <th scope="col" className="px-4 py-3">Status</th>
+                            <th scope="col" className="px-4 py-3 whitespace-nowrap">Is Show</th>
                             <th scope="col" className="px-4 py-3">Detail</th>
                         </tr>
                     </thead>
                     <tbody>
                         {response.animes?.map((anime: GetAnimeList, index: number) => (
-                            <tr key={index} className="border-b hover:bg-gray-50">
+                            <tr key={anime.id} className="border-b hover:bg-gray-50">
                                 <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     {(page - 1) * limit + index + 1}
                                 </td>
@@ -116,7 +117,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                                     <p>{formatDate(anime.aired_at)}</p>
                                     <p className="text-gray-400 text-xs mt-1">{anime.seasonal} {anime.year}</p>
                                 </td>
-                                <td className="px-4 py-4 whitespace-nowrap">{anime.status || '-'}</td>
+                                <td className="px-4 py-4">
+                                    <VisibilityToggle key={`${anime.id}:${anime.is_show}`} anime={anime} />
+                                </td>
                                 <td className="px-4 py-4">
                                     <Link href={`anime/${anime.my_anime_list_id}`}>
                                         <Button variant="outlined" color="pink" type="submit">
