@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import { AnimeService } from "@/app/api/anime";
 import { CardBody, Card, Typography } from "../../component/mtailwind";
 import Link from "next/link";
-import CreateAnimeButton from "../component/createAnimeButton";
+import EditAnimeForm from "./component/editAnimeForm";
 import { SongService } from "@/app/api/songs";
 import AddCategoryToAnimeButton from "./component/addCategoryToAnimeButton";
 import { GetSongByAnimeIdResponseSongDetail } from "@/app/api/dtos/song";
@@ -283,99 +283,101 @@ export default async function Page(props: any) {
         <div className="container mx-auto md:px-8 px-5 pt-8 gap-6 flex flex-col">
             <Card className="h-full w-full">
                 <CardBody>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex justify-between">
-                            <Typography variant="h5" color="blue-gray">
-                                {anime.name}
-                            </Typography>
-                            <CreateAnimeButton name="Edit anime" isEdit={true} anime={anime} />
+                    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+                        <div className="flex min-w-0 flex-col gap-4">
+                            <div className="flex justify-between">
+                                <Typography variant="h5" color="blue-gray">
+                                    {anime.name}
+                                </Typography>
+                            </div>
+                            <img
+                                className="h-60 w-44 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
+                                src={anime.image}
+                                alt="nature image"
+                            />
+                            <table className="w-32 min-w-max table-auto text-left">
+                                <tbody>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold">
+                                            Type:
+                                        </td>
+                                        <td>{anime.type}</td>
+                                    </tr>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold">
+                                            Premiered:
+                                        </td>
+                                        <td>
+                                            {anime.seasonal} {anime.year}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold">
+                                            Episodes:
+                                        </td>
+                                        <td>{anime.episodes}</td>
+                                    </tr>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold">
+                                            Studios:
+                                        </td>
+                                        <td>
+                                            {anime.studios?.map((item, index) => (
+                                                <span key={item.id}>
+                                                    <Link href={`studio/${item.id}`}>{item.name}</Link>
+                                                    <p>{index == anime.studios.length ? "," : ""}</p>
+                                                </span>
+                                            ))}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold">
+                                            Duration:
+                                        </td>
+                                        <td>{anime.duration}</td>
+                                    </tr>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold py-1">
+                                            Category:
+                                        </td>
+                                        <td className="flex">
+                                            <div className="flex">
+                                            {anime.categories?.map((item, index) => (
+                                                <span key={item.id} className="px-1">
+                                                    <Link href={`category/${item.id}`}>{item.name}</Link>
+                                                </span>
+                                            ))}
+                                            </div>
+                                            <AddCategoryToAnimeButton
+                                                name="Add Tag"
+                                                category={anime.categories}
+                                                anime_id={anime.id}
+                                                is_universe={false}/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td color="blue-gray" className="font-bold">
+                                            Universe:
+                                        </td>
+                                        <td className="flex">
+                                            <div className="flex">
+                                                {anime.category_universe?.map((item, index) => (
+                                                <span key={item.id} className="px-1">
+                                                    {item.name}
+                                                    <p>{index == anime.category_universe.length ? "," : ""}</p>
+                                                </span>
+                                            ))}</div>
+                                            <AddCategoryToAnimeButton
+                                                name="Add Tag"
+                                                category={anime.category_universe}
+                                                anime_id={anime.id}
+                                                is_universe={true}/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <img
-                            className="h-60 w-44 rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
-                            src={anime.image}
-                            alt="nature image"
-                        />
-                        <table className="w-32 min-w-max table-auto text-left">
-                            <tbody>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Type:
-                                    </td>
-                                    <td>{anime.type}</td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Premiered:
-                                    </td>
-                                    <td>
-                                        {anime.seasonal} {anime.year}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Episodes:
-                                    </td>
-                                    <td>{anime.episodes}</td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Studios:
-                                    </td>
-                                    <td>
-                                        {anime.studios?.map((item, index) => (
-                                            <span key={item.id}>
-                                                <Link href={`studio/${item.id}`}>{item.name}</Link>
-                                                <p>{index == anime.studios.length ? "," : ""}</p>
-                                            </span>
-                                        ))}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Duration:
-                                    </td>
-                                    <td>{anime.duration}</td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold py-1">
-                                        Category:
-                                    </td>
-                                    <td className="flex">
-                                        <div className="flex">
-                                        {anime.categories?.map((item, index) => (
-                                            <span key={item.id} className="px-1">
-                                                <Link href={`category/${item.id}`}>{item.name}</Link>
-                                            </span>
-                                        ))}
-                                        </div>
-                                        <AddCategoryToAnimeButton 
-                                            name="Add Tag" 
-                                            category={anime.categories} 
-                                            anime_id={anime.id}
-                                            is_universe={false}/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td color="blue-gray" className="font-bold">
-                                        Universe:
-                                    </td>
-                                    <td className="flex">
-                                        <div className="flex">                                        
-                                            {anime.category_universe?.map((item, index) => (
-                                            <span key={item.id} className="px-1">
-                                                {item.name}
-                                                <p>{index == anime.category_universe.length ? "," : ""}</p>
-                                            </span>
-                                        ))}</div>
-                                        <AddCategoryToAnimeButton 
-                                            name="Add Tag" 
-                                            category={anime.category_universe} 
-                                            anime_id={anime.id}
-                                            is_universe={true}/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <EditAnimeForm key={anime.id} anime={anime} />
                     </div>
                 </CardBody>
             </Card>

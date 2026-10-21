@@ -38,9 +38,12 @@ export async function updateAnime(anime: UpdateAnimeRequest) {
     await animeSerivce.updateAnime(anime);
   } catch (error) {
     console.error(error);
+    return { success: false, error: "Unable to save anime. Please try again." };
   }
 
   revalidatePath("/anime");
+  revalidatePath(`/anime/${anime.id}`);
+  return { success: true };
 }
 
 export async function getStudios(): Promise<GetStudioResponse[]> {

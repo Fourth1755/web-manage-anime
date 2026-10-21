@@ -12,9 +12,8 @@ import {
     Chip
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { createAnime, updateAnime, getStudios } from "./action";
+import { createAnime, getStudios } from "./action";
 import { GetStudioResponse } from "@/app/api/dtos/studio";
-import { GetAnimeByIdResponse } from "@/app/api/dtos/anime";
 import DatePicker from "@/app/component/datePicker/datePicker";
 
 type AnimeData = {
@@ -35,20 +34,9 @@ type AnimeData = {
     aired_at: string
 };
 
-type EditAnimeData = {
-    id: string;
-    name_thai?: string;
-    description?: string;
-    is_sub_anime?: boolean;
-    is_show?: boolean;
-    status?: string;
-};
-
 type PropsCreateAnimeModal = {
     open: boolean;
     handler: () => void;
-    isEdit: boolean;
-    anime?: GetAnimeByIdResponse
 };
 
 type FormData = {
@@ -69,14 +57,6 @@ type FormData = {
     my_anime_list_id: number
 }
 
-type EditFormData = {
-    name_thai: string;
-    description: string;
-    is_sub_anime: boolean;
-    is_show: boolean;
-    status: string;
-}
-
 const seasonalList = [
     "spring", "summer", "winter", "fall"
 ];
@@ -90,8 +70,6 @@ let studioMap = new Map();
 export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
     const open = prop.open;
     const handleOpen = prop.handler;
-    const isEdit = prop.isEdit
-    const animeData = prop.anime
     const [formData, setFormData] = useState<FormData>({
         name: "",
         name_english: "",
@@ -108,13 +86,6 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         trailer: "",
         aired_at: "",
         my_anime_list_id:0,
-    });
-    const [editFormData, setEditFormData] = useState<EditFormData>({
-        name_thai: "",
-        description: "",
-        is_sub_anime: false,
-        is_show: false,
-        status: "",
     });
     const [studioList, setStduioList] = useState<GetStudioResponse[]>();
     const [chipOpen, setChipOpen] = useState(true);
@@ -136,13 +107,6 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     }
-    const handleEditInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = event.target;
-        setEditFormData({ ...editFormData, [name]: value });
-    }
-    const changeEditBoolean = (name: keyof EditFormData, val = "") => {
-        setEditFormData({ ...editFormData, [name]: val === "true" });
-    }
     const changeSeasonal = (val = "") => {
         setFormData({ ...formData, "seasonal": val });
     };
@@ -163,36 +127,24 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         setFormData({ ...formData, "aired_at": date }); 
     }
     const handleSubmit = async () => {
-        if (isEdit && animeData) {
-            const editAnime: EditAnimeData = {
-                id: animeData.id,
-                name_thai: editFormData.name_thai || undefined,
-                description: editFormData.description || undefined,
-                is_sub_anime: editFormData.is_sub_anime,
-                is_show: editFormData.is_show,
-                status: editFormData.status || undefined,
-            };
-            await updateAnime(editAnime);
-        } else {
-            const anime: AnimeData = {
-                id: "",
-                name: formData.name,
-                name_english: formData.name_english,
-                name_thai: formData.name_thai,
-                episodes: +formData.episodes,
-                seasonal: formData.seasonal,
-                image: formData.image,
-                studio: formData.studio,
-                description: formData.description,
-                duration: formData.duration,
-                year: formData.year,
-                type: +formData.type,
-                wallpaper: formData.wallpaper,
-                trailer: formData.trailer,
-                aired_at: formData.aired_at,
-            };
-            await createAnime(anime);
-        }
+        const anime: AnimeData = {
+            id: "",
+            name: formData.name,
+            name_english: formData.name_english,
+            name_thai: formData.name_thai,
+            episodes: +formData.episodes,
+            seasonal: formData.seasonal,
+            image: formData.image,
+            studio: formData.studio,
+            description: formData.description,
+            duration: formData.duration,
+            year: formData.year,
+            type: +formData.type,
+            wallpaper: formData.wallpaper,
+            trailer: formData.trailer,
+            aired_at: formData.aired_at,
+        };
+        await createAnime(anime);
         handleOpen();
     }
     const onCloseChipStudio = (id:String) => {
@@ -200,17 +152,6 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
         console.log(stuidoVal)
         setFormData({ ...formData, "studio": stuidoVal });
     }
-    useEffect(() => {
-        if (isEdit && animeData) {
-            setEditFormData({
-                name_thai: animeData.name_thai ?? "",
-                description: animeData.description ?? "",
-                is_sub_anime: false,
-                is_show: false,
-                status: "",
-            });
-        }
-    }, [])
     return (
         <>
             <Dialog
@@ -222,56 +163,8 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
                 }}
                 size="sm"
             >
-                <DialogHeader>{isEdit ? "Edit Anime" : "Create Anime"}</DialogHeader>
+                <DialogHeader>Create Anime</DialogHeader>
                     <DialogBody className="space-y-4 pb-6 overflow-scroll h-96">
-                        {isEdit ? (
-                            <>
-                                <Input
-                                    label="anime thai name"
-                                    crossOrigin={undefined}
-                                    value={editFormData.name_thai}
-                                    name="name_thai"
-                                    onChange={handleEditInputChange}
-                                />
-                                <Textarea
-                                    label="description"
-                                    value={editFormData.description}
-                                    name="description"
-                                    onChange={handleEditInputChange}
-                                />
-                                <Input
-                                    label="status"
-                                    crossOrigin={undefined}
-                                    value={editFormData.status}
-                                    name="status"
-                                    onChange={handleEditInputChange}
-                                />
-                                <div className="w-full">
-                                    <Select
-                                        variant="outlined"
-                                        label="Is Sub Anime"
-                                        color="green"
-                                        value={editFormData.is_sub_anime.toString()}
-                                        onChange={(val) => changeEditBoolean("is_sub_anime", val)}
-                                    >
-                                        <Option value="false">No</Option>
-                                        <Option value="true">Yes</Option>
-                                    </Select>
-                                </div>
-                                <div className="w-full">
-                                    <Select
-                                        variant="outlined"
-                                        label="Is Show"
-                                        color="green"
-                                        value={editFormData.is_show.toString()}
-                                        onChange={(val) => changeEditBoolean("is_show", val)}
-                                    >
-                                        <Option value="false">No</Option>
-                                        <Option value="true">Yes</Option>
-                                    </Select>
-                                </div>
-                            </>
-                        ) : (
                             <>
                                 <Input
                                     label="anime name"
@@ -427,7 +320,6 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
                                     onChange={handleInputChange}
                                 />
                             </>
-                        )}
                     </DialogBody>
                     <DialogFooter>
                         <Button
@@ -439,7 +331,7 @@ export default function CreateAnimeModal(prop: PropsCreateAnimeModal) {
                             <span>Cancel</span>
                         </Button>
                         <Button variant="gradient" color="green" onClick={handleSubmit}>
-                            <span>{isEdit ? "Save" : "Create"}</span>
+                            <span>Create</span>
                         </Button>
                     </DialogFooter>
             </Dialog>

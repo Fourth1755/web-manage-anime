@@ -32,6 +32,7 @@ export type GetAnimesResponse = {
 
 export type GetAnimeByIdResponse = {
     is_show?: boolean;
+    is_sub_anime?: boolean;
     id: string;
     name: string;
     name_english: string
