@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AnimeService } from "../api/anime";
 import { Button } from "../component/mtailwind";
-import MigrateAnimeButton from "./component/migrateAnimeButton";
 import PaginationControl from "../component/paginationControl";
 import AnimeSearchInput from "./component/animeSearchInput";
 import { GetAnimeList } from "../api/dtos/anime";
@@ -64,7 +63,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
                 <h1 className="text-2xl font-semibold text-gray-900">Anime</h1>
                 <div className="flex min-w-0 flex-wrap items-center gap-3">
                     <AnimeSearchInput defaultValue={name} />
-                    <MigrateAnimeButton/>
                 </div>
             </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

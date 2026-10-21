@@ -2,6 +2,12 @@ import apiClient, { getAuthCookie } from './apiClient';
 import { AnilistEpisodeSettingResponse, AnilistTrailerSettingResponse, CreateAnimeRequest, CreateAnimeTrailersRequest, EditCategoryAnimeRequest, EditCategoryUniversesAnimeRequest, GetAnimeByIdResponse, GetAnimeTrailersResponse, GetAnimesResponse, MigrateMultipleAnimeRequest, MigrateSingleAnimeRequest, UpdateAnimeAniListEpisodeRequest, UpdateAnilistTrailerSettingRequest, UpdateAnimeRequest } from './dtos/anime';
 
 export class AnimeService {
+    public async getAnimesByMalRange(start: number, end: number, page = 1): Promise<GetAnimesResponse> {
+        const headers = { Cookie: await getAuthCookie() };
+        return apiClient.get('/admin/animes', {
+            params: { mal_id_start: start, mal_id_end: end, page, limit: 100 }, headers,
+        }) as unknown as Promise<GetAnimesResponse>;
+    }
     public async createAnime(anime: CreateAnimeRequest) {
         const headers = { Cookie: await getAuthCookie() };
         return apiClient.post('/admin/animes', anime, { headers });

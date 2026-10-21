@@ -81,7 +81,7 @@ export default function Sidebar(props: PropsSidebar) {
         <nav aria-label="Main navigation" className="h-full overflow-y-auto px-3 py-6">
           <ul className="space-y-2 font-medium">
             {menuSidebar.map((item) => {
-              const active = item.url === "/" ? pathname === "/" : pathname === item.url || pathname.startsWith(`${item.url}/`);
+              const active = item.url === "/" ? pathname === "/" : (pathname === item.url || pathname.startsWith(`${item.url}/`)) && !(item.url === "/anime" && pathname === "/anime/migrate");
               return (
                 <li key={item.name}>
                   <Link
@@ -107,6 +107,17 @@ export default function Sidebar(props: PropsSidebar) {
                     </svg>
                     <span>{item.name}</span>
                   </Link>
+                  {item.url === "/anime" && (
+                    <ul className="ml-9 mt-1 border-l border-gray-200 pl-3">
+                      <li>
+                        <Link href="/anime/migrate" onClick={props.onClose}
+                          aria-current={pathname === "/anime/migrate" ? "page" : undefined}
+                          className={`block rounded-lg px-3 py-2 text-sm ${pathname === "/anime/migrate" ? "bg-pink-50 text-pink-600" : "text-gray-600 hover:bg-gray-50 hover:text-pink-600"}`}>
+                          Migrate Anime
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
                 </li>
               );
             })}
