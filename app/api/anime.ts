@@ -13,9 +13,9 @@ export class AnimeService {
         return apiClient.post('/admin/animes', anime, { headers });
     }
 
-    public async getAnimes(page = 1, limit = 10, sortBy?: string, orderBy?: string, name?: string): Promise<GetAnimesResponse> {
+    public async getAnimes(page = 1, limit = 10, sortBy?: string, orderBy?: string, name?: string, malIdStart?: number, malIdEnd?: number): Promise<GetAnimesResponse> {
         const headers = { Cookie: await getAuthCookie() };
-        return apiClient.get('/admin/animes', { params: { page, limit, sortBy, orderBy, name }, headers }) as unknown as Promise<GetAnimesResponse>;
+        return apiClient.get('/admin/animes', { params: { page, limit, sortBy, orderBy, name, mal_id_start: malIdStart, mal_id_end: malIdEnd }, headers }) as unknown as Promise<GetAnimesResponse>;
     }
 
     public async getAnimeById(id: string): Promise<GetAnimeByIdResponse> {

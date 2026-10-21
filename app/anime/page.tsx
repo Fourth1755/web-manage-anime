@@ -13,6 +13,8 @@ type SearchParams = {
     sort?: string;
     order?: string;
     name?: string;
+    mal_id_start?: string;
+    mal_id_end?: string;
 };
 
 function formatDate(value: string | null | undefined): string {
@@ -37,11 +39,17 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     const sort  = params.sort  ?? '';
     const order = params.order === 'ASC' ? 'ASC' : 'DESC';
     const name  = params.name?.trim() ?? '';
+    const start = params.mal_id_start?.trim() ?? '';
+    const end = params.mal_id_end?.trim() ?? '';
+    const malIdStart = start ? Number(start) : undefined;
+    const malIdEnd = end ? Number(end) : undefined;
+    const invalidRange = [malIdStart, malIdEnd].some(value => value !== undefined && (!Number.isSafeInteger(value) || value < 1)) ||
+        (malIdStart !== undefined && malIdEnd !== undefined && malIdEnd < malIdStart);
 
     const animeSerivce = new AnimeService();
     let response;
     try {
-        response = await animeSerivce.getAnimes(page, limit, sort || undefined, sort ? order : undefined, name || undefined);
+        response = invalidRange ? { animes: [], total_pages: 0 } : await animeSerivce.getAnimes(page, limit, sort || undefined, sort ? order : undefined, name || undefined, malIdStart, malIdEnd);
     } catch (err: any) {
         if (err?.response?.status === 401) redirect('/login');
         throw err;
@@ -54,6 +62,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
         const nextOrder = sort === col && order === 'ASC' ? 'DESC' : 'ASC';
         const params = new URLSearchParams({ page: '1', limit: String(limit), sort: col, order: nextOrder });
         if (name) params.set('name', name);
+        if (start) params.set('mal_id_start', start);
+        if (end) params.set('mal_id_end', end);
         return `?${params.toString()}`;
     }
 
@@ -62,9 +72,10 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
             <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 <h1 className="text-2xl font-semibold text-gray-900">Anime</h1>
                 <div className="flex min-w-0 flex-wrap items-center gap-3">
-                    <AnimeSearchInput defaultValue={name} />
+                    <AnimeSearchInput key={`${name}:${start}:${end}`} defaultValue={name} defaultStart={start} defaultEnd={end} />
                 </div>
             </div>
+            {invalidRange && <p role="alert" className="mb-4 text-sm text-red-700">Enter positive whole MAL IDs. MAL ID End must be greater than or equal to MAL ID Start.</p>}
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full min-w-[800px] text-sm text-left text-black">
                     <thead className="bg-gray-50 text-gray-700 uppercase text-xs">

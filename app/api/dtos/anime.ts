@@ -1,4 +1,5 @@
 export type GetAnimeList = {
+    is_show?: boolean;
     id: string;
     name: string;
     name_thai: string;
@@ -30,6 +31,7 @@ export type GetAnimesResponse = {
 }
 
 export type GetAnimeByIdResponse = {
+    is_show?: boolean;
     id: string;
     name: string;
     name_english: string
